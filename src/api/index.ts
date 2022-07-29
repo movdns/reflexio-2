@@ -23,3 +23,9 @@ export const getDayAPICall = async (date: string) => {
     .get(`${getBaseUrl()}/days/${date}`)
     .then((res) => res.data);
 };
+
+export const setDayAPICall = async (data: any): Promise<Response> => {
+  return await axios
+    .post(`${getBaseUrl()}/days/`, { data })
+    .then((res) => res.data);
+};
