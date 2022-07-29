@@ -51,11 +51,35 @@ const defaultTheme = createTheme({
           },
         },
       ],
+      styleOverrides: {
+        root: {
+          borderRadius: 20,
+
+          //padding: 5,
+          // boxShadow: "rgb(90 114 123 / 11%) 0px 7px 30px 0px",
+        },
+      },
+    },
+    MuiPaper: {
+      variants: [
+        {
+          props: { elevation: 1 },
+          style: {
+            boxShadow: "rgb(90 114 123 / 11%) 0px 7px 30px 0px",
+          },
+        },
+        {
+          props: { elevation: 6 },
+          style: {
+            boxShadow: "rgb(90 114 123 / 50%) 0px 10px 20px 0px",
+          },
+        },
+      ],
     },
     MuiCardContent: {
       styleOverrides: {
         root: {
-          padding: 2,
+          padding: 5,
           "&:last-child": {
             padding: 0,
           },

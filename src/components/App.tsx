@@ -19,7 +19,13 @@ import firebase from "firebase/compat/app";
 const App: React.FC = () => {
   firebase.setLogLevel("silent");
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  });
 
   const firebaseApp = useFirebaseApp();
   const firestoreInstance = getFirestore(useFirebaseApp());

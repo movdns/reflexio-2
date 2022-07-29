@@ -9,9 +9,15 @@ import { useDiaryContext } from "../../../context/DiaryContext";
 const RightSidebar: React.FC<{ score?: number }> = ({ score }) => {
   const { day } = useDiaryContext();
 
+  console.log(day?.score);
+
   const { setPrimaryColor } = useThemeContext();
   const [happiness, setHappiness] = useState<string>("Not good not terrible");
   const [scoreState, setScoreState] = useState(day?.score || 5);
+
+  useEffect(() => {
+    day?.score && day.score !== scoreState && setScoreState(day.score);
+  }, [day, scoreState]);
 
   const sliderMarks = [
     {

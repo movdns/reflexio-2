@@ -15,6 +15,7 @@ import isToday from "dayjs/plugin/isToday";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import getIconByCode from "../../Icons/helpers/getIconByCode";
 import getCardColor from "./helpers/getCardColor";
+import { Link } from "react-router-dom";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isToday);
@@ -25,6 +26,7 @@ type NavCardProps = {
   color?: "ghost" | "neutral" | "positive" | "negative" | "special";
   icons?: any;
   score?: any;
+  selected: boolean;
 };
 
 const DayCardItem: React.FC<NavCardProps> = ({
@@ -33,8 +35,8 @@ const DayCardItem: React.FC<NavCardProps> = ({
   color,
   icons,
   score,
+  selected,
 }) => {
-  const selected = false;
   const ghost = !icons && !score;
 
   const formattedDate = dayjs(date, "D-MM-YY");
@@ -68,14 +70,38 @@ const DayCardItem: React.FC<NavCardProps> = ({
       }}
     >
       <Card
-        elevation={selected ? 24 : 0}
+        elevation={!selected ? 0 : 6}
+        // raised={selected}
         color={ghost ? "ghost" : getCardColor(score)}
       >
-        <CardContent>
-          <Box height={90} display="flex" alignItems="center">
-            <CardActionArea href={`/diary/${date}`}>
+        <CardActionArea component={Link} to={`/diary/${date}`}>
+          <CardContent>
+            <Box height={90} display="flex" alignItems="center">
               <Grid container sx={{ justifyContent: "space-between" }}>
-                <Box component={Grid} item xs={12} md={12} lg={7}>
+                <Box
+                  component={Grid}
+                  item
+                  xs={12}
+                  md={12}
+                  lg={7}
+                  sx={{
+                    display: { xs: "none", lg: "flex" },
+                    paddingLeft: 0,
+                    position: "relative",
+                    "&:before": {
+                      content: "''",
+                      position: "absolute",
+                      zIndex: 1,
+                      width: 170,
+                      height: 170,
+                      background: "#ffffff30",
+                      borderRadius: "50%",
+                      top: -40,
+                      left: -50,
+                      opacity: 0.5,
+                    },
+                  }}
+                >
                   <Box p={2}>
                     <Typography variant="h6">
                       {formattedDate.format("D MMMM")}
@@ -156,9 +182,9 @@ const DayCardItem: React.FC<NavCardProps> = ({
                   </Box>
                 </Box>
               </Grid>
-            </CardActionArea>
-          </Box>
-        </CardContent>
+            </Box>
+          </CardContent>
+        </CardActionArea>
       </Card>
     </Box>
   );

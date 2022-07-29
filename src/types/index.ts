@@ -4,10 +4,22 @@ export type FirebaseId = {
 
 export type TDay = {
   date: string;
-  score: number;
-  icons: string[];
-
-  description: any;
+  uid?: string;
+  score?: number;
+  description?: {
+    blocks: [
+      {
+        type: string;
+        id: string;
+        data: {
+          text: string;
+          level: number;
+        };
+      }
+    ];
+    time: number;
+  };
+  icons?: string[];
 };
 
 export type TDaysList = TDay[] | [];

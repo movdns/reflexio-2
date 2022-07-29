@@ -15,7 +15,7 @@ const Today = () => {
   // const { day, today } = useDiaryContext();
 
   const date = dayjs();
-  const current = true;
+  const current = false;
 
   // useEffect(() => {}, [today, day]);
 
@@ -24,9 +24,8 @@ const Today = () => {
   return (
     <Card
       //type={current ? "current" : getCardColorByDayScore(10)}
-      color="special"
+      color="neutral"
       // elevation={current ? 24 : 0}
-      raised
     >
       <CardContent>
         {/*<Box*/}
@@ -42,10 +41,32 @@ const Today = () => {
         {/*>*/}
         {/*  <ArrowLeftIcon fontSize="large" />*/}
         {/*</Box>*/}
-        <Box height={90} display="flex" alignItems="center">
+        <Box height={100} display="flex" alignItems="center">
           <CardActionArea href={`/diary/today`}>
             <Grid container sx={{ justifyContent: "space-between" }}>
-              <Box component={Grid} item xs={6} md={7}>
+              <Box
+                component={Grid}
+                item
+                xs={6}
+                md={7}
+                sx={{
+                  display: { xs: "none", lg: "flex" },
+                  paddingLeft: 0,
+                  position: "relative",
+                  "&:before": {
+                    content: "''",
+                    position: "absolute",
+                    zIndex: 1,
+                    width: 230,
+                    height: 230,
+                    background: "#ffffff20",
+                    borderRadius: "50%",
+                    top: -70,
+                    left: -30,
+                    opacity: 0.5,
+                  },
+                }}
+              >
                 <Box p={2}>
                   <Typography variant="h6">Today</Typography>
                   <Typography>{date.format("D MMMM, dddd")}</Typography>

@@ -9,46 +9,21 @@ import dayjs from "dayjs";
 // @ts-ignore
 import hash from "object-hash";
 import hydrateWithEmptyDates from "./helpers/hydrateWithEmptyDates";
-import { collection, orderBy, query, limit, where } from "firebase/firestore";
-import { useAuth, useFirestore } from "reactfire";
+import { useAuth } from "reactfire";
 
 import DiarySkeleton from "../components/Diary/Skeleton";
 import { useParams } from "react-router-dom";
-import firebaseFunctions from "../common/firebase/firebaseFunctions";
-import { getFunctions, httpsCallableFromURL } from "firebase/functions";
-import axios from "axios";
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getDaysAPICall } from "../api";
-
-type TDay = {
-  date: string;
-  uid?: string;
-  id?: number;
-  score?: number;
-  description?: {
-    blocks: [
-      {
-        type: string;
-        id: number;
-        level: number;
-        text: string;
-      }
-    ];
-    time: number;
-  };
-  icons?: string[];
-};
+import { getDayAPICall, getDaysAPICall, setDayAPICall } from "../api";
+import generateDay from "./helpers/generateDay";
+import { TDay } from "../types";
 
 type DiaryContextProps = {
   loading: boolean;
+  loadingDays: boolean;
+  loadingDay: boolean;
   day: TDay | null;
   setDay?(data: TDay): void;
   days: TDay[] | null;
@@ -58,6 +33,8 @@ type DiaryContextProps = {
 
 const DiaryContext = createContext<DiaryContextProps>({
   loading: true,
+  loadingDays: true,
+  loadingDay: true,
   day: {
     date: dayjs().format("D-MM-YY"),
   },
@@ -65,66 +42,9 @@ const DiaryContext = createContext<DiaryContextProps>({
 });
 
 export const DiaryProvider = ({ children }: any) => {
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { currentUser } = useAuth();
-  const firestore = useFirestore();
-  const diaryRef = collection(firestore, "days");
-
-  // Server data request
-  // const { isLoading: serverLoading, data: serverDays } = useFirestoreQueryData(
-  //   ["days"],
-  //   query(
-  //     diaryRef,
-  //     where("uid", "==", currentUser?.uid),
-  //     orderBy("date", "desc")
-  //   ),
-  //   { subscribe: false },
-  //   {
-  //     onSuccess(data: any) {
-  //       console.log("queryDays: ", data);
-  //     },
-  //     onError(error: any) {
-  //       console.log(error);
-  //     },
-  //   }
-  // );
-
-  // Mutations
-  // const [serverMutationDenyFlag, setServerMutationDenyFlag] = useState(false);
-  // const serverDaysMutation = useFirestoreCollectionMutation(diaryRef, {
-  //   merge: true,
-  // });
-
-  const [contextLoading, setContextLoading] = useState(true);
-  const [currentDayState, setCurrentDayState] = useState<TDay | null>(null);
-
-  const generateDay = useCallback(
-    (date: string): TDay | null => {
-      if (!dayjs(date, "D-MM-YY").isValid()) {
-        return null;
-      }
-      return {
-        uid: currentUser?.uid,
-        id: dayjs(date, "D-MM-YY").unix(),
-        date: date,
-        score: 5,
-        description: {
-          blocks: [
-            {
-              type: "header",
-              id: dayjs(date, "D-MM-YY").unix(),
-              level: 1,
-              text: dayjs(date, "D-MM-YY").format("D MMMM, dddd"),
-            },
-          ],
-          time: dayjs(date, "D-MM-YY").unix(),
-        },
-        icons: ["coffee", "nicotine", "nootropics"],
-      };
-    },
-    [currentUser?.uid]
-  );
 
   // Retrieve date from query
   const { date: queryDate } = useParams();
@@ -133,7 +53,8 @@ export const DiaryProvider = ({ children }: any) => {
       ? queryDate
       : dayjs().format("D-MM-YY");
 
-  const { isLoading: serverLoading, data: serverDays } = useQuery(
+  // all days api call
+  const { isLoading: daysLoading, data: daysData } = useQuery(
     ["diary"],
     async () => {
       const data = await getDaysAPICall();
@@ -141,45 +62,49 @@ export const DiaryProvider = ({ children }: any) => {
     }
   );
 
-  useEffect(() => {
-    if (!serverLoading && serverDays) {
-      console.log(serverDays);
-      // const selectedDay =
-      //   serverDays?.find(
-      //     (day: any) => day.description && day.date === searchDate
-      //   ) || null;
-      //
-      // if (selectedDay && !currentDayState) {
-      //   setCurrentDayState(selectedDay);
-      // } else if (!selectedDay && !serverMutationDenyFlag) {
-      //   const generatedDay = generateDay(searchDate);
-      //   serverDaysMutation.mutate(generatedDay);
-      //   serverDaysMutation.isSuccess && setCurrentDayState(generatedDay);
-      //   setServerMutationDenyFlag(true);
-      // }
-      setContextLoading(false);
+  // get selected day (by date from params)
+  const { isLoading: dayLoading, data: dayData } = useQuery(
+    ["day", searchDate],
+    async () => {
+      const data = await getDayAPICall(searchDate);
+      if (data.error) {
+        const newDay = generateDay({
+          date: searchDate,
+          uid: currentUser?.uid || "",
+        });
+        dayMutation.mutate(newDay);
+        return newDay;
+      }
+      console.log(data.data);
+      return !data.error ? data.data : data.message;
     }
-  }, [
-    serverLoading,
-    serverDays,
-    // serverDaysMutation,
-    // serverMutationDenyFlag,
-    generateDay,
-    searchDate,
-    currentDayState,
-    contextLoading,
-  ]);
+  );
 
-  if (contextLoading) {
-    return <DiarySkeleton />;
-  }
+  // update / create day
+  const dayMutation = useMutation<any, unknown, TDay | null>(
+    async (dayData) => dayData && setDayAPICall(dayData),
+    {
+      onSettled: (dayData) =>
+        queryClient.invalidateQueries(["diary"], dayData.id),
+    }
+  );
+
+  // useEffect(() => {
+  //   console.log(searchDate);
+  // }, [searchDate, dayData]);
+
+  // if (dayLoading || daysLoading) {
+  //   return <DiarySkeleton />;
+  // }
 
   return (
     <DiaryContext.Provider
       value={{
-        loading: contextLoading,
-        days: serverDays && hydrateWithEmptyDates(serverDays),
-        day: currentDayState,
+        loading: daysLoading || dayLoading,
+        loadingDays: daysLoading,
+        loadingDay: dayLoading,
+        days: daysData && hydrateWithEmptyDates(daysData),
+        day: dayData || null,
         today: null,
       }}
     >

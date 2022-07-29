@@ -19,7 +19,7 @@ declare module "@mui/material/styles" {
 
 const palette = {
   secondary: {
-    main: grey[500],
+    main: "#1e4a6f",
   },
   ghost: {
     background: "transparent",
@@ -29,14 +29,14 @@ const palette = {
   },
   neutral: {
     // main: '#aec8cf',
-    main: "#819da0",
+    main: "#e4e4e4",
     // contrastText: '#322f3e',
     // contrastText: 'white',
     //  contrastText: '#353444',
-    contrastText: "white",
+    contrastText: "#747E88",
   },
   positive: {
-    main: "#16a384",
+    main: "#28ddb6",
     // contrastText: '#353444',
     contrastText: "white",
   },
@@ -47,7 +47,9 @@ const palette = {
   },
   special: {
     // main: '#07a9d2',
-    main: "#0b89d7",
+
+    // main: "#0b89d7",
+    main: "#05CBD6",
     contrastText: "white",
     // contrastText: '#353444',
     // contrastText: "#1E1C07",

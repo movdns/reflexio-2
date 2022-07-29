@@ -70,7 +70,7 @@ const DiarySkeleton = () => {
           <Grid item xs={12} md={8} lg={6}>
             <Grid container gap={4} direction="column">
               <SkeletonCard height={64} />
-              <SkeletonCard height="70vh" />
+              <SkeletonCard height={500} />
             </Grid>
           </Grid>
 

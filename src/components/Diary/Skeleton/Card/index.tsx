@@ -7,9 +7,9 @@ type SkeletonCardProps = {
 
 const SkeletonCard: React.FC<SkeletonCardProps> = ({ height }) => {
   return (
-    <Card>
+    <Card color="ghost">
       <Box height={height}>
-        <Skeleton variant="rectangular" animation="wave" height="100%" />
+        {/*<Skeleton variant="rectangular" animation="wave" height="100%" />*/}
       </Box>
     </Card>
   );

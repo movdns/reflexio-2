@@ -41,6 +41,9 @@ import InlineCode from "@editorjs/inline-code";
 // @ts-ignore
 import SimpleImage from "@editorjs/simple-image";
 
+// @ts-ignore
+// import ColorPlugin from "editorjs-text-color-plugin";
+
 const tools = {
   embed: Embed,
   table: Table,
@@ -57,6 +60,27 @@ const tools = {
   delimiter: Delimiter,
   inlineCode: InlineCode,
   simpleImage: SimpleImage,
+
+  // Color: {
+  //   class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+  //   config: {
+  //     colorCollections: [
+  //       "#EC7878",
+  //       "#9C27B0",
+  //       "#673AB7",
+  //       "#3F51B5",
+  //       "#0070FF",
+  //       "#03A9F4",
+  //       "#00BCD4",
+  //       "#4CAF50",
+  //       "#8BC34A",
+  //       "#CDDC39",
+  //       "#FFF",
+  //     ],
+  //     defaultColor: "#FF1300",
+  //     type: "text",
+  //   },
+  // },
 };
 
 export default tools;
