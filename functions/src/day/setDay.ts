@@ -3,21 +3,27 @@ import { findDayInCollection } from "./getDay";
 import setDayValidationSchema from "./validation/setDayValidationSchema";
 import { TDaySnapshot, TRequestBody, TResponse, TResponseData } from "../types";
 
-// Create or update if exists
-const setDay = async (
+/**
+ * Create or update existing "day" resource
+ * @param {TRequestBody<TDaySnapshot>} req
+ * @param {TResponse<TResponseData>} res
+ */
+async function setDay(
   req: TRequestBody<TDaySnapshot>,
   res: TResponse<TResponseData>
-) => {
+) {
   const data = req.body;
 
-  const { value: validData, error } = setDayValidationSchema.validate(data);
+  const { value: validData, error } = setDayValidationSchema.validate({
+    ...data.data,
+  });
 
   if (error) {
     return res.send({ error: true, message: error.message });
   }
 
   try {
-    const day: TDaySnapshot = await findDayInCollection(data.date);
+    const day: TDaySnapshot = await findDayInCollection(validData.date);
 
     if (day) {
       await admin.firestore().collection("days").doc(day.id).update(validData);
@@ -45,6 +51,6 @@ const setDay = async (
       message: "Something went wrong!",
     });
   }
-};
+}
 
 export default setDay;

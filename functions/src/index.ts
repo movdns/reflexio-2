@@ -3,14 +3,15 @@ import * as admin from "firebase-admin";
 import * as express from "express";
 import * as dayjs from "dayjs";
 import * as customParseFormat from "dayjs/plugin/customParseFormat";
-import * as cors from "cors";
 import { routes } from "./routes";
+import secure from "./middlewares/secure";
 
 dayjs.extend(customParseFormat);
 admin.initializeApp(functions.config().firebase);
 
 const app = express();
-app.use(cors({ origin: true }));
+secure(app);
+// app.use(cors({ origin: true }));
 
 app.use("/v1/", routes);
 
