@@ -8,6 +8,8 @@ import Editor from "./Editor";
 const Main = () => {
   const { day, loadingDay } = useDiaryContext();
 
+  useEffect(() => {}, [day]);
+
   return (
     <Grid container gap={4} direction="column">
       <IconToolbar icons={day?.icons} score={day?.score} loading={loadingDay} />

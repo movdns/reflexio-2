@@ -11,11 +11,11 @@ const Diary = () => {
   return (
     <Box component="main" py={4} height="100vh">
       <Container maxWidth={false}>
-        <Grid container spacing={{ xs: 2, lg: 4 }}>
+        <Grid container columns={24} spacing={3}>
           <Header />
         </Grid>
 
-        <Grid container spacing={4} pt={4}>
+        <Grid container spacing={3} pt={4}>
           <Box
             component={Grid}
             item

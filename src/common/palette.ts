@@ -45,6 +45,14 @@ const palette = {
     // contrastText: '#353444',
     contrastText: "white",
   },
+  danger: {
+    // main: '#aec8cf',
+    main: "#FA9677",
+    // contrastText: '#322f3e',
+    // contrastText: 'white',
+    //  contrastText: '#353444',
+    contrastText: "white",
+  },
   special: {
     // main: '#07a9d2',
 

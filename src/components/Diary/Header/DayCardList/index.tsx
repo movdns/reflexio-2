@@ -50,13 +50,13 @@ const DayCardList = () => {
 
   return (
     <>
-      <Box component={Grid} item xs={12} sm={6} md={4} lg={3}>
+      <Box component={Grid} item xs={24} sm={12} md={8} lg={3}>
         <Today />
       </Box>
 
       {days &&
         days
-          .slice(1, 5)
+          .slice(0, 7)
           .map((day: any, index) => (
             <DayCard
               key={Math.random()}

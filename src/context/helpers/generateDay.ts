@@ -14,14 +14,14 @@ const generateDay = ({
   return {
     uid,
     date,
-    score: 9,
+    score: 5,
     description: {
       blocks: [
         {
           id: `${dayjs(date, "D-MM-YY").unix()}`,
           type: "header",
           data: {
-            text: `<font color="#0689D7">${dayjs(date, "D-MM-YY").format(
+            text: `<font color="#05CBD6">${dayjs(date, "D-MM-YY").format(
               "D MMMM, dddd"
             )}</font>`,
             level: 1,
@@ -30,7 +30,7 @@ const generateDay = ({
       ],
       time: dayjs(date, "D-MM-YY").unix(),
     },
-    icons: ["bike", "hike", "pills", "alcohol", "coffee"],
+    icons: [],
   };
 };
 

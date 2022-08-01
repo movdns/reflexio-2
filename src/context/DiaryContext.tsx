@@ -25,7 +25,7 @@ type DiaryContextProps = {
   loadingDays: boolean;
   loadingDay: boolean;
   day: TDay | null;
-  setDay?(data: TDay): void;
+  setDay?(data: any): void;
   days: TDay[] | null;
   setDays?(data: any): void;
   today?: TDay | null;
@@ -84,14 +84,16 @@ export const DiaryProvider = ({ children }: any) => {
   const dayMutation = useMutation<any, unknown, TDay | null>(
     async (dayData) => dayData && setDayAPICall(dayData),
     {
-      onSettled: (dayData) =>
-        queryClient.invalidateQueries(["diary"], dayData.id),
+      onSuccess: (dayData) => {
+        queryClient.invalidateQueries(["day"], dayData.id);
+        queryClient.invalidateQueries(["diary"], dayData.id);
+      },
     }
   );
 
-  // useEffect(() => {
-  //   console.log(searchDate);
-  // }, [searchDate, dayData]);
+  const setDay = (data: any) => {
+    dayMutation.mutate({ ...dayData, ...data });
+  };
 
   // if (dayLoading || daysLoading) {
   //   return <DiarySkeleton />;
@@ -105,6 +107,7 @@ export const DiaryProvider = ({ children }: any) => {
         loadingDay: dayLoading,
         days: daysData && hydrateWithEmptyDates(daysData),
         day: dayData || null,
+        setDay,
         today: null,
       }}
     >

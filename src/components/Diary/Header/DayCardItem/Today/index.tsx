@@ -24,7 +24,7 @@ const Today = () => {
   return (
     <Card
       //type={current ? "current" : getCardColorByDayScore(10)}
-      color="neutral"
+      color="negative"
       // elevation={current ? 24 : 0}
     >
       <CardContent>
@@ -41,14 +41,17 @@ const Today = () => {
         {/*>*/}
         {/*  <ArrowLeftIcon fontSize="large" />*/}
         {/*</Box>*/}
-        <Box height={100} display="flex" alignItems="center">
+        <Box //height={100}
+          display="flex"
+          alignItems="center"
+        >
           <CardActionArea href={`/diary/today`}>
             <Grid container sx={{ justifyContent: "space-between" }}>
               <Box
                 component={Grid}
                 item
-                xs={6}
-                md={7}
+                // xs={6}
+                // md={7}
                 sx={{
                   display: { xs: "none", lg: "flex" },
                   paddingLeft: 0,
@@ -72,20 +75,20 @@ const Today = () => {
                   <Typography>{date.format("D MMMM, dddd")}</Typography>
                 </Box>
               </Box>
-              <Box component={Grid} item xs={6} md={5} display="flex">
-                <Box
-                  p={2}
-                  display="flex"
-                  flexDirection="column"
-                  justifyContent="center"
-                  textAlign="right"
-                  width="100%"
-                  sx={{ paddingLeft: 0 }}
-                >
-                  <Typography variant="h6">15:35:53:13</Typography>
-                  <Typography variant="subtitle1">88% day is left</Typography>
-                </Box>
-              </Box>
+              {/*<Box component={Grid} item xs={6} md={5} display="flex">*/}
+              {/*  <Box*/}
+              {/*    p={2}*/}
+              {/*    display="flex"*/}
+              {/*    flexDirection="column"*/}
+              {/*    justifyContent="center"*/}
+              {/*    textAlign="right"*/}
+              {/*    width="100%"*/}
+              {/*    sx={{ paddingLeft: 0 }}*/}
+              {/*  >*/}
+              {/*    <Typography variant="h6">15:35:53:13</Typography>*/}
+              {/*    <Typography variant="subtitle1">88% day is left</Typography>*/}
+              {/*  </Box>*/}
+              {/*</Box>*/}
             </Grid>
           </CardActionArea>
         </Box>

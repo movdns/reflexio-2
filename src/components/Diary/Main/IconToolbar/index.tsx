@@ -6,25 +6,34 @@ import iconMock, { TIcon } from "../../../../__mock__/icons";
 import { TDay } from "../../../../types";
 import SkeletonCard from "../../Skeleton/Card";
 import palette from "../../../../common/palette";
+import { useDiaryContext } from "../../../../context/DiaryContext";
+import { useTheme } from "@mui/material/styles";
 
 type ToolbarProps = { icons?: any; loading: boolean; score?: number };
 
 const IconToolbar: React.FC<ToolbarProps> = ({ icons, loading, score }) => {
+  const { setDay } = useDiaryContext();
+  const theme = useTheme();
+
   //console.log("icons", icons);
-  const [selected, setSelected] = useState<any>(icons ? icons : []);
+  //const [selected, setSelected] = useState<any>(icons ? icons : []);
 
   useEffect(() => {
-    selected !== icons && setSelected(icons);
-  }, [icons, selected]);
-
-  //console.log(selected);
+    // setSelected(icons);
+    console.log(icons);
+  }, [icons]);
 
   const handleSelectIcon = (code: string) => {
-    setSelected(
-      selected.includes(code)
-        ? selected.filter((i: any) => i !== code)
-        : [...selected, code]
-    );
+    setDay?.({
+      icons: icons.includes(code)
+        ? icons.filter((i: any) => i !== code)
+        : [...icons, code],
+    });
+    // setSelected(
+    //   selected.includes(code)
+    //     ? selected.filter((i: any) => i !== code)
+    //     : [...selected, code]
+    // );
   };
 
   if (loading) {
@@ -45,7 +54,7 @@ const IconToolbar: React.FC<ToolbarProps> = ({ icons, loading, score }) => {
   return (
     <Card color={color}>
       <Box
-        p={2}
+        p={1}
         display="flex"
         flexWrap="wrap"
         justifyContent="space-around"
@@ -59,16 +68,18 @@ const IconToolbar: React.FC<ToolbarProps> = ({ icons, loading, score }) => {
                 size="large"
                 onClick={() => handleSelectIcon(icon.code)}
                 sx={{
-                  color:
-                    color === "neutral"
-                      ? palette.neutral.contrastText
-                      : "white",
+                  // color:
+                  //   color === "neutral"
+                  //     ? palette.neutral.contrastText
+                  //     : "white",
                   outline:
-                    selected && selected.length && selected.includes(icon.code)
+                    icons && icons.length && icons.includes(icon.code)
                       ? "1px solid"
                       : "none",
+                  borderRadius: 3,
+                  color: palette[color].contrastText,
                 }}
-                // color="secondary"
+                //   color="primary"
               >
                 <icon.component />
               </IconButton>
