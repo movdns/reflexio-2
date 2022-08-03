@@ -118,7 +118,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
                     <Typography variant="h6">
                       {formattedDate.format("D MMMM")}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="subtitle2">
                       {formattedDate.format("dddd")}
                     </Typography>
                   </Box>

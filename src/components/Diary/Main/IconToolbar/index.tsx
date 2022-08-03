@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, IconButton, Tooltip } from "@mui/material";
+import { Box, Card, IconButton, Tooltip, Typography } from "@mui/material";
 import DirectionsBikeIcon from "@mui/icons-material/DirectionsBike";
 import AddIcon from "@mui/icons-material/Add";
 import iconMock, { TIcon } from "../../../../__mock__/icons";
@@ -52,48 +52,49 @@ const IconToolbar: React.FC<ToolbarProps> = ({ icons, loading, score }) => {
     "neutral";
 
   return (
-    <Card color={color}>
-      <Box
-        p={1}
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="space-around"
-        alignItems="center"
-        height="100%"
-      >
-        {iconMock.map((icon: any) => (
-          <span key={Math.random()}>
-            <Tooltip title={icon.alias}>
-              <IconButton
-                size="large"
-                onClick={() => handleSelectIcon(icon.code)}
-                sx={{
-                  // color:
-                  //   color === "neutral"
-                  //     ? palette.neutral.contrastText
-                  //     : "white",
-                  outline:
-                    icons && icons.length && icons.includes(icon.code)
-                      ? "1px solid"
-                      : "none",
-                  borderRadius: 3,
-                  color: palette[color].contrastText,
-                }}
-                //   color="primary"
-              >
-                <icon.component />
-              </IconButton>
-            </Tooltip>
-          </span>
-        ))}
+    <Box
+      py={1}
+      display="flex"
+      flexWrap="wrap"
+      justifyContent="start"
+      alignItems="center"
+      width="100%"
+      height="100%"
+    >
+      {iconMock.map((icon: any) => (
+        <span key={Math.random()}>
+          <Tooltip title={icon.alias}>
+            <IconButton
+              // size="large"
+              onClick={() => handleSelectIcon(icon.code)}
+              sx={{
+                margin: 1,
+                // color:
+                //   color === "neutral"
+                //     ? palette.neutral.contrastText
+                //     : "white",
 
-        <span>
-          <IconButton size="large" sx={{ color: "gray" }} disabled>
-            <AddIcon />
-          </IconButton>
+                outline:
+                  icons && icons.length && icons.includes(icon.code)
+                    ? "1px solid"
+                    : "none",
+                borderRadius: 3,
+                color: palette[color].main,
+              }}
+              //  color="primary"
+            >
+              <icon.component sx={{ fontSize: "1.6em" }} />
+            </IconButton>
+          </Tooltip>
         </span>
-      </Box>
-    </Card>
+      ))}
+
+      <span>
+        <IconButton size="large" sx={{ color: "gray" }} disabled>
+          <AddIcon />
+        </IconButton>
+      </span>
+    </Box>
   );
 };
 

@@ -27,7 +27,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   };
 
   // const initialColor = '#3db2d9';
-  const [primary, setPrimary] = React.useState(palette.neutral.main);
+  const [primary, setPrimary] = React.useState(palette.positive.main);
 
   const setPrimaryColor = (color: string) => {
     setPrimary(color);

@@ -72,7 +72,9 @@ const Today = () => {
               >
                 <Box p={2}>
                   <Typography variant="h6">Today</Typography>
-                  <Typography>{date.format("D MMMM, dddd")}</Typography>
+                  <Typography variant="subtitle2">
+                    {date.format("D MMMM, dddd")}
+                  </Typography>
                 </Box>
               </Box>
               {/*<Box component={Grid} item xs={6} md={5} display="flex">*/}

@@ -15,7 +15,7 @@ const Diary = () => {
           <Header />
         </Grid>
 
-        <Grid container spacing={3} pt={4}>
+        <Grid container spacing={3} pt={4} mb={4}>
           <Box
             component={Grid}
             item

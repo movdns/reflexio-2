@@ -13,6 +13,7 @@ import { ThemeProvider } from "../context/ThemeContext";
 import Root from "./Root";
 import { getFirestore } from "firebase/firestore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "../common/assets/fontawesome/css/all.css";
 
 import firebase from "firebase/compat/app";
 

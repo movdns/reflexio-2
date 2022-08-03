@@ -1,20 +1,115 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SkeletonCard from "../Skeleton/Card";
-import { CardMedia } from "@mui/material";
-import post from "../../../common/assets/img/post.png";
-import palette from "../../../common/palette";
+import { Box, Card, CardMedia, Grid, Typography } from "@mui/material";
+import { useDiaryContext } from "../../../context/DiaryContext";
+import Mood from "./Mood";
+import Glyphs from "../Glyphs";
 
 const LeftSidebar = () => {
+  const { day, loadingDay } = useDiaryContext();
+
+  useEffect(() => {}, [day]);
+
   return (
-    <CardMedia
-      component="img"
-      height="auto"
-      image="https://images.unsplash.com/photo-1533984649377-c20fc524425b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDJ8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=900&q=60"
-      alt="green iguana"
-      sx={{ borderRadius: 3 }}
-    />
+    <>
+      <Card>
+        <Glyphs data={serverData} />
+      </Card>
+    </>
   );
   // return <SkeletonCard height={360} />;
 };
+
+const serverData = [
+  {
+    label: "Mood",
+    order: 0,
+    radio: true,
+    icons: [
+      {
+        code: "face-eyes-xmarks",
+        color: "red",
+        size: 42,
+      },
+      {
+        code: "face-diagonal-mouth",
+        color: "orange",
+        size: 42,
+      },
+      {
+        code: "face-meh",
+        color: "black",
+        size: 42,
+      },
+      {
+        code: "face-smile",
+        color: "green",
+        size: 42,
+      },
+      {
+        code: "face-awesome",
+        color: "blue",
+        size: 42,
+      },
+    ],
+  },
+  {
+    label: "Activities",
+    order: 1,
+    icons: [
+      {
+        code: "person-walking",
+      },
+      {
+        code: "person-running",
+      },
+      {
+        code: "person-hiking",
+      },
+      {
+        code: "person-swimming",
+      },
+      {
+        code: "person-biking-mountain",
+      },
+    ],
+  },
+  {
+    label: "Negative",
+    order: 3,
+    icons: [
+      {
+        code: "smoking",
+      },
+      {
+        code: "wine-glass",
+      },
+      {
+        code: "face-head-bandage",
+      },
+      {
+        code: "bong",
+      },
+      {
+        code: "gamepad-modern",
+      },
+    ],
+  },
+  {
+    label: "Mind boosters",
+    order: 4,
+    icons: [
+      {
+        code: "pills",
+      },
+      {
+        code: "mushroom",
+      },
+      {
+        code: "cannabis",
+      },
+    ],
+  },
+];
 
 export default LeftSidebar;

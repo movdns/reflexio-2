@@ -36,7 +36,8 @@ const palette = {
     contrastText: "#747E88",
   },
   positive: {
-    main: "#28ddb6",
+    //main: "#28ddb6",
+    main: "#14ac8b",
     // contrastText: '#353444',
     contrastText: "white",
   },

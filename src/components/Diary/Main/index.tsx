@@ -12,7 +12,6 @@ const Main = () => {
 
   return (
     <Grid container gap={4} direction="column">
-      <IconToolbar icons={day?.icons} score={day?.score} loading={loadingDay} />
       <Editor description={day?.description} loading={loadingDay} />
     </Grid>
   );
