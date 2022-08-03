@@ -1,0 +1,56 @@
+import * as admin from "firebase-admin";
+import { findDayInCollection } from "./getDay";
+import setDayValidationSchema from "./validation/setDayValidationSchema";
+import { TDaySnapshot, TRequestBody, TResponse, TResponseData } from "../types";
+
+/**
+ * Create or update existing "day" resource
+ * @param {TRequestBody<TDaySnapshot>} req
+ * @param {TResponse<TResponseData>} res
+ */
+async function setDay(
+  req: TRequestBody<TDaySnapshot>,
+  res: TResponse<TResponseData>
+) {
+  const data = req.body;
+
+  const { value: validData, error } = setDayValidationSchema.validate({
+    ...data.data,
+  });
+
+  if (error) {
+    return res.send({ error: true, message: error.message });
+  }
+
+  try {
+    const day: TDaySnapshot = await findDayInCollection(validData.date);
+
+    if (day) {
+      await admin.firestore().collection("days").doc(day.id).update(validData);
+
+      return res.send({
+        error: false,
+        data: { id: day.id, ...validData },
+        message: "Day updated",
+      });
+    } else {
+      const newDay = await admin.firestore().collection("days").add(validData);
+      return res.send({
+        error: false,
+        data: {
+          id: newDay.id,
+          ...validData,
+        },
+        message: "Day created",
+      });
+    }
+  } catch (e) {
+    console.log("Day generation error: ", e);
+    return res.send({
+      error: true,
+      message: "Something went wrong!",
+    });
+  }
+}
+
+export default setDay;

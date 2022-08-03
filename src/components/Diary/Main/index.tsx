@@ -1,0 +1,20 @@
+import React, { useEffect } from "react";
+import { Grid } from "@mui/material";
+// import SkeletonCard from "../Skeleton/Card";
+import IconToolbar from "./IconToolbar";
+import { useDiaryContext } from "../../../context/DiaryContext";
+import Editor from "./Editor";
+
+const Main = () => {
+  const { day, loadingDay } = useDiaryContext();
+
+  useEffect(() => {}, [day]);
+
+  return (
+    <Grid container gap={4} direction="column">
+      <Editor description={day?.description} loading={loadingDay} />
+    </Grid>
+  );
+};
+
+export default Main;

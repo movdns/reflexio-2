@@ -1,0 +1,59 @@
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import * as express from "express";
+import * as dayjs from "dayjs";
+import * as customParseFormat from "dayjs/plugin/customParseFormat";
+import * as cors from "cors";
+
+dayjs.extend(customParseFormat);
+admin.initializeApp();
+const app = express();
+app.use(cors({ origin: true }));
+
+app.get("/:date", async (req, res) => {
+  const queryDate: string = req.params.date;
+
+  if (!dayjs(queryDate, "D-MM-YY", true).isValid()) {
+    return res.status(404).send();
+  }
+
+  try {
+    const dayQuerySnapshot = await admin
+      .firestore()
+      .collection("days")
+      .where("date", "==", queryDate)
+      .limit(1)
+      .get();
+
+    if (dayQuerySnapshot.size) {
+      dayQuerySnapshot.forEach((doc) => {
+        const dayData = doc.data();
+        return res.send({
+          error: false,
+          data: dayData,
+          message: "Day retrieved",
+        });
+      });
+    } else {
+      // const newDay = await admin
+      //   .firestore()
+      //   .collection("days")
+      //   .add({ date: queryDate });
+      return res.send({
+        error: false,
+        // data: { id: newDay.id, date: queryDate },
+        message: "Day not exists",
+      });
+    }
+  } catch (e) {
+    console.log("Day generation error: ", e);
+    return res.send({
+      error: true,
+      message: "Something went wrong!",
+    });
+  }
+
+  return res.status(404).send();
+});
+
+exports.days = functions.https.onRequest(app);
