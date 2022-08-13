@@ -2,6 +2,7 @@ import React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
 import palette from "../../../../common/palette";
+import iconsDefaultConfig from "../../../../common/config/icons";
 
 export type GlyphButtonProps = {
   children: any;
@@ -12,15 +13,16 @@ export type GlyphButtonProps = {
   inverse?: boolean;
   selected?: boolean;
   selectedType?: "outline" | "fill";
+  selectedColor?: string;
   coloration?: "negative" | "danger" | "neutral" | "positive" | "special";
-
+  selectedColoration?: GlyphButtonProps["coloration"];
   onClick?: () => void;
 };
 
 type GlyphIconButtonProps = Pick<
   GlyphButtonProps,
   "selected" | "selectedType" | "inverse"
-> & { colour: string }; // property "color" is reserved by MuiButtonIcon
+> & { colour?: string; selectedColor?: string }; // property "color" is reserved by MuiButtonIcon
 
 const GlyphButton: React.FC<GlyphButtonProps> = ({
   children,
@@ -29,23 +31,24 @@ const GlyphButton: React.FC<GlyphButtonProps> = ({
   selected,
   disabled,
   selectedType,
+  selectedColor,
+  selectedColoration,
   onClick,
   inverse,
 }) => {
-  const theme = useTheme();
-  const defaultColor = theme.palette.secondary.dark;
-
-  const colorationToColor =
-    !color && coloration ? palette[coloration].main : defaultColor; //theme.palette.primary.main;
+  const colorationToColor = !color && coloration && palette[coloration].main; //theme.palette.primary.main;
+  const selectedColorationToColor =
+    !selectedColor && selectedColoration && palette[selectedColoration].main;
 
   return (
     <GlyphIconButton
-      colour={color || colorationToColor}
+      colour={color || colorationToColor || ""}
       selected={selected}
       onClick={onClick}
       inverse={inverse}
       selectedType={selectedType}
-      disabled={disabled && !selected}
+      disabled={disabled}
+      selectedColor={selectedColorationToColor || selectedColor}
     >
       {children}
     </GlyphIconButton>
@@ -57,16 +60,32 @@ const GlyphIconButton = styled(IconButton, {
     prop !== "colour" &&
     prop !== "selected" &&
     prop !== "inverse" &&
+    prop !== "selectedColor" &&
     prop !== "selectedType",
 })<GlyphIconButtonProps>(
-  ({ colour, selected, selectedType = "outline", inverse }) => ({
+  ({
+    disabled,
+    colour,
+    selected,
+    selectedColor,
+    selectedType = "outline",
+    inverse,
+  }) => ({
     display: "flex",
     alignItems: "center",
-    color: (selected && selectedType === "fill") || inverse ? "white" : colour,
+    color:
+      (selected && selectedType === "fill") || inverse
+        ? "white"
+        : (!colour &&
+            selected &&
+            (selectedColor || iconsDefaultConfig.defaultSelectedColor)) ||
+          colour ||
+          iconsDefaultConfig.defaultColor,
     outline: selected && selectedType === "outline" ? "1px solid" : "none",
     aspectRatio: "1 / 1",
     background:
       (selected && selectedType === "fill") || inverse ? colour : "inherit",
+    opacity: disabled && !selected ? 0.3 : 1,
   })
 );
 

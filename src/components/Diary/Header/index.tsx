@@ -1,5 +1,13 @@
 import React from "react";
-import { Avatar, Box, Card, Grid, IconButton, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Card,
+  Fab,
+  Grid,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { DarkMode } from "@mui/icons-material";
@@ -28,6 +36,19 @@ const Header = () => {
   return (
     <>
       <DayCardList />
+
+      <Fab
+        sx={{ position: "fixed", bottom: 0, right: 0, margin: 2 }}
+        onClick={handleLogout}
+      >
+        <Avatar sx={{ bgcolor: "primary.main" }}>
+          {currentUser?.photoURL ? (
+            <img src={currentUser.photoURL} width="100%" alt="" />
+          ) : (
+            <>{getUserInitials(currentUser?.displayName)}</>
+          )}
+        </Avatar>
+      </Fab>
 
       {/*<Box component={Grid} item display={{ xs: "none", md: "block" }}>*/}
       {/*  <Box*/}

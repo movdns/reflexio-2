@@ -1,22 +1,30 @@
 import dayjs from "dayjs";
+import { TDay } from "../../types";
 
-const hydrateWithEmptyDates = (days: any) => {
+const hydrateWithEmptyDates = (days: any): TDay[] | null => {
+  console.log(days);
   // Dates range
   const endDate = dayjs().subtract(9, "d");
-  const startDate = dayjs().subtract(1, "d");
+  const startDate = dayjs();
 
   let currentDate = dayjs(endDate);
   let generatedDates: any = [];
 
   // Get array of all dates between dates range
-  while (currentDate.isBefore(startDate)) {
+  while (currentDate.isBefore(startDate) && !currentDate.isAfter(startDate)) {
+    //  console.log(currentDate.format("D"));
     currentDate = currentDate.add(1, "d");
     generatedDates.push(currentDate.format("D-MM-YY"));
   }
 
   let existingDates: string[] = [];
   // Get array of existing dates
-  days?.forEach((day: any) => existingDates.push(day.date));
+
+  if (days) {
+    days.forEach((day: any) => existingDates.push(day.date));
+  } else {
+    days = [];
+  }
 
   let difference = generatedDates.filter(
     (x: any) => !existingDates.includes(x)

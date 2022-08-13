@@ -41,6 +41,13 @@ const defaultTheme = createTheme({
           },
         },
         {
+          props: { color: "danger" },
+          style: {
+            background: palette.danger.main,
+            color: palette.danger.contrastText,
+          },
+        },
+        {
           props: { color: "special" },
           style: {
             background: palette.special.main,
@@ -224,6 +231,7 @@ declare module "@mui/material/Card" {
     special: true;
     ghost: true;
     transparent: true;
+    danger: true;
   }
 }
 

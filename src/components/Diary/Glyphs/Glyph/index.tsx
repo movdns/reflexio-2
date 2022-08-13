@@ -4,7 +4,7 @@ import iconsDefaultConfig, {
   needsToBeResized,
   resizeValue,
 } from "../../../../common/config/icons";
-import { Box } from "@mui/material";
+import palette from "../../../../common/palette";
 
 export type GlyphProps = {
   code: string;
@@ -12,38 +12,60 @@ export type GlyphProps = {
   size?: number;
   color?: string;
   iconType?: "light" | "thin" | "regular" | "solid" | "duotone";
+  coloration?: "negative" | "danger" | "neutral" | "positive" | "special";
+  selectedColor?: string;
+  selectedColoration?: GlyphProps["coloration"];
+  fullWidth?: boolean;
 };
-
-const GlyphIcon = styled("div", {
-  shouldForwardProp: (prop) => prop !== "size" && prop !== "color",
-})<{ size?: number; color?: string; selected?: boolean }>(
-  ({ theme, size, color, selected }) => ({
-    fontSize: size || iconsDefaultConfig.fontSize,
-    position: "relative",
-    color: selected ? "red" : color || "inherit",
-  })
-);
 
 const Glyph: React.FC<GlyphProps> = ({
   code,
   size,
   color,
+  coloration,
+  selectedColor,
   iconType,
   selected,
+  selectedColoration,
+  fullWidth,
 }) => {
   const defaultType = iconsDefaultConfig.type;
-
+  const colorationToColor = !color && coloration && palette[coloration].main; //theme.palette.primary.main;
+  const selectedColorationToColor =
+    !selectedColor && selectedColoration && palette[selectedColoration].main;
   const sizeOrResize =
     size && needsToBeResized.includes(code) ? size - resizeValue : size;
 
   return (
     <GlyphIcon
       selected={selected}
-      className={`fa-${iconType || defaultType} fa-${code} fa-fw`}
+      className={`fa-${iconType || defaultType} fa-${code} ${
+        fullWidth && "fa-fw"
+      }`}
       size={sizeOrResize}
-      color={color}
+      color={colorationToColor || color}
+      selectedColor={selectedColorationToColor || selectedColor}
     />
   );
 };
+
+const GlyphIcon = styled("div", {
+  shouldForwardProp: (prop) =>
+    prop !== "size" && prop !== "color" && prop !== "selectedColor",
+})<{
+  size?: number;
+  color?: string;
+  selected?: boolean;
+  selectedColor?: string;
+}>(({ theme, size, color, selected, selectedColor }) => ({
+  fontSize: size || iconsDefaultConfig.fontSize,
+  position: "relative",
+  color:
+    (!color &&
+      selected &&
+      (selectedColor || iconsDefaultConfig.defaultSelectedColor)) ||
+    color ||
+    "inherit",
+}));
 
 export default Glyph;

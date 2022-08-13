@@ -11,6 +11,9 @@ import palette from "../common/palette";
 type ThemeContextProps = {
   toggleMode?: () => void;
   setPrimaryColor?(color: string): void;
+  setPrimaryColoration?(
+    coloration: "negative" | "danger" | "neutral" | "positive" | "special"
+  ): void;
   mode: PaletteMode;
 };
 
@@ -30,6 +33,13 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [primary, setPrimary] = React.useState(palette.positive.main);
 
   const setPrimaryColor = (color: string) => {
+    setPrimary(color);
+  };
+
+  const setPrimaryColoration = (
+    coloration: "negative" | "danger" | "neutral" | "positive" | "special"
+  ) => {
+    const color = palette[coloration].main;
     setPrimary(color);
   };
 
@@ -57,6 +67,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
         mode,
         toggleMode,
         setPrimaryColor,
+        setPrimaryColoration,
       }}
     >
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>

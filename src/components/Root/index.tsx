@@ -6,6 +6,7 @@ import SignUpScreen from "../Auth/SignUpScreen";
 import { useUser } from "reactfire";
 import Diary from "../Diary";
 import { DiaryProvider } from "../../context/DiaryContext";
+import { IconsProvider } from "../../context/IconContext";
 
 const Root = () => {
   const {
@@ -32,7 +33,9 @@ const Root = () => {
           path="/diary"
           element={
             <DiaryProvider>
-              <Diary />
+              <IconsProvider>
+                <Diary />
+              </IconsProvider>
             </DiaryProvider>
           }
         >

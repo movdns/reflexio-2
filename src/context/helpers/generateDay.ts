@@ -30,7 +30,7 @@ const generateDay = ({
       ],
       time: dayjs(date, "D-MM-YY").unix(),
     },
-    icons: [],
+    icons: ["face-expressionless"],
   };
 };
 

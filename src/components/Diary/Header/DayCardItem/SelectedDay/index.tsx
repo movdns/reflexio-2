@@ -11,10 +11,11 @@ import {
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import dayjs from "dayjs";
 
-const Today = () => {
+const SelectedDay = ({ date }: { date?: string }) => {
   // const { day, today } = useDiaryContext();
 
-  const date = dayjs();
+  const formattedDate = dayjs(date, "D-MM-YY");
+
   const current = false;
 
   // useEffect(() => {}, [today, day]);
@@ -73,7 +74,7 @@ const Today = () => {
                 <Box p={2}>
                   <Typography variant="h6">Today</Typography>
                   <Typography variant="subtitle2">
-                    {date.format("D MMMM, dddd")}
+                    {formattedDate.format("D MMMM, dddd")}
                   </Typography>
                 </Box>
               </Box>
@@ -99,4 +100,4 @@ const Today = () => {
   );
 };
 
-export default Today;
+export default SelectedDay;

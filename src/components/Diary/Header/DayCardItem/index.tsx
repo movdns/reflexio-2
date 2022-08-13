@@ -16,7 +16,9 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import getIconByCode from "../../Icons/helpers/getIconByCode";
 import getCardColor from "./helpers/getCardColor";
 import { Link } from "react-router-dom";
-import Icons from "./Icons";
+
+import Glyph from "../../Glyphs/Glyph";
+import { useIconsContext } from "../../../../context/IconContext";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isToday);
@@ -40,6 +42,8 @@ const DayCardItem: React.FC<NavCardProps> = ({
 }) => {
   const ghost = !icons && !score;
 
+  const { getSelectedIconsByGroup, getIconByScore } = useIconsContext();
+
   const formattedDate = dayjs(date, "D-MM-YY");
 
   const theme = useTheme();
@@ -49,20 +53,29 @@ const DayCardItem: React.FC<NavCardProps> = ({
   const xl = useMediaQuery(theme.breakpoints.up("xl"));
   const xxl = useMediaQuery(theme.breakpoints.up("xxl"));
 
+  const mood = icons && getIconByScore?.(score);
+  const positive = getSelectedIconsByGroup?.(icons, "negative");
+
+  // const { getIconByScore } = useIconsContext();
+
+  //const icc = getIconByScore?.(score);
+
   return (
     <Box
       component={Grid}
       item
-      xs={2}
-      sm={2}
-      md={2}
-      lg={3}
+      xs={24}
+      sm={selected || index < 2 ? 12 : 0}
+      md={index > 3 ? 0 : 8}
+      lg={index > 6 ? 0 : 6}
+      xl={selected ? 6 : index > 8 ? 0 : 3}
       sx={{
         display: {
-          xs: "none",
-          sm: index < 3 ? "flex" : "none",
+          xs: selected ? "flex" : "none",
+          sm: selected || index < 1 ? "flex" : "none",
           md: index < 3 ? "flex" : "none",
-          lg: "flex",
+          lg: index < 4 ? "flex" : "none",
+          xl: index < 7 ? "flex" : "none",
         },
       }}
     >
@@ -76,7 +89,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
             ? {
                 content: "''",
                 position: "absolute",
-                left: "20%",
+                left: "10%",
                 bottom: 0,
                 borderLeft: "12px solid transparent",
                 borderRight: "12px solid transparent",
@@ -97,7 +110,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
                   component={Grid}
                   item
                   sx={{
-                    display: { xs: "none", md: "flex", lg: "flex" },
+                    // display: { sm: "none", md: "flex", lg: "flex" },
                     paddingLeft: 0,
                     // position: "relative",
                     // "&:before": {
@@ -129,7 +142,11 @@ const DayCardItem: React.FC<NavCardProps> = ({
                   display="flex"
                   justifyContent="end"
                   sx={{
-                    opacity: selected ? 1 : 0.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 2,
+                    opacity: selected ? 1 : 0.7,
                     "&:hover": {
                       opacity: 1,
                     },
@@ -138,7 +155,26 @@ const DayCardItem: React.FC<NavCardProps> = ({
                     },
                   }}
                 >
-                  <Icons icons={icons} ghost={ghost} />
+                  {mood && (
+                    <Box>
+                      <Glyph code={mood.code} size={32} iconType="thin" />
+                    </Box>
+                  )}
+
+                  {/*{selected &&*/}
+                  {/*  positive &&*/}
+                  {/*  positive.slice(0, 2).map((i: any) => (*/}
+                  {/*    <Box p={1}>*/}
+                  {/*      <Glyph*/}
+                  {/*        code={i.code}*/}
+                  {/*        iconType="thin"*/}
+                  {/*        fullWidth*/}
+                  {/*        size={25}*/}
+                  {/*      />*/}
+                  {/*    </Box>*/}
+                  {/*  ))}*/}
+
+                  {/*<Icons icons={icons} ghost={ghost} />*/}
                 </Box>
               </Grid>
             </Box>

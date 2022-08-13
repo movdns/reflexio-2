@@ -3,7 +3,7 @@ import { Request } from "express";
 import { TDaySnapshot } from "./types";
 import { TResponse, TResponseData } from "../../types";
 
-const collectionDBName: string = process.env.COLLECTION_DB_NAME || "days";
+const collectionDBName: string = process.env.COLLECTION_DAYS_DB_NAME || "days";
 const collectionLimit: number = parseInt(process.env.COLLECTION_LIMIT || "14");
 
 const getAllDays = async (

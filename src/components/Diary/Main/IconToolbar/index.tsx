@@ -12,7 +12,7 @@ import { useTheme } from "@mui/material/styles";
 type ToolbarProps = { icons?: any; loading: boolean; score?: number };
 
 const IconToolbar: React.FC<ToolbarProps> = ({ icons, loading, score }) => {
-  const { setDay } = useDiaryContext();
+  const { updateDayState } = useDiaryContext();
   const theme = useTheme();
 
   //console.log("icons", icons);
@@ -24,7 +24,7 @@ const IconToolbar: React.FC<ToolbarProps> = ({ icons, loading, score }) => {
   }, [icons]);
 
   const handleSelectIcon = (code: string) => {
-    setDay?.({
+    updateDayState?.({
       icons: icons.includes(code)
         ? icons.filter((i: any) => i !== code)
         : [...icons, code],

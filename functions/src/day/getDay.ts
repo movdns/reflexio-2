@@ -3,7 +3,7 @@ import getDayValidationSchema from "./validation/getDayValidationSchema";
 import { TRequestBody, TResponse, TResponseData } from "../../types";
 import { TDaySnapshot } from "./types";
 
-const collectionDBName: string = process.env.COLLECTION_DB_NAME || "days";
+const collectionDBName: string = process.env.COLLECTION_DAYS_DB_NAME || "days";
 
 const getDay = async (
   req: TRequestBody<{ date: string }>,
