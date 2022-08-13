@@ -53,7 +53,7 @@ const Today = () => {
                 // xs={6}
                 // md={7}
                 sx={{
-                  display: { xs: "none", lg: "flex" },
+                  // display: { xs: "none", lg: "flex" },
                   paddingLeft: 0,
                   position: "relative",
                   "&:before": {

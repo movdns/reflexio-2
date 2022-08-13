@@ -1,18 +1,28 @@
 import * as admin from "firebase-admin";
 import { findDayInCollection } from "./getDay";
 import setDayValidationSchema from "./validation/setDayValidationSchema";
-import { TDaySnapshot, TRequestBody, TResponse, TResponseData } from "../types";
+import { TDaySnapshot } from "./types";
+import { TRequestBody, TResponse, TResponseData } from "../../types";
 
 /**
  * Create or update existing "day" resource
  * @param {TRequestBody<TDaySnapshot>} req
- * @param {TResponse<TResponseData>} res
+ * @param {TResponse<TResponseData<TDaySnapshot | null>>} res
  */
 async function setDay(
   req: TRequestBody<TDaySnapshot>,
-  res: TResponse<TResponseData>
+  res: TResponse<TResponseData<TDaySnapshot | null>>
 ) {
   const data = req.body;
+  const uid = req?.user?.uid;
+
+  if (!uid) {
+    return res.json({
+      error: true,
+      data: null,
+      message: "Insufficient permissions",
+    });
+  }
 
   const { value: validData, error } = setDayValidationSchema.validate({
     ...data.data,
@@ -23,7 +33,7 @@ async function setDay(
   }
 
   try {
-    const day: TDaySnapshot = await findDayInCollection(validData.date);
+    const day: TDaySnapshot = await findDayInCollection(uid, validData.date);
 
     if (day) {
       await admin.firestore().collection("days").doc(day.id).update(validData);
