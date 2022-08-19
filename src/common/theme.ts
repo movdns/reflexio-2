@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 import palette from "./palette";
-import { deepOrange, green } from "@mui/material/colors";
+import { deepOrange } from "@mui/material/colors";
 
 const defaultTheme = createTheme({
   breakpoints: {

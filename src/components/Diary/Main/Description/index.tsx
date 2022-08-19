@@ -3,7 +3,7 @@ import {
   Plate,
   createBlockquotePlugin,
   createBoldPlugin,
-  createCodeBlockPlugin,
+  // createCodeBlockPlugin,
   createCodePlugin,
   createHeadingPlugin,
   createItalicPlugin,
@@ -16,7 +16,7 @@ import {
   ELEMENT_CODE_BLOCK,
 } from "@udecode/plate";
 import { Box, Card } from "@mui/material";
-import { MyValue, MyParagraphElement, MyPlatePlugin } from "./types";
+import { MyValue, MyParagraphElement } from "./types";
 
 const plateUI = createPlateUI({
   // disabled for the sandbox as prismjs is throwing an error sometimes
@@ -66,7 +66,7 @@ export const editableProps: TEditableProps<MyValue> = {
 const Description = () => {
   const [debugValue, setDebugValue] = useState<MyValue | null>(null);
 
-  console.log(debugValue);
+  // console.log(debugValue);
 
   return (
     <Card>

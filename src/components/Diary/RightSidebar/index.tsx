@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
-  Button,
+  //  Button,
   Card,
   CardMedia,
   Chip,
-  Grid,
-  ListItem,
-  Typography,
+  // Grid,
+  // ListItem,
+  // Typography,
 } from "@mui/material";
-import StyledSlider from "./StyledSlider";
-import { useThemeContext } from "../../../context/ThemeContext";
-import palette from "../../../common/palette";
-import Quiz from "./Quiz";
-import { useDiaryContext } from "../../../context/DiaryContext";
-import { Image } from "@mui/icons-material";
-import expressionless from "../../../common/assets/img/emotions/expressionless.png";
-import { styled } from "@mui/styles";
-import SkeletonCard from "../Skeleton/Card";
+// import StyledSlider from "./StyledSlider";
+// import { useThemeContext } from "../../../context/ThemeContext";
+// import palette from "../../../common/palette";
+// import Quiz from "./Quiz";
+// import { useDiaryContext } from "../../../context/DiaryContext";
+// import { Image } from "@mui/icons-material";
+// import expressionless from "../../../common/assets/img/emotions/expressionless.png";
+// import { styled } from "@mui/styles";
+// import SkeletonCard from "../Skeleton/Card";
 
 const RightSidebar: React.FC<{ score?: number }> = ({ score }) => {
   return (

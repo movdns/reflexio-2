@@ -1,8 +1,8 @@
 import React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
-import palette from "../../../../common/palette";
-import iconsDefaultConfig from "../../../../common/config/icons";
+import palette from "../../../../../common/palette";
+import iconsDefaultConfig from "../../../../../common/config/icons";
 
 export type GlyphButtonProps = {
   children: any;

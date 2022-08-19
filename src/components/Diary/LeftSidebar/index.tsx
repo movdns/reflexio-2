@@ -1,37 +1,32 @@
-import React, { useEffect } from "react";
+import React, { FC } from "react";
+import { Box } from "@mui/material";
 import SkeletonCard from "../Skeleton/Card";
-import { Card } from "@mui/material";
+import Glyphs from "./Glyphs";
 import { useDiaryContext } from "../../../context/DiaryContext";
-import Glyphs from "../Glyphs";
 import { useIconsContext } from "../../../context/IconContext";
 
-const LeftSidebar = () => {
-  const { day, loadingDay, updateDayState } = useDiaryContext();
-  const { glyphs, loadingIcons } = useIconsContext();
+const LeftSidebar: FC = () => {
+  const { day } = useDiaryContext();
+  const { glyphs } = useIconsContext();
 
-  //console.log(day?.icons);
-  // useEffect(() => {}, [day]);
-
-  if (loadingIcons || loadingDay) {
+  // Show loading Skeleton
+  if (!day || !glyphs) {
     return (
-      <Card>
-        <SkeletonCard height={800} />
-      </Card>
+      <>
+        {[1, 2, 3, 4, 5].map((i: number) => (
+          <Box mb={3} key={Math.random()}>
+            <SkeletonCard height={130} />
+          </Box>
+        ))}
+      </>
     );
   }
 
   return (
     <>
-      <Card>
-        <Glyphs
-          data={glyphs}
-          selectedIcons={day?.icons}
-          updateDay={updateDayState}
-        />
-      </Card>
+      <Glyphs groupsData={glyphs} selected={day?.icons || []} />
     </>
   );
-  // return <SkeletonCard height={360} />;
 };
 
 export default LeftSidebar;

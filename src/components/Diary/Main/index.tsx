@@ -1,26 +1,24 @@
-import React, { useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import { Grid } from "@mui/material";
-// import SkeletonCard from "../Skeleton/Card";
-//import IconToolbar from "./IconToolbar";
+import SkeletonCard from "../Skeleton/Card";
 import { useDiaryContext } from "../../../context/DiaryContext";
 import Description from "./Description";
 
-const Main = () => {
-  const { day, loadingDay } = useDiaryContext();
+const Main: FC = () => {
+  const { day } = useDiaryContext();
 
   useEffect(() => {}, [day]);
 
-  if (loadingDay) {
+  if (!day) {
     return (
       <Grid container gap={4} direction="column">
-        Loading
+        <SkeletonCard height={500} />
       </Grid>
     );
   }
   return (
     <Grid container gap={4} direction="column">
       <Description />
-      {/*<Editor description={day?.description} loading={loadingDay} />*/}
     </Grid>
   );
 };

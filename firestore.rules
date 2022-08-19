@@ -13,7 +13,7 @@ service cloud.firestore {
     
     match /days/{date} {
       allow read: if permissionsCheck()
-      allow write: if duplicatesCheck()
+      allow write: if duplicatesCheck() && isCalm();
     }
     
     function permissionsCheck(){
@@ -24,6 +24,10 @@ service cloud.firestore {
     	return request.resource.data.date != resource.data.date
  		}
 	}
+
+	function isCalm() {
+        return request.time > resource.data.timestamp + duration.value(1, 's');
+    }
   
   
 }

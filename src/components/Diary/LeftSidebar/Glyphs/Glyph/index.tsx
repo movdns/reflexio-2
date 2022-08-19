@@ -3,8 +3,8 @@ import { styled } from "@mui/material/styles";
 import iconsDefaultConfig, {
   needsToBeResized,
   resizeValue,
-} from "../../../../common/config/icons";
-import palette from "../../../../common/palette";
+} from "../../../../../common/config/icons";
+import palette from "../../../../../common/palette";
 
 export type GlyphProps = {
   code: string;
@@ -57,7 +57,7 @@ const GlyphIcon = styled("div", {
   color?: string;
   selected?: boolean;
   selectedColor?: string;
-}>(({ theme, size, color, selected, selectedColor }) => ({
+}>(({ size, color, selected, selectedColor }) => ({
   fontSize: size || iconsDefaultConfig.fontSize,
   position: "relative",
   color:

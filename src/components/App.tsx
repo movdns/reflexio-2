@@ -6,15 +6,13 @@ import {
   useInitPerformance,
   FirestoreProvider,
 } from "reactfire";
-import { useAuth, useUser } from "reactfire";
-
 import { getAuth } from "firebase/auth";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "../context/ThemeContext";
-import Root from "./Root";
 import { getFirestore } from "firebase/firestore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../common/assets/fontawesome/css/all.css";
+import Root from "./Root";
 
 import firebase from "firebase/compat/app";
 import axios from "axios";
@@ -25,7 +23,7 @@ const App: React.FC = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false,
+        refetchOnWindowFocus: true,
       },
     },
   });

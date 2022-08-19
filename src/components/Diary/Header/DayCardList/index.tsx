@@ -1,20 +1,61 @@
-import React, { useEffect } from "react";
+import React, { FC } from "react";
 import DayCard from "../DayCardItem";
-import SelectedDay from "../DayCardItem/SelectedDay";
-import { Box, Card, Grid } from "@mui/material";
+import { Box, Grid, useMediaQuery } from "@mui/material";
 import { useDiaryContext } from "../../../../context/DiaryContext";
 import SkeletonCard from "../../Skeleton/Card";
 import { useParams } from "react-router-dom";
+import MobileNav from "../MobileNav";
+import { TDay } from "../../../../types";
+import { useTheme } from "@mui/material";
 
-const DayCardList = () => {
-  const { day, days, loadingDays } = useDiaryContext();
+const DayCardList: FC = () => {
+  const { days } = useDiaryContext();
   const { date } = useParams();
 
-  //  useEffect(() => {}, [days]);
+  const theme = useTheme();
+  const md = useMediaQuery(theme.breakpoints.up("md"));
 
-  //console.log(days);
+  // Simple navigation
+  const getSelectedIndex = (days: TDay[]) => {
+    return days?.findIndex((day: TDay) => date === day.date);
+  };
+  const sliceOffset = (days: TDay[]) => {
+    const current = getSelectedIndex(days);
 
-  if (loadingDays) {
+    if (current > 3) {
+      return current - 3;
+    } else if (current > 2) {
+      return current - 3;
+    } else {
+      return 0;
+    }
+  };
+
+  if (days) {
+    return (
+      <>
+        {!md && (
+          <Box>
+            <MobileNav days={days} />
+          </Box>
+        )}
+
+        {days &&
+          days
+            .slice(sliceOffset(days), days.length)
+            .map((day: any, index) => (
+              <DayCard
+                key={Math.random()}
+                index={index}
+                selected={date === day.date || false}
+                date={day.date}
+                icons={day.icons}
+                score={day.score}
+              />
+            ))}
+      </>
+    );
+  } else {
     return (
       <>
         <Box component={Grid} item xs={24} sm={12} md={8} lg={6}>
@@ -105,28 +146,6 @@ const DayCardList = () => {
       </>
     );
   }
-
-  return (
-    <>
-      {/*<Box component={Grid} item xs={24} sm={12} md={6} lg={6}>*/}
-      {/*  <SelectedDay date={day?.date} />*/}
-      {/*</Box>*/}
-
-      {days &&
-        days
-          .slice(0, 8)
-          .map((day: any, index) => (
-            <DayCard
-              key={Math.random()}
-              index={index}
-              selected={date === day.date || false}
-              date={day.date}
-              icons={day.icons}
-              score={day.score}
-            />
-          ))}
-    </>
-  );
 };
 
 export default DayCardList;

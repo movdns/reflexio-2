@@ -1,169 +1,177 @@
 import {
+  FC,
+  ReactNode,
   createContext,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
-// @ts-ignore
-import hash from "object-hash";
-import hydrateWithEmptyDates from "./helpers/hydrateWithEmptyDates";
+import fillWithEmptyDates from "./helpers/fillWithEmptyDates";
 import { useAuth } from "reactfire";
-
-import { useParams } from "react-router-dom";
-import { Alert, Snackbar, Typography } from "@mui/material";
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import { getDayAPICall, getDaysAPICall, setDayAPICall } from "../api";
 import generateDay from "./helpers/generateDay";
 import { TDay } from "../types";
-import axios from "axios";
 
 type DiaryContextProps = {
-  loading: boolean;
-  loadingDays: boolean;
-  loadingDay: boolean;
   day: TDay | null;
-  // setDay?(data: any): void;
-  updateDayState?(data: any): void;
-  days: TDay[] | null | undefined;
-  setDays?(data: any): void;
-  today?: TDay | null;
+  days: TDay[] | null;
+  isToday?: boolean;
+  makeDayMutation?(data: Partial<TDay>): void;
   isDayEditable?(): boolean;
 };
 
-const DiaryContext = createContext<DiaryContextProps>({
-  loading: true,
-  loadingDays: true,
-  loadingDay: true,
-  day: {
-    date: dayjs().format("D-MM-YY"),
-  },
-  days: null,
-});
+type DiaryProviderProps = {
+  children?: ReactNode;
+};
 
-export const DiaryProvider = ({ children }: any) => {
+export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
+  const { currentUser } = useAuth();
   const queryClient = useQueryClient();
 
-  const { currentUser } = useAuth();
+  // Retrieve date from URL params
+  const { date: paramsDate } = useParams();
+  const isParamsDateValid =
+    dayjs(`${paramsDate}`, "D-MM-YY").isValid() &&
+    dayjs(`${paramsDate}`, "D-MM-YY").isBefore(dayjs()) &&
+    paramsDate;
 
-  // Retrieve date from query
-  const { date: queryDate } = useParams();
-  const searchDate =
-    queryDate && dayjs(`${queryDate}`, "D-MM-YY").isValid()
-      ? queryDate
-      : dayjs().format("D-MM-YY");
+  // If date validation failed, redirect to today
+  const navigate = useNavigate();
+  !isParamsDateValid &&
+    navigate({
+      pathname: dayjs().format("D-MM-YY"),
+    });
 
-  // all days api call
-  const { isLoading: daysLoading, data: daysData } = useQuery(
-    ["diary"],
-    async (): Promise<TDay[] | null> => {
-      const data = await getDaysAPICall();
-      return hydrateWithEmptyDates(data.data);
-    }
-  );
+  const queryDate = isParamsDateValid ? paramsDate : dayjs().format("D-MM-YY");
 
-  // get selected day (by date from params)
-  const { isLoading: dayLoading, data: dayData } = useQuery(
-    ["day", searchDate],
-    async () => {
-      const data = await getDayAPICall(searchDate);
-      if (data.error) {
-        const newDay = generateDay({
-          date: searchDate,
+  /**
+   * Fetch all days collection
+   */
+  const { data: daysData } = useQuery(["diary"], async () => {
+    const response = await getDaysAPICall();
+    // @todo error handler
+    response.error &&
+      console.log("getGlyphsGroupsAPICall error: ", response.message);
+
+    // Fill existing days with "ghost" days (return {date: string})
+    return fillWithEmptyDates(response.data);
+  });
+
+  /**
+   * Fetch single day resource by request query "date" param
+   */
+  const { data: dayData } = useQuery(["day", queryDate], async () => {
+    const response = await getDayAPICall(queryDate);
+    // @todo error handler
+    if (response.error) {
+      console.log("getDayAPICall error: ", response.message);
+      // If day not exists, generate it (fill with init data) and make mutation request
+      return dayMutation.mutate(
+        generateDay({
+          date: queryDate,
           uid: currentUser?.uid || "",
-        });
-        dayMutation.mutate(newDay);
-        return newDay;
-      } else {
-        setDayState(data.data);
-      }
-      return !data.error ? data.data : data.message;
+        })
+      );
     }
-  );
+    return response.data || null;
+  });
 
-  const [dayState, setDayState] = useState(dayData || null);
-
-  // update / create day
-  const dayMutation = useMutation<any, unknown, TDay | null>(
-    async (dayData) => dayData && setDayAPICall(dayData),
+  /**
+   * Update / Create day resource
+   */
+  const dayMutation = useMutation(
+    async (dayData: TDay) => dayData && setDayAPICall(dayData),
     {
-      onSuccess: (dayData) => {
-        queryClient.invalidateQueries(["day"], dayData.id);
-        queryClient.invalidateQueries(["diary"], dayData.id);
+      onMutate: async (updatedDay: TDay) => {
+        // Cancel all possible ongoing queries
+        await queryClient.cancelQueries(["day", queryDate]);
+        await queryClient.cancelQueries(["diary"]);
+
+        // Get snapshot of previous data
+        const daysSnapshot = await queryClient.getQueryData(["diary"]);
+        const daySnapshot = await queryClient.getQueryData(["day", queryDate]);
+
+        // Optimistic update, instantly reflect changes on UI
+        await queryClient.setQueryData(["day", queryDate], updatedDay);
+        await queryClient.setQueryData(["diary"], (oldDays: any) => {
+          return oldDays.map((oldDay: TDay) => {
+            if (oldDay?.id === updatedDay.id) {
+              return {
+                ...oldDay,
+                ...updatedDay,
+              };
+            }
+            return oldDay;
+          });
+        });
+
+        return { daySnapshot, daysSnapshot };
+      },
+
+      onSettled: () => {
+        queryClient.invalidateQueries(["day", queryDate]).then();
+        queryClient.invalidateQueries(["diary"]).then();
+      },
+
+      onError: (error, updatedDay, daysSnapshot) => {
+        console.log(error);
+        // Rollback the changes using the snapshot
+        queryClient.setQueryData(["diary"], daysSnapshot);
       },
     }
   );
 
-  const updateDayState = useCallback(
-    async (data: any) => {
-      setDayState({ ...dayData, ...data });
-    },
-    [dayData]
-  );
-
-  const setDayMutation = useCallback(
-    async (data: any) => {
-      dayMutation.mutate({ ...dayData, ...data });
+  /**
+   * Mutation interface, accepts partial day data, and fill it with existing day data
+   * @param data: TDay
+   */
+  const makeDayMutation = useCallback(
+    async (data: Partial<TDay>) => {
+      await dayMutation.mutate({ ...dayData, ...data });
     },
     [dayData, dayMutation]
   );
 
-  const [savedLabel, setSavedLabel] = useState(false);
+  const [isToday, setIsToday] = useState(false);
 
   useEffect(() => {
-    !dayState && setDayState(dayData);
-    // saving only if user finished typing \ setting icons
-    const delayDebounceFn = setTimeout(async () => {
-      if (hash(dayData) !== hash(dayState)) {
-        setSavedLabel(true);
-        await setDayMutation(dayState);
-        setTimeout(() => setSavedLabel(false), 1000);
-      }
-    }, 2000);
+    if (queryDate === dayjs().format("D-MM-YY")) {
+      setIsToday(true);
+    }
+  }, [queryDate]);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [dayData, dayState, setDayMutation]);
-
-  const isDayEditable = () => {
-    const dayDateUnix = dayjs(dayData?.date, "DD-MM-YY").unix();
-    const agoDateUnix = dayjs().subtract(30, "days").unix();
+  /**
+   * Check if day can be edit
+   * @return boolean
+   */
+  function isDayEditable() {
+    // const dayDateUnix = dayjs(dayData?.date, "DD-MM-YY").unix();
+    // const agoDateUnix = dayjs().subtract(30, "days").unix();
     return true;
-  };
-
-  // if (dayLoading || daysLoading) {
-  //   return <DiarySkeleton />;
-  // }
+  }
 
   return (
     <DiaryContext.Provider
       value={{
-        loading: daysLoading || dayLoading,
-        loadingDays: daysLoading,
-        loadingDay: dayLoading,
         days: daysData,
-        day: dayState,
-        updateDayState,
-        today: null,
+        day: dayData,
+        makeDayMutation,
+        isToday,
         isDayEditable,
       }}
     >
       {children}
-      <Snackbar
-        open={savedLabel}
-        autoHideDuration={2000}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert severity="success">
-          <Typography variant="body2" color="darkgreen">
-            updated
-          </Typography>
-        </Alert>
-      </Snackbar>
     </DiaryContext.Provider>
   );
 };
+
+const DiaryContext = createContext<DiaryContextProps>({
+  day: null,
+  days: null,
+});
 
 export const useDiaryContext = () => useContext(DiaryContext);

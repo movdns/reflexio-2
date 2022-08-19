@@ -1,42 +1,21 @@
-import React from "react";
+import React, { FC } from "react";
+import { Box, Container, Grid } from "@mui/material";
 import Header from "./Header";
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Container,
-  Fab,
-  Grid,
-  IconButton,
-  Toolbar,
-} from "@mui/material";
-
 import LeftSidebar from "./LeftSidebar";
 import RightSidebar from "./RightSidebar";
 import Main from "./Main";
-import MobileNav from "./Header/MobileNav";
-import { useDiaryContext } from "../../context/DiaryContext";
-import Glyph from "./Glyphs/Glyph";
+import Footer from "./Footer";
 
-const Diary = () => {
-  const { days } = useDiaryContext();
+const Diary: FC = () => {
   return (
-    <Box component="main" py={4} height="100vh">
+    <Box component="main">
       <Container maxWidth={false}>
-        <MobileNav days={days} />
-        <Grid container columns={24} spacing={3} mt={4}>
+        <Grid container columns={24} spacing={3} mt={{ xs: 8, md: 0 }}>
           <Header />
         </Grid>
 
         <Grid container spacing={3} pt={4} mb={4}>
-          <Box
-            component={Grid}
-            item
-            xs={12}
-            md={6}
-            lg={3}
-            // display={{ xs: "none", lg: "block" }}
-          >
+          <Box component={Grid} item xs={12} md={6} lg={3}>
             <LeftSidebar />
           </Box>
 
@@ -49,15 +28,9 @@ const Diary = () => {
           </Grid>
         </Grid>
 
-        {/*<AppBar*/}
-        {/*  position="fixed"*/}
-        {/*  color="secondary"*/}
-        {/*  sx={{ top: "auto", bottom: 0 }}*/}
-        {/*>*/}
-        {/*  <Toolbar>*/}
-        {/*    <Avatar />*/}
-        {/*  </Toolbar>*/}
-        {/*</AppBar>*/}
+        <Grid container>
+          <Footer />
+        </Grid>
       </Container>
     </Box>
   );

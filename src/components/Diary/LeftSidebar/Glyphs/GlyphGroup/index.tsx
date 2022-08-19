@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Grid } from "@mui/material";
 import GlyphButton, { GlyphButtonProps } from "../GlyphButton";
 import Glyph, { GlyphProps } from "../Glyph";
+import { TGlyph } from "../../../../../types";
 
 type GlyphGroupProps = Pick<GlyphProps, "iconType" | "size"> & {
   data?: any[];
@@ -13,7 +14,7 @@ type GlyphGroupProps = Pick<GlyphProps, "iconType" | "size"> & {
   }[];
   button?: boolean;
   disabled?: boolean;
-  onClick?: (code: string) => void;
+  onClick?: (code: TGlyph) => void;
   coloration?: GlyphButtonProps["coloration"];
   inverse?: GlyphButtonProps["inverse"];
   selected?: string[];

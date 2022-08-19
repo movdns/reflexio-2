@@ -1,43 +1,43 @@
 import React from "react";
-import { Box, Fab, Tab } from "@mui/material";
+import { Box, Tab } from "@mui/material";
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import dayjs from "dayjs";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-
-const ZeroFab = styled(Fab)({
-  position: "absolute",
-  boxShadow: "none",
-  zIndex: 1,
-  top: -10,
-  left: "-40%",
-  right: 0,
-  margin: "0 auto",
-});
-
-const StyledFab = styled(Fab)({
-  position: "absolute",
-  boxShadow: "none",
-  zIndex: 1,
-  top: -10,
-  left: 0,
-  right: 0,
-  margin: "0 auto",
-});
-
-const SecondFab = styled(Fab)({
-  position: "absolute",
-  boxShadow: "none",
-  zIndex: 1,
-  top: -10,
-  left: "40%",
-  right: 0,
-  margin: "0 auto",
-});
-
-interface StyledTabProps {
-  label: string;
-}
+//
+// const ZeroFab = styled(Fab)({
+//   position: "absolute",
+//   boxShadow: "none",
+//   zIndex: 1,
+//   top: -10,
+//   left: "-40%",
+//   right: 0,
+//   margin: "0 auto",
+// });
+//
+// const StyledFab = styled(Fab)({
+//   position: "absolute",
+//   boxShadow: "none",
+//   zIndex: 1,
+//   top: -10,
+//   left: 0,
+//   right: 0,
+//   margin: "0 auto",
+// });
+//
+// const SecondFab = styled(Fab)({
+//   position: "absolute",
+//   boxShadow: "none",
+//   zIndex: 1,
+//   top: -10,
+//   left: "40%",
+//   right: 0,
+//   margin: "0 auto",
+// });
+//
+// interface StyledTabProps {
+//   label: string;
+// }
 
 interface LinkTabProps {
   label?: string;

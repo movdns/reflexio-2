@@ -1,65 +1,64 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, FC, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getIconsAPICall } from "../api";
-import getIconByScore from "../components/Diary/Glyphs/helpers/getIconByDayScore";
+import { getGlyphsGroupsAPICall } from "../api";
+import { TGlyph, TGlyphGroup } from "../types";
 
 type IconsContextProps = {
-  loadingIcons: boolean;
-  glyphs: [] | null;
-  getSelectedIconsByGroup?: (selected: string[], group: string) => any;
-  getIconByScore?: (score: number) => any;
+  glyphs: TGlyphGroup[] | null;
+  getIconByScore?: (score: number) => TGlyph | null;
+  getSelectedIconsByGroup?: (
+    selected: string[],
+    group: string
+  ) => TGlyph[] | null;
 };
 
-const IconsContext = createContext<IconsContextProps>({
-  loadingIcons: true,
-  glyphs: null,
-});
+type IconsProviderProps = {
+  children?: ReactNode;
+};
 
-export const IconsProvider = ({ children }: any) => {
-  const { isLoading: loadingIcons, data: glyphsData } = useQuery(
-    ["icons"],
-    async () => {
-      const data = await getIconsAPICall();
-      return !data.error ? data.data : data.message;
-    }
-  );
+export const IconsProvider: FC<IconsProviderProps> = ({ children }) => {
+  /**
+   * Fetch all glyphs groups from endpoint
+   */
+  const { data: glyphsGroupsData } = useQuery(["glyphs"], async () => {
+    const response = await getGlyphsGroupsAPICall();
+    // @todo error handler
+    response.error &&
+      console.log("getGlyphsGroupsAPICall error: ", response.message);
 
-  function getIconByScore(score: number) {
-    if (glyphsData) {
-      const aaa = glyphsData.find((group: any) =>
+    return response.data || null;
+  });
+
+  /**
+   * Get Glyph object from Glyphs Groups Arr with matched 'score' property
+   * @param {number} score
+   * @return TGlyph | null
+   */
+  function getIconByScore(score: number): TGlyph | null {
+    if (glyphsGroupsData) {
+      const glyphGroup = glyphsGroupsData.find((group: any) =>
         group.icons.find((i: any) => i?.score === score)
       );
-      return aaa?.icons.find((i: any) => i?.score === score);
+      return glyphGroup?.icons.find((i: any) => i?.score === score) || null;
     }
+    return null;
   }
 
-  function getSelectedIconsByGroup(selected: string[], group: string) {
-    if (glyphsData) {
-      const iconGroup = glyphsData.find((g: any) => g.code === group);
+  function getSelectedIconsByGroup(
+    selected: string[],
+    group: string
+  ): TGlyph[] | null {
+    if (glyphsGroupsData) {
+      const iconGroup = glyphsGroupsData.find((g: any) => g.code === group);
       return iconGroup?.icons.filter((i: any) => selected?.includes(i.code));
     }
+    return null;
   }
-
-  // function getSelectrdIconsByGroup(group: string, selected: []) {
-  //   if (glyphsData) {
-  //     const aaa = glyphsData && glyphsData.find((g: any) => group === g);
-  //     return aaa?.icons.find((i: any) => i?.score === score);
-  //   }
-  // }
-
-  // const getMoodIconInDayIcons = (icons: any) => {
-  //   const group =
-  //     iconsData && iconsData.find((group: any) => group.code === "mood");
-  //   return group.icons.find((i: any) =>
-  //     icons.find((iDay: any) => i.code === iDay)
-  //   );
-  // };
 
   return (
     <IconsContext.Provider
       value={{
-        loadingIcons: loadingIcons,
-        glyphs: glyphsData,
+        glyphs: glyphsGroupsData,
         getIconByScore,
         getSelectedIconsByGroup,
       }}
@@ -68,5 +67,9 @@ export const IconsProvider = ({ children }: any) => {
     </IconsContext.Provider>
   );
 };
+
+const IconsContext = createContext<IconsContextProps>({
+  glyphs: null,
+});
 
 export const useIconsContext = () => useContext(IconsContext);

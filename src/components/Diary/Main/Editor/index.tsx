@@ -3,8 +3,6 @@ import { createReactEditorJS } from "react-editor-js";
 import tools from "./tools";
 import { Box, Card, Grid } from "@mui/material";
 import SkeletonCard from "../../Skeleton/Card";
-import { useIconsContext } from "../../../../context/IconContext";
-import { useDiaryContext } from "../../../../context/DiaryContext";
 
 type EditorProps = {
   description?: any;
@@ -13,7 +11,7 @@ type EditorProps = {
 
 const Editor: React.FC<EditorProps> = ({ loading, description }) => {
   const ReactEditorJS = createReactEditorJS();
-  const { updateDayState } = useDiaryContext();
+  // const { updateDayState } = useDiaryContext();
 
   const [editorValue, setEditorValue] = useState(description);
 
