@@ -1,14 +1,24 @@
 import * as admin from "firebase-admin";
 import getDayValidationSchema from "./validation/getDayValidationSchema";
-import { TDaySnapshot, TRequestBody, TResponse, TResponseData } from "../types";
+import { TRequestBody, TResponse, TResponseData } from "../../types";
+import { TDaySnapshot } from "./types";
 
-const collectionDBName: string = process.env.COLLECTION_DB_NAME || "days";
+const collectionDBName: string = process.env.COLLECTION_DAYS_DB_NAME || "days";
 
 const getDay = async (
   req: TRequestBody<{ date: string }>,
-  res: TResponse<TResponseData>
+  res: TResponse<TResponseData<TDaySnapshot | null>>
 ) => {
   const date = req.params.date;
+  const uid = req?.user?.uid;
+
+  if (!uid) {
+    return res.json({
+      error: true,
+      data: null,
+      message: "Insufficient permissions",
+    });
+  }
 
   const { value: validDate, error } = getDayValidationSchema.validate({
     date,
@@ -19,7 +29,7 @@ const getDay = async (
   }
 
   try {
-    const day = await findDayInCollection(validDate.date);
+    const day = await findDayInCollection(uid, validDate.date);
 
     if (day) {
       return res.send({
@@ -43,12 +53,14 @@ const getDay = async (
 };
 
 export const findDayInCollection = async (
+  uid: string,
   date: string
 ): Promise<TDaySnapshot> => {
   const dayQuerySnapshot = await admin
     .firestore()
     .collection(collectionDBName)
     .where("date", "==", date)
+    .where("uid", "==", uid)
     .limit(1)
     .get();
 

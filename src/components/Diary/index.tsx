@@ -1,37 +1,35 @@
-import React from "react";
-import DiarySkeleton from "./Skeleton";
-import Header from "./Header";
+import React, { FC } from "react";
 import { Box, Container, Grid } from "@mui/material";
+import Header from "./Header";
 import LeftSidebar from "./LeftSidebar";
 import RightSidebar from "./RightSidebar";
 import Main from "./Main";
-import bg from "../../common/assets/img/bg2.svg";
+import Footer from "./Footer";
 
-const Diary = () => {
+const Diary: FC = () => {
   return (
-    <Box component="main" py={4} height="100vh">
+    <Box component="main">
       <Container maxWidth={false}>
-        <Grid container columns={24} spacing={3}>
+        <Grid container columns={24} spacing={3} mt={{ xs: 8, md: 0 }}>
           <Header />
         </Grid>
 
         <Grid container spacing={3} pt={4} mb={4}>
-          <Box
-            component={Grid}
-            item
-            lg={3}
-            display={{ xs: "none", lg: "block" }}
-          >
+          <Box component={Grid} item xs={12} md={6} lg={3}>
             <LeftSidebar />
           </Box>
 
-          <Grid item xs={12} md={8} lg={6}>
+          <Grid item xs={12} md={6} lg={6}>
             <Main />
           </Grid>
 
-          <Grid item xs={12} md={4} lg={3}>
+          <Grid item xs={12} md={4} lg={3} display={{ xs: "none" }}>
             <RightSidebar />
           </Grid>
+        </Grid>
+
+        <Grid container>
+          <Footer />
         </Grid>
       </Container>
     </Box>

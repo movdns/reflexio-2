@@ -11,6 +11,9 @@ import palette from "../common/palette";
 type ThemeContextProps = {
   toggleMode?: () => void;
   setPrimaryColor?(color: string): void;
+  setPrimaryColoration?(
+    coloration: "negative" | "danger" | "neutral" | "positive" | "special"
+  ): void;
   mode: PaletteMode;
 };
 
@@ -33,6 +36,13 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     setPrimary(color);
   };
 
+  const setPrimaryColoration = (
+    coloration: "negative" | "danger" | "neutral" | "positive" | "special"
+  ) => {
+    const color = palette[coloration].main;
+    setPrimary(color);
+  };
+
   const theme = React.useMemo(
     () =>
       createTheme(
@@ -41,7 +51,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
             mode,
             primary: { main: primary },
             background: {
-              default: mode === "light" ? "#fafbfb" : "#202328", // body
+              default: mode === "light" ? "#f7f7f7" : "#202328", // body
               paper: mode === "light" ? "#fff" : "#33373D ", // cards
             },
             ...palette,
@@ -57,6 +67,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
         mode,
         toggleMode,
         setPrimaryColor,
+        setPrimaryColoration,
       }}
     >
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>

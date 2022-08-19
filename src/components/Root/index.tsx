@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AuthLayout from "../Auth/AuthLayout";
 import SignInScreen from "../Auth/SignInScreen";
-import SignUpScreen from "../Auth/SignUpScreen";
 import { useUser } from "reactfire";
 import Diary from "../Diary";
 import { DiaryProvider } from "../../context/DiaryContext";
+import { IconsProvider } from "../../context/IconContext";
 
 const Root = () => {
   const {
@@ -32,7 +32,9 @@ const Root = () => {
           path="/diary"
           element={
             <DiaryProvider>
-              <Diary />
+              <IconsProvider>
+                <Diary />
+              </IconsProvider>
             </DiaryProvider>
           }
         >
@@ -54,14 +56,6 @@ const Root = () => {
         element={
           <AuthLayout>
             <SignInScreen />
-          </AuthLayout>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <AuthLayout>
-            <SignUpScreen />
           </AuthLayout>
         }
       />

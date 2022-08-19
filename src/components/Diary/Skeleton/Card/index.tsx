@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Card, Skeleton } from "@mui/material";
+import { Box, Card } from "@mui/material";
 
 type SkeletonCardProps = {
   height?: number | string;
@@ -8,9 +8,7 @@ type SkeletonCardProps = {
 const SkeletonCard: React.FC<SkeletonCardProps> = ({ height }) => {
   return (
     <Card color="ghost">
-      <Box height={height}>
-        {/*<Skeleton variant="rectangular" animation="wave" height="100%" />*/}
-      </Box>
+      <Box height={height} />
     </Card>
   );
 };

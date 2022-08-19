@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 import palette from "./palette";
-import { deepOrange, green } from "@mui/material/colors";
+import { deepOrange } from "@mui/material/colors";
 
 const defaultTheme = createTheme({
   breakpoints: {
@@ -38,6 +38,13 @@ const defaultTheme = createTheme({
           style: {
             background: palette.negative.main,
             color: palette.negative.contrastText,
+          },
+        },
+        {
+          props: { color: "danger" },
+          style: {
+            background: palette.danger.main,
+            color: palette.danger.contrastText,
           },
         },
         {
@@ -224,6 +231,7 @@ declare module "@mui/material/Card" {
     special: true;
     ghost: true;
     transparent: true;
+    danger: true;
   }
 }
 

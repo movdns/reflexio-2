@@ -3,15 +3,12 @@ import * as slowDown from "express-slow-down";
 import helmet from "helmet";
 import rateLimiter from "express-rate-limit";
 import { Application } from "express";
-import disablePoweredBy from "./disablePoweredBy";
 
 /**
  * Protect application from DDOS and XSS
  * @param {Request} app
  */
 function secure(app: Application) {
-  app.use(disablePoweredBy);
-
   app.use(
     cors({
       origin: ["https://reflexio-2.web.app", "http://localhost:3000"],
@@ -41,6 +38,7 @@ function secure(app: Application) {
 
   app.use(speedLimiter);
   app.use(limiter);
+  app.disable("x-powered-by");
 }
 
 export default secure;

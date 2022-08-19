@@ -3,7 +3,8 @@ const iconsDefaultConfig = {
   type: "duotone",
   fontSize: 32,
   color: "inherit", // this rule overrides by GlyphIconButton "button" prop
-  defaultColor: "red",
+  defaultColor: "darkgray",
+  defaultSelectedColor: "#d7942d",
 };
 
 export const needsToBeResized = ["smoking"]; // this rule override "advancedData" "size" prop

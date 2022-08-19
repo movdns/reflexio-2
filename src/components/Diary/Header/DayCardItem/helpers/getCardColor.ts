@@ -3,8 +3,10 @@ const getCardColorByDayScore = (score: number | undefined) => {
     return "ghost";
   } else {
     switch (true) {
-      case score < 4:
+      case score < 3:
         return "negative";
+      case score < 5:
+        return "danger";
       case score < 6:
         return "neutral";
       case score < 9:
