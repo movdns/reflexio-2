@@ -10,7 +10,9 @@ const LeftSidebar: FC = () => {
   const { glyphs } = useIconsContext();
 
   // Show loading Skeleton
-  if (!day || !glyphs) {
+  if (day && glyphs) {
+    return <Glyphs groupsData={glyphs} selected={day?.icons || []} />;
+  } else {
     return (
       <>
         {[1, 2, 3, 4, 5].map((i: number) => (
@@ -21,12 +23,6 @@ const LeftSidebar: FC = () => {
       </>
     );
   }
-
-  return (
-    <>
-      <Glyphs groupsData={glyphs} selected={day?.icons || []} />
-    </>
-  );
 };
 
 export default LeftSidebar;

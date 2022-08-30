@@ -6,6 +6,7 @@ import { useUser } from "reactfire";
 import Diary from "../Diary";
 import { DiaryProvider } from "../../context/DiaryContext";
 import { IconsProvider } from "../../context/IconContext";
+import PullToRefresh from "react-simple-pull-to-refresh";
 
 const Root = () => {
   const {
@@ -24,6 +25,10 @@ const Root = () => {
     return null;
   }
 
+  const handleRefresh = async () => {
+    //  window.location.reload();
+  };
+
   if (isLogged) {
     return (
       <Routes>
@@ -33,7 +38,9 @@ const Root = () => {
           element={
             <DiaryProvider>
               <IconsProvider>
-                <Diary />
+                <PullToRefresh onRefresh={handleRefresh}>
+                  <Diary />
+                </PullToRefresh>
               </IconsProvider>
             </DiaryProvider>
           }

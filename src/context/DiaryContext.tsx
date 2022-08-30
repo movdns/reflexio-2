@@ -60,7 +60,7 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
     // Fill existing days with "ghost" days (return {date: string})
     return fillWithEmptyDates(response.data);
   });
-
+  //console.log(daysData);
   /**
    * Fetch single day resource by request query "date" param
    */
@@ -112,7 +112,8 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
         return { daySnapshot, daysSnapshot };
       },
 
-      onSettled: () => {
+      onSettled: (data) => {
+        data?.error && console.log(data?.message);
         queryClient.invalidateQueries(["day", queryDate]).then();
         queryClient.invalidateQueries(["diary"]).then();
       },
@@ -149,9 +150,9 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
    * @return boolean
    */
   function isDayEditable() {
-    // const dayDateUnix = dayjs(dayData?.date, "DD-MM-YY").unix();
-    // const agoDateUnix = dayjs().subtract(30, "days").unix();
-    return true;
+    const dayDateUnix = dayjs(dayData?.date, "DD-MM-YY").unix();
+    const agoDateUnix = dayjs().subtract(7, "days").unix();
+    return dayDateUnix > agoDateUnix;
   }
 
   return (

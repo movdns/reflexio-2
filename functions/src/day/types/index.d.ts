@@ -3,16 +3,6 @@ export type TDaySnapshot = {
   uid?: string;
   date?: string;
   score?: string;
-  description?: {
-    blocks: [
-      {
-        type: string;
-        id: number;
-        level: number;
-        text: string;
-      }
-    ];
-    time: number;
-  };
+  description?: [];
   icons?: string[];
 } | null;

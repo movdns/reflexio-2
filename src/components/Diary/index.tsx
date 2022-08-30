@@ -19,11 +19,18 @@ const Diary: FC = () => {
             <LeftSidebar />
           </Box>
 
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} md={6} lg={9} xl={6}>
             <Main />
           </Grid>
 
-          <Grid item xs={12} md={4} lg={3} display={{ xs: "none" }}>
+          <Grid
+            item
+            xs={12}
+            md={4}
+            lg={3}
+            display={{ xs: "none", sm: "block" }}
+            xl={3}
+          >
             <RightSidebar />
           </Grid>
         </Grid>
