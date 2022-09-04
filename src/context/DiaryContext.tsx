@@ -58,9 +58,11 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
       console.log("getGlyphsGroupsAPICall error: ", response.message);
 
     // Fill existing days with "ghost" days (return {date: string})
-    return fillWithEmptyDates(response.data);
+    const filled = fillWithEmptyDates(response.data);
+    // console.log(filled);
+    return filled;
   });
-
+  //console.log(daysData);
   /**
    * Fetch single day resource by request query "date" param
    */
@@ -97,24 +99,25 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
 
         // Optimistic update, instantly reflect changes on UI
         await queryClient.setQueryData(["day", queryDate], updatedDay);
-        await queryClient.setQueryData(["diary"], (oldDays: any) => {
-          return oldDays.map((oldDay: TDay) => {
-            if (oldDay?.id === updatedDay.id) {
+        await queryClient.setQueryData(["diary"], (daysSnapshot: any) => {
+          return daysSnapshot.map((daySnapshot: TDay) => {
+            if (daySnapshot.date === updatedDay.date) {
               return {
-                ...oldDay,
+                ...daySnapshot,
                 ...updatedDay,
               };
             }
-            return oldDay;
+            return daySnapshot;
           });
         });
 
         return { daySnapshot, daysSnapshot };
       },
 
-      onSettled: () => {
-        queryClient.invalidateQueries(["day", queryDate]).then();
-        queryClient.invalidateQueries(["diary"]).then();
+      onSettled: (data) => {
+        data?.error && console.log(data?.message);
+        // queryClient.invalidateQueries(["day", queryDate]).then();
+        // queryClient.invalidateQueries(["diary"]).then();
       },
 
       onError: (error, updatedDay, daysSnapshot) => {
@@ -145,12 +148,13 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
   }, [queryDate]);
 
   /**
-   * Check if day can be edit
+   * Check if day can be edited
    * @return boolean
    */
   function isDayEditable() {
     // const dayDateUnix = dayjs(dayData?.date, "DD-MM-YY").unix();
-    // const agoDateUnix = dayjs().subtract(30, "days").unix();
+    // const agoDateUnix = dayjs().subtract(7, "days").unix();
+    // return dayDateUnix > agoDateUnix;
     return true;
   }
 

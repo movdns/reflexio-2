@@ -1,62 +1,70 @@
-import React, { useEffect, useState } from "react";
-import { createReactEditorJS } from "react-editor-js";
-import tools from "./tools";
-import { Box, Card, Grid } from "@mui/material";
-import SkeletonCard from "../../Skeleton/Card";
+import React, { FC, useEffect, useMemo, useState } from "react";
+import { ReactEditor, Slate, withReact } from "slate-react";
+import { createEditor } from "slate";
+import { withHistory } from "slate-history";
+import SlateBody from "./SlateBody";
+import { useDiaryContext } from "../../../../context/DiaryContext";
+import hash from "object-hash";
 
-type EditorProps = {
-  description?: any;
-  loading: boolean;
-};
+const Editor: FC<{
+  data: any[];
+  readonly?: boolean;
+  showToolBar?: boolean;
+}> = ({ data, readonly, showToolBar }) => {
+  const { makeDayMutation } = useDiaryContext();
 
-const Editor: React.FC<EditorProps> = ({ loading, description }) => {
-  const ReactEditorJS = createReactEditorJS();
-  // const { updateDayState } = useDiaryContext();
+  const slate = useMemo(
+    () => withHistory(withReact(createEditor() as ReactEditor)),
+    []
+  );
 
-  const [editorValue, setEditorValue] = useState(description);
+  const [value, setValue] = useState(data);
+  slate.children = value;
+  // const debounceValue = useDebounce(value, 2000);
 
-  const editorCore = React.useRef(null);
+  const [synced, setSynced] = useState(true);
 
-  const handleInitialize = React.useCallback((instance: any) => {
-    editorCore.current = instance;
-  }, []);
-
-  const handleChanges = React.useCallback(async () => {
-    // @ts-ignore
-    const savedData = await editorCore?.current?.save?.();
-    // console.log(savedData);
-    setEditorValue(savedData);
-    //savedData && updateDayState?.({ description: savedData });
-  }, []);
+  const handleSave = () => {
+    !synced && makeDayMutation?.({ description: value });
+  };
 
   useEffect(() => {
-    // console.log(description);
-    //editorValue !== description && setEditorValue(description);
-  }, [description]);
+    // makeDayMutation?.({ description: debounceValue });
+    // setSynced(debounceValue === data);
+    setSynced(hash(value) === hash(data));
+  }, [value, data]);
 
-  if (loading) {
-    return (
-      <Box component={Grid} item lg={3} display={{ xs: "none", lg: "block" }}>
-        <SkeletonCard height={500} />
-      </Box>
-    );
-  }
+  useEffect(() => {
+    setValue((currentValue) => {
+      /**
+       * We need to reset selection only for real remote updates
+       * In case of direct update currentValue will be updated before remote,
+       * so they will be equal.
+       */
+      if (currentValue !== data) {
+        slate.selection = null;
+      }
+      return data;
+    });
+  }, [data, slate]);
 
   return (
     <>
-      <Card>
-        <Box p={4} minHeight={500}>
-          <ReactEditorJS
-            inlineToolbar={true}
-            onInitialize={handleInitialize}
-            tools={tools}
-            //value={editorValue}
-            defaultValue={description}
-            minHeight={500}
-            onChange={handleChanges}
-          />
-        </Box>
-      </Card>
+      <Slate
+        editor={slate}
+        value={value}
+        onChange={(value) => {
+          setValue(value);
+        }}
+      >
+        <SlateBody
+          editor={slate}
+          readonly={readonly}
+          showToolBar={showToolBar}
+          handleSave={handleSave}
+          isSynced={synced}
+        />
+      </Slate>
     </>
   );
 };
