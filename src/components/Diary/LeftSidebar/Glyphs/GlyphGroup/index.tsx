@@ -126,7 +126,11 @@ const GlyphGroup: React.FC<GlyphGroupProps> = ({
                 >
                   <Glyph
                     code={icon?.code || icon}
-                    iconType={icon?.iconType || iconType}
+                    iconType={
+                      selected?.includes(icon?.code) || icon?.selected
+                        ? "duotone"
+                        : icon?.iconType || iconType
+                    }
                     size={iconSize - 5}
                     fullWidth={fullWidth}
                   />

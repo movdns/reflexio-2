@@ -1,17 +1,22 @@
 import React, { FC, useEffect, useState } from "react";
-import { Grid, Box, Card, Typography } from "@mui/material";
+import { Grid, Box, Card, Typography, CardMedia } from "@mui/material";
 import SkeletonCard from "../Skeleton/Card";
 import { useDiaryContext } from "../../../context/DiaryContext";
 import Editor from "./Editor";
 import GlyphButton from "../LeftSidebar/Glyphs/GlyphButton";
 import Glyph from "../LeftSidebar/Glyphs/Glyph";
 import dayjs from "dayjs";
+import palette from "../../../common/palette";
+// @ts-ignore
+import image from "../../../common/assets/img/post.JPG";
 
 const Main: FC = () => {
-  const { day, isDayEditable } = useDiaryContext();
-  //const [readonly, setReadonly] = useState(!isDayEditable?.());
-  const [favorite, setFavorite] = useState(true);
-  const [showToolBar, setShowToolbar] = useState(true);
+  const { day, isDayEditable, makeDayMutation } = useDiaryContext();
+  const [showToolBar, setShowToolbar] = useState(false);
+
+  const handleFavorite = (val: boolean) => {
+    makeDayMutation?.({ favorite: val });
+  };
 
   useEffect(() => {}, [day]);
   if (!day) {
@@ -21,43 +26,51 @@ const Main: FC = () => {
       </Grid>
     );
   }
-
   return (
-    <Grid container gap={4} direction="column">
-      <Card>
-        <Box p={2}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
+    <>
+      <Grid container gap={4} direction="column">
+        <Card>
+          <Box p={2}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Box display="flex" alignItems="baseline">
+                <Typography variant="h6" mr={1}>
+                  {dayjs(day.date, "D-MM-YY").format("D MMMM, dddd")}
+                </Typography>
+                <GlyphButton onClick={() => handleFavorite(!day?.favorite)}>
+                  <Glyph
+                    code="bookmark"
+                    size={18}
+                    color={day?.favorite ? palette.special.main : "inherit"}
+                    iconType={day?.favorite ? "solid" : "thin"}
+                    fullWidth
+                  />
+                </GlyphButton>
+              </Box>
 
-            // sx={{ borderBottom: "1px solid #ddd" }}
-          >
-            <Box display="flex" alignItems="top">
-              <Typography variant="h6" mr={1}>
-                {dayjs(day?.date, "DD-MM-YY").format("D MMMM, dddd")}
-              </Typography>
+              <Box display="flex">
+                <GlyphButton
+                  onClick={() => setShowToolbar(!showToolBar)}
+                  selectedType="outline"
+                  selected={showToolBar}
+                >
+                  <Glyph code="font" size={20} iconType="solid" fullWidth />
+                </GlyphButton>
+              </Box>
             </Box>
 
-            <Box display="flex">
-              <GlyphButton
-                onClick={() => setShowToolbar(!showToolBar)}
-                selectedType="outline"
-                selected={!showToolBar}
-              >
-                <Glyph code="font" size={20} iconType="solid" />
-              </GlyphButton>
-            </Box>
+            <Editor
+              data={day?.description || []}
+              readonly={!isDayEditable?.()}
+              showToolBar={showToolBar}
+            />
           </Box>
-
-          <Editor
-            data={day?.description || []}
-            readonly={!isDayEditable?.()}
-            showToolBar={showToolBar}
-          />
-        </Box>
-      </Card>
-    </Grid>
+        </Card>
+      </Grid>
+    </>
   );
 };
 

@@ -1,12 +1,15 @@
 import React, { FC } from "react";
 import DayCard from "../DayCardItem";
-import { Box, Grid, useMediaQuery } from "@mui/material";
+import { Box, Card, Grid, useMediaQuery } from "@mui/material";
 import { useDiaryContext } from "../../../../context/DiaryContext";
 import SkeletonCard from "../../Skeleton/Card";
 import { useParams } from "react-router-dom";
 import MobileNav from "../MobileNav";
 import { TDay } from "../../../../types";
 import { useTheme } from "@mui/material";
+import getCardType from "../DayCardItem/helpers/getCardType";
+import getDayLeftInPercent from "../DayCardItem/helpers/getDayLeftInPercent";
+import Glyph from "../../LeftSidebar/Glyphs/Glyph";
 
 const DayCardList: FC = () => {
   const { days } = useDiaryContext();
@@ -14,6 +17,8 @@ const DayCardList: FC = () => {
 
   const theme = useTheme();
   const md = useMediaQuery(theme.breakpoints.up("md"));
+
+  // console.log(days);
 
   // Simple navigation
   const getSelectedIndex = (days: TDay[]) => {
@@ -31,6 +36,8 @@ const DayCardList: FC = () => {
     }
   };
 
+  const defaultCardSize = "medium";
+
   if (days) {
     return (
       <>
@@ -39,20 +46,38 @@ const DayCardList: FC = () => {
             <MobileNav days={days} />
           </Box>
         )}
+        {/*<DayCard*/}
+        {/*  key={Math.random()}*/}
+        {/*  index={1}*/}
+        {/*  size="small"*/}
+        {/*  date="24-02-2021"*/}
+        {/*  favorite*/}
+        {/*  icons={["face-explode"]}*/}
+        {/*  score={1}*/}
+        {/*  selected*/}
+        {/*/>*/}
 
         {days &&
           days
-            .slice(sliceOffset(days), days.length)
-            .map((day: any, index) => (
-              <DayCard
-                key={Math.random()}
-                index={index}
-                selected={date === day.date || false}
-                date={day.date}
-                icons={day.icons}
-                score={day.score}
-              />
-            ))}
+            .slice(sliceOffset(days), defaultCardSize === "medium" ? 7 : 10)
+            .map((day: any, index) => {
+              const size = date === day.date ? "large" : defaultCardSize;
+              // console.log(day.date);
+              return (
+                <DayCard
+                  // outline
+                  key={Math.random()}
+                  type={day?.type}
+                  index={index}
+                  selected={date === day.date || false}
+                  size={size}
+                  date={day.date}
+                  icons={day.icons}
+                  score={day.score}
+                  favorite={day?.favorite}
+                />
+              );
+            })}
       </>
     );
   } else {

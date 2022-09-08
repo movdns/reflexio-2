@@ -11,9 +11,11 @@ import {
 } from "@mui/material";
 import isToday from "dayjs/plugin/isToday";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import getCardColor from "./helpers/getCardColor";
+import getCardType from "./helpers/getCardType";
 import Glyph from "../../LeftSidebar/Glyphs/Glyph";
 import { useIconsContext } from "../../../../context/IconContext";
+import getDayLeftInPercent from "./helpers/getDayLeftInPercent";
+import { getMainColorByType } from "../../../../common/palette";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isToday);
@@ -21,39 +23,36 @@ dayjs.extend(isToday);
 type NavCardProps = {
   index: number;
   date: any;
-  color?: "ghost" | "neutral" | "positive" | "negative" | "special";
+  type?: "neutral" | "positive" | "negative" | "special" | "ghost";
+  size?: "small" | "medium" | "large";
   icons?: any;
   score?: any;
-  selected: boolean;
+  selected?: boolean;
+  favorite?: boolean;
+  outline?: boolean;
 };
 
+//@todo remove 'sx'
 const DayCardItem: React.FC<NavCardProps> = ({
   index,
   date,
   icons,
   score,
+  type,
+  size,
   selected,
+  favorite,
+  outline,
 }) => {
+  //console.log(size);
+  const { getIconByScore, getSelectedIconsByGroup } = useIconsContext();
+
   const ghost = !icons && !score;
-
-  const { getIconByScore } = useIconsContext();
-
   const formattedDate = dayjs(date, "D-MM-YY");
+  const mood = getIconByScore?.(score, "mood");
+  const isToday = dayjs(date, "D-MM-YY").isToday();
 
-  const dayLeftInPercent = (): number => {
-    let start, finish, midpoint, percent, elapsed;
-    start = dayjs().startOf("d").unix();
-    finish = dayjs().endOf("d").unix();
-    midpoint = dayjs().unix();
-
-    elapsed = midpoint - start;
-    percent = (elapsed / (finish - start)) * 100;
-
-    return Math.round(percent);
-  };
-
-  const mood = icons && getIconByScore?.(score);
-  const isToday = dayjs(date, "DD-MM-YY").isToday();
+  const positiveIcons = getSelectedIconsByGroup?.(icons, "positive");
 
   return (
     <Box
@@ -63,21 +62,40 @@ const DayCardItem: React.FC<NavCardProps> = ({
       sm={selected || index < 2 ? 12 : 0}
       md={index > 3 ? 0 : 8}
       lg={index > 6 ? 0 : 6}
-      xl={selected ? 6 : index > 8 ? 0 : 3}
-      sx={{
-        display: {
-          xs: selected ? "flex" : "none",
-          sm: selected || index < 1 ? "flex" : "none",
-          md: index < 3 ? "flex" : "none",
-          lg: index < 4 ? "flex" : "none",
-          xl: index < 7 ? "flex" : "none",
-        },
-      }}
+      //xl={selected ? 6 : index > 8 ? 0 : 3}
+      xl={
+        size === "large"
+          ? 6
+          : size === "medium"
+          ? 3
+          : size === "small"
+          ? 2
+          : index > 8
+          ? 0
+          : 3
+      }
+      sx={
+        {
+          // display: {
+          //   xs: selected ? "flex" : "none",
+          //   sm: selected || index < 1 ? "flex" : "none",
+          //   md: index < 3 ? "flex" : "none",
+          //   lg: index < 4 ? "flex" : "none",
+          //   xl: index < 7 ? "flex" : "none",
+          // },
+        }
+      }
     >
       <Card
         elevation={!selected ? 0 : 0}
-        color={ghost ? "ghost" : getCardColor(score)}
+        color={type || ghost ? "ghost" : getCardType(score)}
         sx={{
+          // color: outline
+          //   ? getMainColorByType(getCardType(score) || "neutral")
+          //   : "inherit",
+          // outline: outline ? "2px solid" : "none",
+          // bgcolor: selected ? "primary.main" : "",
+          // color: selected ? "primary.contrastText" : "",
           position: "relative",
           "&:before": isToday
             ? {
@@ -86,7 +104,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
 
                 position: "absolute",
                 background: "#ffffff30",
-                width: `${100 - dayLeftInPercent()}%`,
+                width: `${100 - getDayLeftInPercent()}%`,
                 height: "100%",
                 right: 0,
               }
@@ -96,7 +114,8 @@ const DayCardItem: React.FC<NavCardProps> = ({
             ? {
                 content: "''",
                 position: "absolute",
-                left: "10%",
+                left: size === "small" ? "50%" : "20%",
+                transform: `translateX(${size === "small" ? "-50%" : "-20%"})`,
                 bottom: 0,
                 borderLeft: "12px solid transparent",
                 borderRight: "12px solid transparent",
@@ -109,7 +128,11 @@ const DayCardItem: React.FC<NavCardProps> = ({
         <CardActionArea component={Link} to={`/diary/${date}`}>
           <CardContent sx={{ padding: { xs: 1 } }}>
             <Box display="flex" alignItems="center">
-              <Grid container sx={{ justifyContent: "space-between" }}>
+              <Box
+                component={Grid}
+                container
+                justifyContent={size === "small" ? "center" : "space-between"}
+              >
                 <Box
                   component={Grid}
                   item
@@ -122,12 +145,20 @@ const DayCardItem: React.FC<NavCardProps> = ({
                       <>
                         <Box display="inline-flex" alignItems="baseline">
                           <Typography variant="h6">Today</Typography>
+                          {favorite && (
+                            <Glyph
+                              code="bookmark"
+                              size={14}
+                              iconType="duotone"
+                              fullWidth
+                            />
+                          )}
                           {selected && (
                             <Typography
                               variant="subtitle2"
                               sx={{ marginLeft: 1, opacity: 0.5 }}
                             >
-                              {100 - dayLeftInPercent()}% left
+                              {100 - getDayLeftInPercent()}% left
                             </Typography>
                           )}
                         </Box>
@@ -137,48 +168,74 @@ const DayCardItem: React.FC<NavCardProps> = ({
                         </Typography>
                       </>
                     ) : (
-                      <>
-                        <Typography variant="h6">
-                          {formattedDate.format("D MMMM")}
+                      <Box textAlign={size === "small" ? "center" : "left"}>
+                        <Typography variant="h6" mr={size === "small" ? 0 : 1}>
+                          {formattedDate.format("D ddd")}
+                          {favorite && (
+                            <Glyph
+                              code="bookmark"
+                              size={14}
+                              iconType="duotone"
+                              fullWidth
+                            />
+                          )}
                         </Typography>
                         <Typography variant="subtitle2">
-                          {formattedDate.format("dddd")}
+                          {formattedDate.format("MMMM")}
                         </Typography>
-                      </>
+                      </Box>
                     )}
                   </Box>
                 </Box>
-                <Box
-                  component={Grid}
-                  item
-                  display="flex"
-                  justifyContent="end"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 2,
-                    opacity: selected ? 1 : 0.7,
-                    "&:hover": {
-                      opacity: 1,
-                    },
-                    "& span": {
-                      margin: "6px",
-                    },
-                  }}
-                >
-                  {selected && (
-                    <Box mr={2}>
-                      <Typography variant="subtitle2">{score} / 10</Typography>
-                    </Box>
-                  )}
-                  {mood && (
-                    <Box>
-                      <Glyph code={mood.code} size={32} iconType="thin" />
-                    </Box>
-                  )}
-                </Box>
-              </Grid>
+                {size !== "small" && (
+                  <Box
+                    component={Grid}
+                    item
+                    display="flex"
+                    justifyContent="end"
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 2,
+                      opacity: selected ? 1 : 0.7,
+                      "&:hover": {
+                        opacity: 1,
+                      },
+                      "& span": {
+                        margin: "6px",
+                      },
+                    }}
+                  >
+                    {/*{size === "large" && selected && (*/}
+                    {/*  <Box mr={2}>*/}
+                    {/*    <Typography variant="subtitle2">{score} / 10</Typography>*/}
+                    {/*  </Box>*/}
+                    {/*)}*/}
+                    {mood ? (
+                      <Box>
+                        <Glyph
+                          code={mood.code}
+                          size={32}
+                          iconType="solid"
+                          //   shadow
+                        />
+                      </Box>
+                    ) : (
+                      <Glyph code="ghost" size={32} iconType="thin" />
+                    )}
+
+                    {/*{positiveIcons &&*/}
+                    {/*  positiveIcons*/}
+                    {/*    .slice(0, size === "large" ? 3 : 0)*/}
+                    {/*    .map((i: any) => (*/}
+                    {/*      <Box key={Math.random()} ml={2}>*/}
+                    {/*        <Glyph code={i.code} size={26} iconType="thin" />*/}
+                    {/*      </Box>*/}
+                    {/*    ))}*/}
+                  </Box>
+                )}
+              </Box>
             </Box>
           </CardContent>
         </CardActionArea>

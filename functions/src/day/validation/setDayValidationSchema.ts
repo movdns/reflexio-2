@@ -6,8 +6,10 @@ const setDayValidationSchema = Joi.object().keys({
   id: Joi.string(),
   uid: Joi.string(),
   score: Joi.number(),
+  favorite: Joi.boolean(),
   description: Joi.array(),
   icons: Joi.array(),
+  targets: Joi.array(),
 });
 
 export default setDayValidationSchema;

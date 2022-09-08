@@ -5,7 +5,7 @@ import { TGlyph, TGlyphGroup } from "../types";
 
 type IconsContextProps = {
   glyphs: TGlyphGroup[] | null;
-  getIconByScore?: (score: number) => TGlyph | null;
+  getIconByScore?: (score: number, group: string) => TGlyph | null;
   getSelectedIconsByGroup?: (
     selected: string[],
     group: string
@@ -32,14 +32,13 @@ export const IconsProvider: FC<IconsProviderProps> = ({ children }) => {
   /**
    * Get Glyph object from Glyphs Groups Arr with matched 'score' property
    * @param {number} score
+   * @param {string} group
    * @return TGlyph | null
    */
-  function getIconByScore(score: number): TGlyph | null {
+  function getIconByScore(score: number, group: string): TGlyph | null {
     if (glyphsGroupsData) {
-      const glyphGroup = glyphsGroupsData.find((group: any) =>
-        group.icons.find((i: any) => i?.score === score)
-      );
-      return glyphGroup?.icons.find((i: any) => i?.score === score) || null;
+      const iconGroup = glyphsGroupsData.find((g: any) => g.code === group);
+      return iconGroup?.icons.find((i: any) => i?.score === score) || null;
     }
     return null;
   }

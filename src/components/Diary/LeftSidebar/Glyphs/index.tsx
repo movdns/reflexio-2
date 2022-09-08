@@ -1,9 +1,11 @@
 import React, { memo, useCallback } from "react";
 import GlyphGroup from "./GlyphGroup";
-import GlyphSection from "./GlyphSection";
 import getGroupByIconCode from "./helpers/getGroupByIconCode";
 import { useDiaryContext } from "../../../../context/DiaryContext";
 import { TGlyph, TIcon } from "../../../../types";
+import SidebarSection from "../../Layout/Sidebar/Section";
+import { useThemeContext } from "../../../../context/ThemeContext";
+import getDayColorationByScore from "../../../../context/helpers/getDayColorationByScore";
 
 type GlyphProps = {
   groupsData: any[] | null;
@@ -12,6 +14,7 @@ type GlyphProps = {
 
 const Glyphs: React.FC<GlyphProps> = memo(({ groupsData, selected = [] }) => {
   const { isDayEditable, makeDayMutation } = useDiaryContext();
+  const { setPrimaryColoration } = useThemeContext();
 
   const onIconCLickHandler = useCallback(
     (icon: TGlyph) => {
@@ -36,7 +39,9 @@ const Glyphs: React.FC<GlyphProps> = memo(({ groupsData, selected = [] }) => {
         const icons = [...includedIcons, icon.code];
 
         try {
-          makeDayMutation?.({ icons: icons, score: icon.score });
+          //@todo refactor
+          makeDayMutation?.({ icons, score: icon.score });
+          setPrimaryColoration?.(getDayColorationByScore(icon.score));
         } catch (e) {
           console.log(e);
         }
@@ -48,7 +53,7 @@ const Glyphs: React.FC<GlyphProps> = memo(({ groupsData, selected = [] }) => {
         }
       }
     },
-    [groupsData, selected, makeDayMutation]
+    [selected, groupsData, makeDayMutation, setPrimaryColoration]
   );
 
   const sorted = groupsData && groupsData.sort((a, b) => a?.order - b?.order);
@@ -58,7 +63,7 @@ const Glyphs: React.FC<GlyphProps> = memo(({ groupsData, selected = [] }) => {
       {sorted &&
         sorted.map((category: any) => {
           return (
-            <GlyphSection
+            <SidebarSection
               title={category.label}
               // actions="edit"
               key={Math.random()}
@@ -76,7 +81,7 @@ const Glyphs: React.FC<GlyphProps> = memo(({ groupsData, selected = [] }) => {
                 selectedColor={category?.selectedColor}
                 selectedColoration={category?.selectedColoration}
               />
-            </GlyphSection>
+            </SidebarSection>
           );
         })}
     </>

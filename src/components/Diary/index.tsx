@@ -10,11 +10,11 @@ const Diary: FC = () => {
   return (
     <Box component="main">
       <Container maxWidth={false}>
-        <Grid container columns={24} spacing={3} mt={{ xs: 8, md: 0 }}>
+        <Grid container columns={24} spacing={4} mt={{ xs: 8, md: 0 }} mb={1}>
           <Header />
         </Grid>
 
-        <Grid container spacing={3} pt={4} mb={4}>
+        <Grid container spacing={4} pt={3} mb={4}>
           <Box component={Grid} item xs={12} md={6} lg={3}>
             <LeftSidebar />
           </Box>
@@ -23,14 +23,7 @@ const Diary: FC = () => {
             <Main />
           </Grid>
 
-          <Grid
-            item
-            xs={12}
-            md={4}
-            lg={3}
-            display={{ xs: "none", sm: "block" }}
-            xl={3}
-          >
+          <Grid item xs={12} sm={12} md={6} lg={3} xl={3}>
             <RightSidebar />
           </Grid>
         </Grid>

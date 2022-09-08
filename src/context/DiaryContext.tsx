@@ -15,6 +15,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDayAPICall, getDaysAPICall, setDayAPICall } from "../api";
 import generateDay from "./helpers/generateDay";
 import { TDay } from "../types";
+import { useThemeContext } from "./ThemeContext";
+import getDayColorationByScore from "./helpers/getDayColorationByScore";
 
 type DiaryContextProps = {
   day: TDay | null;
@@ -66,6 +68,9 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
   /**
    * Fetch single day resource by request query "date" param
    */
+
+  const { setPrimaryColoration } = useThemeContext();
+
   const { data: dayData } = useQuery(["day", queryDate], async () => {
     const response = await getDayAPICall(queryDate);
     // @todo error handler
@@ -78,9 +83,18 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
           uid: currentUser?.uid || "",
         })
       );
+    } else {
+      // Apply theme primary coloration by day score
+      // response?.data?.score &&
+      //   setPrimaryColoration?.(getDayColorationByScore(response.data.score));
     }
     return response.data || null;
   });
+
+  useEffect(() => {
+    dayData?.score &&
+      setPrimaryColoration?.(getDayColorationByScore(dayData.score));
+  }, [dayData, setPrimaryColoration]);
 
   /**
    * Update / Create day resource

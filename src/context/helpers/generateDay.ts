@@ -1,5 +1,4 @@
 import { TDay } from "../../types";
-import dayjs from "dayjs";
 
 /**
  * Generate day with initial values
@@ -12,51 +11,34 @@ function generateDay({ date, uid }: { date: string; uid: string }): TDay {
     uid,
     date,
     score: 5,
+    favorite: false,
     description: [
-      // {
-      //   type: "heading-one",
-      //   children: [
-      //     {
-      //       text: `${dayjs(date, "D-MM-YY").format("D MMMM, dddd")}`,
-      //       highlight: true,
-      //     },
-      //   ],
-      // },
       {
         type: "paragraph",
         children: [
           {
-            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua..",
-          },
-          { text: "bold", bold: true },
-          {
-            text: ", or add a  rendered block quote in the middle of the page, like this:",
+            text: " ",
           },
         ],
       },
+    ],
+    icons: ["face-expressionless"],
+    targets: [
       {
-        type: "paragraph",
-        align: "center",
-        children: [{ text: "Try it out for yourself!" }],
+        id: genUniqueId(),
+        value: "Change me!",
+        coloration: "neutral",
+        selected: false,
+        createdAt: new Date().getTime(),
       },
     ],
-
-    // blocks: [
-    //   {
-    //     id: `${dayjs(date, "D-MM-YY").unix()}`,
-    //     type: "header",
-    //     data: {
-    //       text: `<font color="#05CBD6">${dayjs(date, "D-MM-YY").format(
-    //         "D MMMM, dddd"
-    //       )}</font>`,
-    //       level: 1,
-    //     },
-    //   },
-    // ],
-    // time: dayjs(date, "D-MM-YY").unix(),
-
-    icons: ["face-expressionless"],
   };
+}
+export function genUniqueId(): string {
+  // const dateStr = Date.now().toString(36); // convert num to base 36 and stringify
+  const randomStr = Math.random().toString(36).substring(2, 8); // start at index 2 to skip decimal point
+
+  return `${randomStr}`;
 }
 
 export default generateDay;

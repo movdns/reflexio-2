@@ -104,26 +104,27 @@ const SlateBody: FC<{
           }
         }}
       />
-      <Box position="absolute" right={0} bottom={10}>
+      <Box position="absolute" right={0} bottom={6}>
         <GlyphButton
           onClick={handleSave}
           disabled={isSynced}
           selected={!isSynced}
+          selectedColor="indianred"
         >
           <Glyph
-            code={isSynced ? "check-double" : "check"}
+            code={isSynced ? "floppy-disk" : "paper-plane"}
             size={20}
             iconType="solid"
-            color={isSynced ? "blue" : "inherit"}
+            fullWidth
+            color={isSynced ? "indianred" : "inherit"}
           />
         </GlyphButton>
       </Box>
 
       <Box
         p={1}
-        //display={readonly || showToolBar ? "none" : "flex"}
         display="flex"
-        visibility={readonly || showToolBar ? "hidden" : "visible"}
+        visibility={readonly || !showToolBar ? "hidden" : "visible"}
         alignItems="center"
         justifyContent="space-between"
         flexWrap="wrap"

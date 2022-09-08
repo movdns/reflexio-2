@@ -13,6 +13,7 @@ export type TDay = {
   date: string;
   uid?: string;
   score?: number;
+  favorite?: boolean;
   description?: any[];
   // blocks: [
   //   {
@@ -27,7 +28,24 @@ export type TDay = {
   // time: number;
 
   icons?: TIcon[];
+  targets?: TTarget[];
 };
+
+export type TTarget = {
+  id: string;
+  value: string;
+  coloration: "negative" | "danger" | "neutral" | "positive" | "special";
+  selected: boolean;
+  createdAt: number;
+};
+
+export type TColoration =
+  | "negative"
+  | "danger"
+  | "neutral"
+  | "positive"
+  | "special"
+  | "ghost";
 
 export type TIcon = string;
 

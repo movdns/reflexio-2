@@ -9,8 +9,8 @@ import { TDay } from "../../types";
 const fillWithEmptyDates = (days: TDay[] | null): any => {
   // @todo return type
   // Dates range
-  const endDate = dayjs().subtract(9, "d");
-  const startDate = dayjs();
+  const endDate = dayjs().subtract(12, "d"); // fromDate
+  const startDate = dayjs(); // toDate
 
   let currentDate = dayjs(endDate);
   let generatedDates: any = [];

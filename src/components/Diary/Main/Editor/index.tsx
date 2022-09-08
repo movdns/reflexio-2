@@ -1,16 +1,19 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { ReactEditor, Slate, withReact } from "slate-react";
-import { createEditor } from "slate";
+import { createEditor, Descendant } from "slate";
 import { withHistory } from "slate-history";
 import SlateBody from "./SlateBody";
 import { useDiaryContext } from "../../../../context/DiaryContext";
 import hash from "object-hash";
+import usePrompt from "../../../../hooks/usePrompt";
 
-const Editor: FC<{
-  data: any[];
+type EditorProps = {
+  data: Descendant[];
   readonly?: boolean;
   showToolBar?: boolean;
-}> = ({ data, readonly, showToolBar }) => {
+};
+
+const Editor: FC<EditorProps> = ({ data, readonly, showToolBar }) => {
   const { makeDayMutation } = useDiaryContext();
 
   const slate = useMemo(
@@ -20,27 +23,29 @@ const Editor: FC<{
 
   const [value, setValue] = useState(data);
   slate.children = value;
-  // const debounceValue = useDebounce(value, 2000);
 
   const [synced, setSynced] = useState(true);
+
+  // const debounceValue = useDebounce(value, 2000);
 
   const handleSave = () => {
     !synced && makeDayMutation?.({ description: value });
   };
 
+  usePrompt(
+    "You have unsaved changes here, do you want to leave?",
+    hash(value) !== hash(data)
+  );
+
   useEffect(() => {
     // makeDayMutation?.({ description: debounceValue });
-    // setSynced(debounceValue === data);
+    // setSynced(hash(debounceValue) === hash(data));
     setSynced(hash(value) === hash(data));
   }, [value, data]);
 
   useEffect(() => {
     setValue((currentValue) => {
-      /**
-       * We need to reset selection only for real remote updates
-       * In case of direct update currentValue will be updated before remote,
-       * so they will be equal.
-       */
+      // Reset editor selection (caret) when getting new data props
       if (currentValue !== data) {
         slate.selection = null;
       }
@@ -50,13 +55,7 @@ const Editor: FC<{
 
   return (
     <>
-      <Slate
-        editor={slate}
-        value={value}
-        onChange={(value) => {
-          setValue(value);
-        }}
-      >
+      <Slate editor={slate} value={value} onChange={(value) => setValue(value)}>
         <SlateBody
           editor={slate}
           readonly={readonly}

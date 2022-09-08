@@ -1,4 +1,11 @@
-import React, { createContext, FC, useContext, useState } from "react";
+import React, {
+  createContext,
+  FC,
+  useCallback,
+  useContext,
+  useState,
+  useMemo,
+} from "react";
 import {
   PaletteMode,
   createTheme,
@@ -12,7 +19,14 @@ type ThemeContextProps = {
   toggleMode?: () => void;
   setPrimaryColor?(color: string): void;
   setPrimaryColoration?(
-    coloration: "negative" | "danger" | "neutral" | "positive" | "special"
+    coloration:
+      | "ghost"
+      | "negative"
+      | "danger"
+      | "neutral"
+      | "positive"
+      | "special"
+      | null
   ): void;
   mode: PaletteMode;
 };
@@ -29,27 +43,37 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  // const initialColor = '#3db2d9';
-  const [primary, setPrimary] = React.useState(palette.positive.main);
+  const [primary, setPrimary] = useState(palette.neutral.main);
+  const [contrastTextColor, setContrastTextColor] = useState(
+    palette.neutral.contrastText
+  );
 
-  const setPrimaryColor = (color: string) => {
+  const setPrimaryColor = useCallback((color: string) => {
     setPrimary(color);
-  };
+  }, []);
 
-  const setPrimaryColoration = (
-    coloration: "negative" | "danger" | "neutral" | "positive" | "special"
-  ) => {
-    const color = palette[coloration].main;
-    setPrimary(color);
-  };
+  const setPrimaryColoration = useCallback(
+    (
+      coloration: "negative" | "danger" | "neutral" | "positive" | "special"
+    ) => {
+      if (coloration === null) {
+        return false;
+      }
+      const color = palette[coloration].main;
+      const contrastColor = palette[coloration].contrastText;
+      setPrimary(color);
+      setContrastTextColor(contrastColor);
+    },
+    []
+  );
 
-  const theme = React.useMemo(
+  const theme = useMemo(
     () =>
       createTheme(
         deepmerge(defaultTheme, {
           palette: {
             mode,
-            primary: { main: primary },
+            primary: { main: primary, contrastText: contrastTextColor },
             background: {
               default: mode === "light" ? "#f7f7f7" : "#202328", // body
               paper: mode === "light" ? "#fff" : "#33373D ", // cards
@@ -58,7 +82,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
           },
         })
       ),
-    [mode, primary]
+    [contrastTextColor, mode, primary]
   );
 
   return (
