@@ -7,7 +7,7 @@ type SectionProps = {
   children: any;
 };
 
-const GlyphSection: FC<SectionProps> = ({ title, actions, children }) => {
+const SidebarSection: FC<SectionProps> = ({ title, actions, children }) => {
   return (
     <Box pb={2}>
       <Card>
@@ -16,11 +16,11 @@ const GlyphSection: FC<SectionProps> = ({ title, actions, children }) => {
             display="flex"
             justifyContent="space-between"
             alignItems="center"
-            sx={{ color: "#BDB4B450" }}
+            sx={{ color: "#959CA3" }}
             pb={1}
           >
             <Typography
-              sx={{ color: "#BDB4B4", fontSize: "1em", fontWeight: "lighter" }}
+              sx={{ color: "#959CA3", fontSize: "1em", fontWeight: "lighter" }}
             >
               {title}
             </Typography>
@@ -33,4 +33,4 @@ const GlyphSection: FC<SectionProps> = ({ title, actions, children }) => {
   );
 };
 
-export default GlyphSection;
+export default SidebarSection;
