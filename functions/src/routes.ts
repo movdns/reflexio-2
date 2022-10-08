@@ -5,6 +5,8 @@ import setDay from "./day/setDay";
 import getIconsGroups from "./icons/getIconsGroups";
 import getIconsGroup from "./icons/getIconsGroup";
 import setIconsGroup from "./icons/setIconsGroup";
+import getUserSettings from "./user/getUserSettings";
+import setUserSettings from "./user/setUserSettings";
 
 export const routes = Router();
 
@@ -25,3 +27,8 @@ const iconsPath = "/icons";
 routes.get(iconsPath, getIconsGroups);
 routes.get(`${iconsPath}/:id`, getIconsGroup);
 routes.post(iconsPath, setIconsGroup); // day create or update
+
+// User settings API Routes
+const settingsPath = "/settings";
+routes.get(settingsPath, getUserSettings);
+routes.post(settingsPath, setUserSettings);

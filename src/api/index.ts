@@ -15,6 +15,22 @@ const getBaseUrl = () => {
 };
 
 /**
+ * Settings
+ */
+export const getUserSettingsAPICall = async (): Promise<TResponseData<any>> => {
+  return await axios.get(`${getBaseUrl()}/settings`).then((res) => res.data);
+};
+
+// Mutation
+export const setUserSettingsAPICall = async (
+  data: any
+): Promise<TResponseData<any>> => {
+  return await axios
+    .post(`${getBaseUrl()}/settings/`, { data })
+    .then((res) => res.data);
+};
+
+/**
  * Days
  */
 

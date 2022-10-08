@@ -29,6 +29,7 @@ const palette = {
     color: "grey",
     outline: "1px dashed",
     boxShadow: "none",
+    contrastText: "white",
   },
   neutral: {
     // main: '#aec8cf',
@@ -78,8 +79,7 @@ const palette = {
 export const getMainColorByType = (type: TColoration): string =>
   palette[type].main;
 
-export const getContrastColorByType = (
-  type: "negative" | "danger" | "neutral" | "positive" | "special"
-): string => palette[type].contrastText;
+export const getContrastColorByType = (type: TColoration): string =>
+  palette[type].contrastText;
 
 export default palette;

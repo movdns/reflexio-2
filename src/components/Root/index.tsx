@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AuthLayout from "../Auth/AuthLayout";
 import SignInScreen from "../Auth/SignInScreen";
 import { useUser } from "reactfire";
-import Diary from "../Diary";
-import { DiaryProvider } from "../../context/DiaryContext";
-import { IconsProvider } from "../../context/IconContext";
-import PullToRefresh from "react-simple-pull-to-refresh";
 
-const Root = () => {
+import DiaryPage from "../../pages/DiaryPage";
+import { DiaryProvider } from "../../context/DiaryContext";
+import PullToRefresh from "react-simple-pull-to-refresh";
+// import { ThemeProvider } from "../../context/ThemeContext";
+import Compose from "../../context/Compose";
+import { SettingsProvider } from "../../context/SettingsContext";
+import PalettePage from "../../pages/PalettePage";
+
+const Root: FC = () => {
   const {
     data: user,
     // hasEmitted,
@@ -36,17 +40,23 @@ const Root = () => {
         <Route
           path="/diary"
           element={
-            <DiaryProvider>
-              <IconsProvider>
-                <PullToRefresh onRefresh={handleRefresh}>
-                  <Diary />
-                </PullToRefresh>
-              </IconsProvider>
-            </DiaryProvider>
+            <Compose components={[SettingsProvider, DiaryProvider]}>
+              {/*<PullToRefresh onRefresh={handleRefresh}>*/}
+              <DiaryPage />
+              {/*</PullToRefresh>*/}
+            </Compose>
           }
         >
           <Route path=":date" />
         </Route>
+        <Route
+          path="/palette"
+          element={
+            <Compose components={[SettingsProvider, DiaryProvider]}>
+              <PalettePage />
+            </Compose>
+          }
+        />
         <Route path="/login" element={<Navigate to="/" />} />
         <Route path="/register" element={<Navigate to="/" />} />
       </Routes>

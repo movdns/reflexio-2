@@ -1,29 +1,37 @@
 import {
+  createContext,
   FC,
   ReactNode,
-  createContext,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
-import fillWithEmptyDates from "./helpers/fillWithEmptyDates";
+// import fillWithEmptyDates from "./helpers/fillWithEmptyDates";
 import { useAuth } from "reactfire";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDayAPICall, getDaysAPICall, setDayAPICall } from "../api";
 import generateDay from "./helpers/generateDay";
 import { TDay } from "../types";
-import { useThemeContext } from "./ThemeContext";
-import getDayColorationByScore from "./helpers/getDayColorationByScore";
+// import { useThemeContext } from "./ThemeContext";
+// import getDayColorationByScore from "./helpers/getDayColorationByScore";
+// import { getContrastColorByType, getMainColorByType } from "../common/palette";
+// import { useSettingsContext } from "./SettingsContext";
 
 type DiaryContextProps = {
   day: TDay | null;
   days: TDay[] | null;
-  isToday?: boolean;
+  isSelectedDay?: boolean;
+  queryDate?: string;
   makeDayMutation?(data: Partial<TDay>): void;
+  setDescription?: (data: any) => void;
   isDayEditable?(): boolean;
+  dayPalette?: {
+    main: string;
+    secondary: string;
+  } | null;
 };
 
 type DiaryProviderProps = {
@@ -34,21 +42,27 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
   const { currentUser } = useAuth();
   const queryClient = useQueryClient();
 
+  // const { getColorsFromPalette } = useSettingsContext();
+
   // Retrieve date from URL params
   const { date: paramsDate } = useParams();
+
   const isParamsDateValid =
     dayjs(`${paramsDate}`, "D-MM-YY").isValid() &&
     dayjs(`${paramsDate}`, "D-MM-YY").isBefore(dayjs()) &&
     paramsDate;
 
   // If date validation failed, redirect to today
-  const navigate = useNavigate();
-  !isParamsDateValid &&
-    navigate({
-      pathname: dayjs().format("D-MM-YY"),
-    });
+  // const navigate = useNavigate();
+  // !isParamsDateValid &&
+  //   navigate({
+  //     pathname: dayjs().format("D-MM-YY"),
+  //   });
 
   const queryDate = isParamsDateValid ? paramsDate : dayjs().format("D-MM-YY");
+
+  // const { setThemeColorsByPalette, getColorsFromPalette } =
+  //   useSettingsContext();
 
   /**
    * Fetch all days collection
@@ -60,16 +74,19 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
       console.log("getGlyphsGroupsAPICall error: ", response.message);
 
     // Fill existing days with "ghost" days (return {date: string})
-    const filled = fillWithEmptyDates(response.data);
+    // const filled = fillWithEmptyDates(response.data);
     // console.log(filled);
-    return filled;
+
+    return response.data.sort(
+      (a: TDay, b: TDay) =>
+        dayjs(b.date, "D-MM-YY").unix() - dayjs(a.date, "D-MM-YY").unix()
+    );
   });
+
   //console.log(daysData);
   /**
    * Fetch single day resource by request query "date" param
    */
-
-  const { setPrimaryColoration } = useThemeContext();
 
   const { data: dayData } = useQuery(["day", queryDate], async () => {
     const response = await getDayAPICall(queryDate);
@@ -88,13 +105,23 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
       // response?.data?.score &&
       //   setPrimaryColoration?.(getDayColorationByScore(response.data.score));
     }
+    //  const transformed = await transformDayData(response.data);
+
+    // if (response.data?.coloration) {
+    //   response.data["palette"] = getColorsFromPalette?.(
+    //     response.data.coloration
+    //   );
+    // }
+
     return response.data || null;
   });
 
-  useEffect(() => {
-    dayData?.score &&
-      setPrimaryColoration?.(getDayColorationByScore(dayData.score));
-  }, [dayData, setPrimaryColoration]);
+  // const transformDayData = async (data: TDay): Promise<TDay> => {
+  //   if (data?.coloration && getColorsFromPalette) {
+  //     data["palette"] = getColorsFromPalette?.(data?.coloration);
+  //   }
+  //   return data;
+  // };
 
   /**
    * Update / Create day resource
@@ -153,11 +180,33 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
     [dayData, dayMutation]
   );
 
-  const [isToday, setIsToday] = useState(false);
+  const setDescription = useCallback(
+    async (description?: any) => {
+      await makeDayMutation({
+        description,
+      });
+    },
+    [makeDayMutation]
+  );
+
+  // const [dayPalette, setDayPalette] = useState<{
+  //   main: string;
+  //   secondary: string;
+  // } | null>(null);
+  //
+  // useEffect(() => {
+  //   if (dayData?.palette) {
+  //     const colors = getColorsFromPalette?.(dayData.coloration);
+  //     colors && setDayPalette(colors);
+  //     // setThemeColorsByPalette?.(dayData.coloration);
+  //   }
+  // }, [dayData, getColorsFromPalette, setThemeColorsByPalette]);
+
+  const [isSelectedDay, setIsSelectedDay] = useState(false);
 
   useEffect(() => {
     if (queryDate === dayjs().format("D-MM-YY")) {
-      setIsToday(true);
+      setIsSelectedDay(true);
     }
   }, [queryDate]);
 
@@ -177,9 +226,13 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
       value={{
         days: daysData,
         day: dayData,
+
         makeDayMutation,
-        isToday,
+        isSelectedDay,
+        queryDate,
         isDayEditable,
+        setDescription,
+        //dayPalette,
       }}
     >
       {children}

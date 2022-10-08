@@ -2,14 +2,11 @@ import React, { FC } from "react";
 import DayCard from "../DayCardItem";
 import { Box, Card, Grid, useMediaQuery } from "@mui/material";
 import { useDiaryContext } from "../../../../context/DiaryContext";
-import SkeletonCard from "../../Skeleton/Card";
+import SkeletonCard from "../../Card/SkeletonCard";
 import { useParams } from "react-router-dom";
 import MobileNav from "../MobileNav";
 import { TDay } from "../../../../types";
 import { useTheme } from "@mui/material";
-import getCardType from "../DayCardItem/helpers/getCardType";
-import getDayLeftInPercent from "../DayCardItem/helpers/getDayLeftInPercent";
-import Glyph from "../../LeftSidebar/Glyphs/Glyph";
 
 const DayCardList: FC = () => {
   const { days } = useDiaryContext();
@@ -36,7 +33,7 @@ const DayCardList: FC = () => {
     }
   };
 
-  const defaultCardSize = "medium";
+  const defaultCardSize = "small";
 
   if (days) {
     return (
@@ -57,27 +54,30 @@ const DayCardList: FC = () => {
         {/*  selected*/}
         {/*/>*/}
 
-        {days &&
-          days
-            .slice(sliceOffset(days), defaultCardSize === "medium" ? 7 : 10)
-            .map((day: any, index) => {
-              const size = date === day.date ? "large" : defaultCardSize;
-              // console.log(day.date);
-              return (
-                <DayCard
-                  // outline
-                  key={Math.random()}
-                  type={day?.type}
-                  index={index}
-                  selected={date === day.date || false}
-                  size={size}
-                  date={day.date}
-                  icons={day.icons}
-                  score={day.score}
-                  favorite={day?.favorite}
-                />
-              );
-            })}
+        <Box component={Grid} container columns={24} spacing={2}>
+          {days &&
+            days
+              .slice(sliceOffset(days), defaultCardSize === "small" ? 11 : 10)
+              .map((day: any, index) => {
+                const size = date === day.date ? "large" : defaultCardSize;
+                // console.log(day.date);
+                return (
+                  <DayCard
+                    // outline
+                    key={Math.random()}
+                    type={day?.type}
+                    index={index}
+                    selected={date === day.date || false}
+                    size={size}
+                    date={day.date}
+                    icons={day.icons}
+                    score={day.score}
+                    favorite={day?.isFavorite}
+                    coloration={day.paletteCode}
+                  />
+                );
+              })}
+        </Box>
       </>
     );
   } else {

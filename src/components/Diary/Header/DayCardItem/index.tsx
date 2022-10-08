@@ -12,10 +12,10 @@ import {
 import isToday from "dayjs/plugin/isToday";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import getCardType from "./helpers/getCardType";
-import Glyph from "../../LeftSidebar/Glyphs/Glyph";
-import { useIconsContext } from "../../../../context/IconContext";
+import Glyph from "../../../Glyph";
 import getDayLeftInPercent from "./helpers/getDayLeftInPercent";
 import { getMainColorByType } from "../../../../common/palette";
+import { useSettingsContext } from "../../../../context/SettingsContext";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isToday);
@@ -30,6 +30,7 @@ type NavCardProps = {
   selected?: boolean;
   favorite?: boolean;
   outline?: boolean;
+  coloration: string;
 };
 
 //@todo remove 'sx'
@@ -43,16 +44,17 @@ const DayCardItem: React.FC<NavCardProps> = ({
   selected,
   favorite,
   outline,
+  coloration,
 }) => {
   //console.log(size);
-  const { getIconByScore, getSelectedIconsByGroup } = useIconsContext();
+  const { getColorsFromPalette } = useSettingsContext();
 
   const ghost = !icons && !score;
   const formattedDate = dayjs(date, "D-MM-YY");
-  const mood = getIconByScore?.(score, "mood");
+  //const mood = getIconByScore?.(score, "mood");
   const isToday = dayjs(date, "D-MM-YY").isToday();
 
-  const positiveIcons = getSelectedIconsByGroup?.(icons, "positive");
+  const palette = coloration ? getColorsFromPalette?.(coloration) : null;
 
   return (
     <Box
@@ -65,7 +67,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
       //xl={selected ? 6 : index > 8 ? 0 : 3}
       xl={
         size === "large"
-          ? 6
+          ? 4
           : size === "medium"
           ? 3
           : size === "small"
@@ -87,8 +89,8 @@ const DayCardItem: React.FC<NavCardProps> = ({
       }
     >
       <Card
-        elevation={!selected ? 0 : 0}
-        color={type || ghost ? "ghost" : getCardType(score)}
+        elevation={selected ? 0 : 1}
+        //  color={ghost && "ghost"}
         sx={{
           // color: outline
           //   ? getMainColorByType(getCardType(score) || "neutral")
@@ -96,6 +98,8 @@ const DayCardItem: React.FC<NavCardProps> = ({
           // outline: outline ? "2px solid" : "none",
           // bgcolor: selected ? "primary.main" : "",
           // color: selected ? "primary.contrastText" : "",
+          background: palette?.main,
+          color: palette?.secondary,
           position: "relative",
           "&:before": isToday
             ? {
@@ -119,7 +123,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
                 bottom: 0,
                 borderLeft: "12px solid transparent",
                 borderRight: "12px solid transparent",
-                borderBottom: `12px solid #f7f7f7`,
+                borderBottom: `12px solid #fafbfb`,
                 clear: "both",
               }
             : {},
@@ -127,7 +131,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
       >
         <CardActionArea component={Link} to={`/diary/${date}`}>
           <CardContent sx={{ padding: { xs: 1 } }}>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" alignItems="center" height={60}>
               <Box
                 component={Grid}
                 container
@@ -141,7 +145,7 @@ const DayCardItem: React.FC<NavCardProps> = ({
                   }}
                 >
                   <Box p={1}>
-                    {isToday ? (
+                    {isToday && selected ? (
                       <>
                         <Box display="inline-flex" alignItems="baseline">
                           <Typography variant="h6">Today</Typography>
@@ -212,18 +216,18 @@ const DayCardItem: React.FC<NavCardProps> = ({
                     {/*    <Typography variant="subtitle2">{score} / 10</Typography>*/}
                     {/*  </Box>*/}
                     {/*)}*/}
-                    {mood ? (
-                      <Box>
-                        <Glyph
-                          code={mood.code}
-                          size={32}
-                          iconType="solid"
-                          //   shadow
-                        />
-                      </Box>
-                    ) : (
-                      <Glyph code="ghost" size={32} iconType="thin" />
-                    )}
+                    {/*{mood ? (*/}
+                    {/*  <Box>*/}
+                    {/*    <Glyph*/}
+                    {/*      code={mood.code}*/}
+                    {/*      size={32}*/}
+                    {/*      iconType="solid"*/}
+                    {/*      //   shadow*/}
+                    {/*    />*/}
+                    {/*  </Box>*/}
+                    {/*) : (*/}
+                    {/*  <Glyph code="ghost" size={32} iconType="thin" />*/}
+                    {/*)}*/}
 
                     {/*{positiveIcons &&*/}
                     {/*  positiveIcons*/}

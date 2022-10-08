@@ -10,19 +10,42 @@ function generateDay({ date, uid }: { date: string; uid: string }): TDay {
   return {
     uid,
     date,
-    score: 5,
-    favorite: false,
-    description: [
-      {
-        type: "paragraph",
-        children: [
-          {
-            text: " ",
-          },
-        ],
+    score: {
+      general: 5,
+      mood: 5,
+      health: 5,
+      motivation: 5,
+    },
+    isFavorite: false,
+    paletteCode: "special",
+    mood: {
+      glyphCode: "face-expressionless",
+      paletteCode: "neutral",
+      label: "Meh :|",
+    },
+    sentiments: {
+      positive: {
+        description: "Ride on bicycle, sundown, amazing sunset!",
+        glyphs: ["person-walking", "mushroom", "cannabis"],
+        tags: ["Friends", "Sunset", "Chill"],
       },
-    ],
-    icons: ["face-expressionless"],
+      negative: {
+        description: "Broken rear shock absorber :(",
+        glyphs: ["smoking", "cup-togo"],
+        tags: ["Junk food", "Explosion"],
+      },
+      special: {
+        description: "Nothing special :/",
+        glyphs: ["code", "cat"],
+        tags: ["Dating", "Comet"],
+      },
+    },
+    // glyphs: {
+    //   mood: "face-expressionless",
+    //   positive: ["walk", "person-biking-mountain"],
+    //   negative: ["smoking", "mug-hot"],
+    // },
+    // icons: ["face-expressionless"],
     targets: [
       {
         id: genUniqueId(),

@@ -16,6 +16,8 @@ async function setDay(
   const data = req.body;
   const uid = req?.user?.uid;
 
+  console.log(data);
+
   if (!uid) {
     return res.json({
       error: true,

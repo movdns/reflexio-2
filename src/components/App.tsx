@@ -14,8 +14,16 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../common/assets/fontawesome/css/all.css";
 import Root from "./Root";
 
+import isToday from "dayjs/plugin/isToday";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+import dayjs from "dayjs";
+
 import firebase from "firebase/compat/app";
 import axios from "axios";
+
+dayjs.extend(customParseFormat);
+dayjs.extend(isToday);
 
 const App: React.FC = () => {
   firebase.setLogLevel("silent");

@@ -5,6 +5,7 @@ export type TIconGroupSnapshot = {
   singleSelectMode?: boolean;
   fullWidth?: boolean;
   size?: number;
+  coloration?: string;
   icons?: {
     code: string;
     color?: string;

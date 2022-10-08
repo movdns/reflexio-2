@@ -1,10 +1,10 @@
 import React, {
   createContext,
   FC,
-  useCallback,
   useContext,
   useState,
   useMemo,
+  useCallback,
 } from "react";
 import {
   PaletteMode,
@@ -16,19 +16,15 @@ import defaultTheme from "../common/theme";
 import palette from "../common/palette";
 
 type ThemeContextProps = {
-  toggleMode?: () => void;
-  setPrimaryColor?(color: string): void;
-  setPrimaryColoration?(
-    coloration:
-      | "ghost"
-      | "negative"
-      | "danger"
-      | "neutral"
-      | "positive"
-      | "special"
-      | null
-  ): void;
   mode: PaletteMode;
+  toggleMode?: () => void;
+  setThemeColors?: ({
+    main,
+    secondary,
+  }: {
+    main: string;
+    secondary: string;
+  }) => void;
 };
 
 type ThemeProviderProps = {
@@ -43,29 +39,10 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  const [primary, setPrimary] = useState(palette.neutral.main);
-  const [contrastTextColor, setContrastTextColor] = useState(
-    palette.neutral.contrastText
-  );
-
-  const setPrimaryColor = useCallback((color: string) => {
-    setPrimary(color);
-  }, []);
-
-  const setPrimaryColoration = useCallback(
-    (
-      coloration: "negative" | "danger" | "neutral" | "positive" | "special"
-    ) => {
-      if (coloration === null) {
-        return false;
-      }
-      const color = palette[coloration].main;
-      const contrastColor = palette[coloration].contrastText;
-      setPrimary(color);
-      setContrastTextColor(contrastColor);
-    },
-    []
-  );
+  // const [primary, setPrimary] = useState(palette.neutral.main);
+  // const [contrastTextColor, setContrastTextColor] = useState(
+  //   palette.neutral.contrastText
+  // );
 
   const theme = useMemo(
     () =>
@@ -73,25 +50,31 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
         deepmerge(defaultTheme, {
           palette: {
             mode,
-            primary: { main: primary, contrastText: contrastTextColor },
             background: {
-              default: mode === "light" ? "#f7f7f7" : "#202328", // body
+              default: mode === "light" ? "#fafbfb" : "#202328", // body
               paper: mode === "light" ? "#fff" : "#33373D ", // cards
             },
-            ...palette,
+            //  ...palette,
           },
         })
       ),
-    [contrastTextColor, mode, primary]
+    [mode]
   );
+
+  // const setThemeColors = useCallback(
+  //   ({ main, secondary }: { main: string; secondary: string }) => {
+  //     setPrimary(main);
+  //     setContrastTextColor(secondary);
+  //   },
+  //   []
+  // );
 
   return (
     <ThemeContext.Provider
       value={{
         mode,
         toggleMode,
-        setPrimaryColor,
-        setPrimaryColoration,
+        //setThemeColors,
       }}
     >
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>

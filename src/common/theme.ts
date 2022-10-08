@@ -1,6 +1,8 @@
 import { createTheme } from "@mui/material/styles";
 import palette from "./palette";
 import { deepOrange } from "@mui/material/colors";
+import typography from "./typography";
+import shadows from "./shadows";
 
 const defaultTheme = createTheme({
   breakpoints: {
@@ -17,27 +19,73 @@ const defaultTheme = createTheme({
   },
   palette: {
     mode: "light",
+
     primary: {
-      contrastText: "white",
-      main: "#44bb68",
+      main: "#03c9d7",
+      light: "#e5fafb",
+      dark: "#05b2bd",
+      contrastText: "#ffffff",
     },
-    background: { default: "#F9FAFC" },
+    secondary: {
+      main: "#fb9678",
+      contrastText: "#ffffff",
+    },
+    success: {
+      main: "#00c292",
+
+      dark: "#00964b",
+      contrastText: "#ffffff",
+    },
+    info: {
+      main: "#0bb2fb",
+      light: "#a7e3f4",
+    },
+    error: {
+      main: "#e46a76",
+
+      dark: "#e45a68",
+    },
+    warning: {
+      main: "#fec90f",
+
+      dark: "#dcb014",
+      contrastText: "#ffffff",
+    },
+
+    // primary: {
+    //   contrastText: "white",
+    //   main: "#44bb68",
+    // },
+    background: {
+      default: "#fafbfb",
+      // "#F9FAFC"
+    },
   },
+
   components: {
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          background: "transparent",
+        },
+      },
+    },
     MuiCard: {
       variants: [
         {
           props: { color: "positive" },
           style: {
-            background: palette.positive.main,
-            color: palette.positive.contrastText,
+            // background: palette.positive.main,
+            // color: palette.positive.contrastText,
+            borderTop: `3px solid ${palette.positive.main}`,
           },
         },
         {
           props: { color: "negative" },
           style: {
-            background: palette.negative.main,
-            color: palette.negative.contrastText,
+            // background: palette.negative.main,
+            // color: palette.negative.contrastText,
+            borderTop: `3px solid ${palette.negative.main}`,
           },
         },
         {
@@ -50,8 +98,9 @@ const defaultTheme = createTheme({
         {
           props: { color: "special" },
           style: {
-            background: palette.special.main,
-            color: palette.special.contrastText,
+            // background: palette.special.main,
+            // color: palette.special.contrastText,
+            borderTop: `3px solid ${palette.special.main}`,
           },
         },
         {
@@ -80,7 +129,7 @@ const defaultTheme = createTheme({
       ],
       styleOverrides: {
         root: {
-          borderRadius: 10,
+          borderRadius: 20,
 
           //padding: 5,
           // boxShadow: "rgb(90 114 123 / 11%) 0px 7px 30px 0px",
@@ -108,13 +157,22 @@ const defaultTheme = createTheme({
         },
       },
     },
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+          padding: 32,
+        },
+      },
+    },
     MuiCardContent: {
       styleOverrides: {
         root: {
           width: "100%",
-          padding: 3,
+          paddingLeft: 32,
+          paddingRight: 32,
+          paddingBottom: 32,
           "&:last-child": {
-            padding: 0,
+            paddingBottom: 32,
           },
         },
       },
@@ -127,7 +185,57 @@ const defaultTheme = createTheme({
         },
       },
     },
+
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          marginBottom: 10,
+          borderRadius: "9px",
+        },
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: 40,
+        },
+      },
+    },
+
+    MuiTextField: {
+      variants: [
+        {
+          props: { variant: "outlined" },
+          style: {
+            [`& fieldset`]: {
+              borderRadius: 10,
+            },
+          },
+        },
+      ],
+    },
+
+    MuiChip: {
+      styleOverrides: {
+        icon: {
+          marginLeft: 8,
+          marginTop: 3,
+        },
+      },
+    },
+
     MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          boxShadow: "none",
+          borderRadius: 8,
+
+          "&:hover": {
+            boxShadow: "none",
+          },
+        },
+      },
       variants: [
         {
           props: { color: "negative" },
@@ -206,6 +314,8 @@ const defaultTheme = createTheme({
       ],
     },
   },
+  typography,
+  shadows,
 });
 
 declare module "@mui/material/styles" {
