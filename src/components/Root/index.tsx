@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import AuthLayout from "../Auth/AuthLayout";
-import SignInScreen from "../Auth/SignInScreen";
+// import PullToRefresh from "react-simple-pull-to-refresh";
+import { SettingsProvider } from "~/context/SettingsContext";
+import { DiaryProvider } from "~/context/DiaryContext";
+import AuthLayout from "~/layouts/AuthLayout";
+import SignInScreen from "~/pages/AuthPage";
+import Compose from "~/context/Compose";
+import DayPage from "~/pages/DayPage";
 import { useUser } from "reactfire";
-import Diary from "../Diary";
-import { DiaryProvider } from "../../context/DiaryContext";
-import { IconsProvider } from "../../context/IconContext";
-import PullToRefresh from "react-simple-pull-to-refresh";
 
-const Root = () => {
+const Root: FC = () => {
   const {
     data: user,
     // hasEmitted,
@@ -25,9 +26,9 @@ const Root = () => {
     return null;
   }
 
-  const handleRefresh = async () => {
-    //  window.location.reload();
-  };
+  // const handleRefresh = async () => {
+  //  window.location.reload();
+  // };
 
   if (isLogged) {
     return (
@@ -36,13 +37,11 @@ const Root = () => {
         <Route
           path="/diary"
           element={
-            <DiaryProvider>
-              <IconsProvider>
-                <PullToRefresh onRefresh={handleRefresh}>
-                  <Diary />
-                </PullToRefresh>
-              </IconsProvider>
-            </DiaryProvider>
+            <Compose components={[SettingsProvider, DiaryProvider]}>
+              {/*<PullToRefresh onRefresh={handleRefresh}>*/}
+              <DayPage />
+              {/*</PullToRefresh>*/}
+            </Compose>
           }
         >
           <Route path=":date" />

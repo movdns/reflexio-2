@@ -1,92 +1,104 @@
-import {
-  FC,
-  ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import fillWithEmptyDates from "./helpers/fillWithEmptyDates";
-import { useAuth } from "reactfire";
+import { FC, ReactNode, createContext, useCallback, useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getDayAPICall, getDaysAPICall, setDayAPICall } from "../api";
-import generateDay from "./helpers/generateDay";
-import { TDay } from "../types";
+import { getDayAPICall, getDaysAPICall, setDayAPICall } from "~/api";
+import { useParams } from "react-router-dom";
+import { TDay } from "root/types/day";
+import dayjs from "dayjs";
+
+import { toast } from "react-toastify";
+import Glyph from "~/components/shared/Glyph";
+import { useUser } from "reactfire";
+import { getDayMockCall, getDaysMockCall, setDayMockCall } from "~/api/mock";
 
 type DiaryContextProps = {
   day: TDay | null;
   days: TDay[] | null;
-  isToday?: boolean;
-  makeDayMutation?(data: Partial<TDay>): void;
+  queryDate?: string;
   isDayEditable?(): boolean;
+  makeDayMutation?(data: Partial<TDay>): void;
 };
 
-type DiaryProviderProps = {
-  children?: ReactNode;
-};
-
-export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
-  const { currentUser } = useAuth();
+export const DiaryProvider: FC<{ children?: ReactNode }> = ({ children }) => {
   const queryClient = useQueryClient();
 
   // Retrieve date from URL params
   const { date: paramsDate } = useParams();
+
   const isParamsDateValid =
     dayjs(`${paramsDate}`, "D-MM-YY").isValid() &&
     dayjs(`${paramsDate}`, "D-MM-YY").isBefore(dayjs()) &&
     paramsDate;
-
-  // If date validation failed, redirect to today
-  const navigate = useNavigate();
-  !isParamsDateValid &&
-    navigate({
-      pathname: dayjs().format("D-MM-YY"),
-    });
 
   const queryDate = isParamsDateValid ? paramsDate : dayjs().format("D-MM-YY");
 
   /**
    * Fetch all days collection
    */
-  const { data: daysData } = useQuery(["diary"], async () => {
-    const response = await getDaysAPICall();
-    // @todo error handler
-    response.error &&
-      console.log("getGlyphsGroupsAPICall error: ", response.message);
 
-    // Fill existing days with "ghost" days (return {date: string})
-    const filled = fillWithEmptyDates(response.data);
-    // console.log(filled);
-    return filled;
+  const {
+    // @ts-ignore
+    data: { isAnonymous },
+  } = useUser();
+
+  const { data: daysData } = useQuery(["diary"], async () => {
+    const { error, message, data } = isAnonymous
+      ? await getDaysMockCall()
+      : await getDaysAPICall();
+
+    error &&
+      toast.error(message, {
+        toastId: "apiDaysError",
+        position: toast.POSITION.BOTTOM_CENTER,
+        icon: <Glyph code="clock" size={38} />,
+        theme: "colored",
+        autoClose: false,
+      });
+    data && toast.dismiss("apiDaysError");
+
+    return (
+      data.sort(
+        (a: TDay, b: TDay) =>
+          dayjs(b.date, "D-MM-YY").unix() - dayjs(a.date, "D-MM-YY").unix()
+      ) || null
+    );
   });
-  //console.log(daysData);
+
   /**
    * Fetch single day resource by request query "date" param
    */
-  const { data: dayData } = useQuery(["day", queryDate], async () => {
-    const response = await getDayAPICall(queryDate);
-    // @todo error handler
-    if (response.error) {
-      console.log("getDayAPICall error: ", response.message);
-      // If day not exists, generate it (fill with init data) and make mutation request
-      return dayMutation.mutate(
-        generateDay({
-          date: queryDate,
-          uid: currentUser?.uid || "",
-        })
-      );
-    }
-    return response.data || null;
-  });
+  const { data: dayData } = useQuery(
+    ["day", queryDate],
+    async () => {
+      const { error, message, data } = isAnonymous
+        ? await getDayMockCall(queryDate)
+        : await getDayAPICall(queryDate);
+
+      error &&
+        toast.error(message, {
+          toastId: "apiDayError",
+          position: toast.POSITION.BOTTOM_CENTER,
+          icon: <Glyph code="clock" size={38} />,
+          theme: "colored",
+          autoClose: false,
+        });
+      data && toast.dismiss("apiDayError");
+
+      if (daysData?.find((day: TDay) => day?.id !== data?.id)) {
+        // await queryClient.setQueryData(["diary"], [...daysData, data]);
+        await queryClient.invalidateQueries(["diary"]);
+      }
+
+      return data || null;
+    },
+    { retry: 2000 }
+  );
 
   /**
    * Update / Create day resource
    */
   const dayMutation = useMutation(
-    async (dayData: TDay) => dayData && setDayAPICall(dayData),
+    async (dayData: TDay) =>
+      dayData && isAnonymous ? setDayMockCall(dayData) : setDayAPICall(dayData),
     {
       onMutate: async (updatedDay: TDay) => {
         // Cancel all possible ongoing queries
@@ -139,23 +151,18 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
     [dayData, dayMutation]
   );
 
-  const [isToday, setIsToday] = useState(false);
-
-  useEffect(() => {
-    if (queryDate === dayjs().format("D-MM-YY")) {
-      setIsToday(true);
-    }
-  }, [queryDate]);
-
   /**
    * Check if day can be edited
    * @return boolean
    */
   function isDayEditable() {
-    // const dayDateUnix = dayjs(dayData?.date, "DD-MM-YY").unix();
-    // const agoDateUnix = dayjs().subtract(7, "days").unix();
-    // return dayDateUnix > agoDateUnix;
-    return true;
+    const currentDayDate = dayData?.date;
+    return (
+      currentDayDate &&
+      dayjs(currentDayDate, "D-MM-YY").isValid() &&
+      !dayjs(currentDayDate, "D-MM-YY").isAfter(dayjs()) &&
+      !dayjs(currentDayDate, "D-MM-YY").isBefore(dayjs().subtract(14, "days"))
+    );
   }
 
   return (
@@ -163,9 +170,9 @@ export const DiaryProvider: FC<DiaryProviderProps> = ({ children }) => {
       value={{
         days: daysData,
         day: dayData,
-        makeDayMutation,
-        isToday,
+        queryDate,
         isDayEditable,
+        makeDayMutation,
       }}
     >
       {children}

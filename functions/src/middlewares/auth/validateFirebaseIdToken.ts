@@ -1,5 +1,5 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 import { NextFunction, Request, Response } from "express";
 
 const validateFirebaseIdToken = async (
@@ -37,6 +37,12 @@ const validateFirebaseIdToken = async (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     req.user = await admin.auth().verifyIdToken(idToken);
+
+    const role = req.user?.provider_id ? "anonymous" : "user";
+    req?.user && (await grantUserRole(req.user.uid, role));
+
+    console.log(req.user);
+
     next();
     return;
   } catch (error) {
@@ -44,6 +50,17 @@ const validateFirebaseIdToken = async (
     res.status(403).send("Unauthorized");
     return;
   }
+};
+
+const grantUserRole = async (uid: string, role: string) => {
+  const user = await admin.auth().getUser(uid);
+  // console.log("grantUserRole", user);
+  if (user.customClaims && user.customClaims.role === role) {
+    return;
+  }
+  return admin.auth().setCustomUserClaims(user.uid, {
+    role: [role],
+  });
 };
 
 export default validateFirebaseIdToken;

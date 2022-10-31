@@ -2,12 +2,16 @@ import * as Joi from "joi";
 import isDate from "./helpers/isDate";
 
 const setDayValidationSchema = Joi.object().keys({
-  date: Joi.string().required().custom(isDate),
   id: Joi.string(),
   uid: Joi.string(),
-  score: Joi.number(),
+  date: Joi.string().required().custom(isDate),
+  isFavorite: Joi.boolean(),
+  paletteCode: Joi.string(),
+  mood: Joi.object(),
+  metrics: Joi.object(),
   description: Joi.array(),
-  icons: Joi.array(),
+  sentiments: Joi.object(),
+  todo: Joi.array(),
 });
 
 export default setDayValidationSchema;

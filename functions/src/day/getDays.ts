@@ -1,10 +1,12 @@
-import * as admin from "firebase-admin";
 import { Request } from "express";
-import { TDaySnapshot } from "./types";
+import * as admin from "firebase-admin";
+import { TDay } from "../../../types/day";
 import { TResponse, TResponseData } from "../../types";
 
 const collectionDBName: string = process.env.COLLECTION_DAYS_DB_NAME || "days";
 const collectionLimit: number = parseInt(process.env.COLLECTION_LIMIT || "14");
+
+type TDaySnapshot = TDay | null;
 
 const getAllDays = async (
   req: Request,
@@ -15,7 +17,6 @@ const getAllDays = async (
   if (!uid) {
     return res.json({
       error: true,
-      data: null,
       message: "Insufficient permissions",
     });
   }

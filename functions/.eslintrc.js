@@ -28,5 +28,6 @@ module.exports = {
     quotes: ["error", "double"],
     "import/no-unresolved": 0,
     "new-cap": ["error", { capIsNewExceptions: ["Router"] }],
+    "max-len": "off",
   },
 };

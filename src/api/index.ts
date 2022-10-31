@@ -1,29 +1,24 @@
+import { TUserSettings } from "root/types/userSettings";
+import { TResponseData } from "root/types";
+import { TDay } from "root/types/day";
 import axios from "axios";
-import { TResponseData } from "../types";
 
 const getBaseUrl = () => {
-  let url;
   switch (process.env.NODE_ENV) {
     case "production":
-      url = "https://us-central1-reflexio-2.cloudfunctions.net/api/v2";
-      break;
+      return process.env.REACT_APP_BACKEND_API_PRODUCTION_URL;
     case "development":
     default:
-      url = "http://localhost:5001/reflexio-2/us-central1/api/v2";
+      return process.env.REACT_APP_BACKEND_API_DEVELOPMENT_URL;
   }
-  return url;
 };
 
-/**
- * Days
- */
-
-// Collection
+// Days Collection
 export const getDaysAPICall = async (): Promise<TResponseData<any>> => {
   return await axios.get(`${getBaseUrl()}/days`).then((res) => res.data);
 };
 
-// Resource
+// Day Resource
 export const getDayAPICall = async (
   date: string
 ): Promise<TResponseData<any>> => {
@@ -32,19 +27,25 @@ export const getDayAPICall = async (
     .then((res) => res.data);
 };
 
-// Mutation
-export const setDayAPICall = async (data: any): Promise<TResponseData<any>> => {
+// Day Resource Mutation
+export const setDayAPICall = async (
+  data: any
+): Promise<TResponseData<TDay>> => {
   return await axios
     .post(`${getBaseUrl()}/days/`, { data })
     .then((res) => res.data);
 };
 
-/**
- * Glyphs
- */
+// User Settings (palette, glyphs, tags, etc.)
+export const getUserSettingsAPICall = async (): Promise<TResponseData<any>> => {
+  return await axios.get(`${getBaseUrl()}/settings`).then((res) => res.data);
+};
 
-// Collection
-// @todo TResponseData<TGlyphGroup[]>
-export const getGlyphsGroupsAPICall = async (): Promise<TResponseData<any>> => {
-  return await axios.get(`${getBaseUrl()}/icons`).then((res) => res.data);
+// User Settings Mutation
+export const setUserSettingsAPICall = async (
+  data: Partial<TUserSettings>
+): Promise<TResponseData<any>> => {
+  return await axios
+    .post(`${getBaseUrl()}/settings/`, { data })
+    .then((res) => res.data);
 };

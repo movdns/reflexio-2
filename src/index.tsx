@@ -1,12 +1,12 @@
 import React from "react";
-import reportWebVitals from "./reportWebVitals";
-import App from "./components/App";
-import { FirebaseAppProvider } from "reactfire";
 import firebaseConfig from "./common/firebase/firebaseConfig";
+import reportWebVitals from "./reportWebVitals";
+import { FirebaseAppProvider } from "reactfire";
+import App from "./components/App";
 
 import { createRoot } from "react-dom/client";
 const container = document.getElementById("root");
-const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+const root = createRoot(container!);
 root.render(
   // <React.StrictMode>
   <FirebaseAppProvider firebaseConfig={firebaseConfig}>
