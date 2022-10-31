@@ -1,8 +1,10 @@
 import * as admin from "firebase-admin";
-import { findDayInCollection } from "./getDay";
-import setDayValidationSchema from "./validation/setDayValidationSchema";
-import { TDaySnapshot } from "./types";
+import { TDay } from "../../../types/day";
+import { findDayInCollection } from "./getOrCreateDay";
 import { TRequestBody, TResponse, TResponseData } from "../../types";
+import setDayValidationSchema from "./validation/setDayValidationSchema";
+
+type TDaySnapshot = TDay | null;
 
 /**
  * Create or update existing "day" resource
@@ -21,7 +23,6 @@ async function setDay(
   if (!uid) {
     return res.json({
       error: true,
-      data: null,
       message: "Insufficient permissions",
     });
   }

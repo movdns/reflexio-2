@@ -1,12 +1,9 @@
 import { Router } from "express";
-import getAllDays from "./day/getDays";
-import getDay from "./day/getDay";
-import setDay from "./day/setDay";
-import getIconsGroups from "./icons/getIconsGroups";
-import getIconsGroup from "./icons/getIconsGroup";
-import setIconsGroup from "./icons/setIconsGroup";
-import getUserSettings from "./user/getUserSettings";
+import getOrCreateUserSettings from "./user/getOrCreateUserSettings";
 import setUserSettings from "./user/setUserSettings";
+import getOrCreateDay from "./day/getOrCreateDay";
+import getAllDays from "./day/getDays";
+import setDay from "./day/setDay";
 
 export const routes = Router();
 
@@ -16,19 +13,11 @@ routes.get("/", (req, res) => {
 
 // Days API Routes
 const daysPath = "/days";
-
 routes.get(daysPath, getAllDays); // days collection
-routes.get(`${daysPath}/:date`, getDay); // day resource
+routes.get(`${daysPath}/:date`, getOrCreateDay); // day resource
 routes.post(daysPath, setDay); // day create or update
 
-// Icons API Routes
-const iconsPath = "/icons";
-
-routes.get(iconsPath, getIconsGroups);
-routes.get(`${iconsPath}/:id`, getIconsGroup);
-routes.post(iconsPath, setIconsGroup); // day create or update
-
-// User settings API Routes
+// UserSettings API Routes
 const settingsPath = "/settings";
-routes.get(settingsPath, getUserSettings);
+routes.get(settingsPath, getOrCreateUserSettings);
 routes.post(settingsPath, setUserSettings);

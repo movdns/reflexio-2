@@ -1,4 +1,9 @@
-import React, { Dispatch, FC, SetStateAction } from "react";
+import React, { FC } from "react";
+import avatar_placeholder from "~/common/assets/images/avatar_placeholder.png";
+import clearFirestoreCache from "~/common/firebase/clearFirestoreCache";
+import GlyphButton from "~/components/shared/Glyph/GlyphButton";
+import Glyph from "~/components/shared/Glyph";
+import { useAuth, useUser } from "reactfire";
 import {
   AppBar,
   Toolbar,
@@ -6,16 +11,12 @@ import {
   Typography,
   Avatar,
   Button,
+  SxProps,
 } from "@mui/material";
-import Glyph from "../../../components/Glyph";
-import GlyphButton from "../../../components/Glyph/GlyphButton";
-import { useAuth, useUser } from "reactfire";
-import clearFirestoreCache from "../../../common/firebase/clearFirestoreCache";
-import getUserInitials from "../../../components/Auth/helpers/getUserInitials";
 
 type HeaderProps = {
   toggleSidebar?: () => void;
-  sx?: any;
+  sx?: SxProps;
 };
 
 const Header: FC<HeaderProps> = ({ toggleSidebar, sx }) => {
@@ -49,11 +50,11 @@ const Header: FC<HeaderProps> = ({ toggleSidebar, sx }) => {
             onClick={handleLogout}
           >
             <Avatar sx={{ bgcolor: "primary.main", width: 30, height: 30 }}>
-              {currentUser?.photoURL ? (
-                <img src={currentUser.photoURL} width="100%" alt="" />
-              ) : (
-                <>{getUserInitials(currentUser?.displayName)}</>
-              )}
+              <img
+                src={currentUser?.photoURL || avatar_placeholder}
+                width="100%"
+                alt=""
+              />
             </Avatar>
             <Box
               sx={{
@@ -76,12 +77,9 @@ const Header: FC<HeaderProps> = ({ toggleSidebar, sx }) => {
                 color="textSecondary"
                 variant="h5"
                 fontWeight="700"
-                sx={{
-                  ml: 1,
-                  // color: "#fb9678",
-                }}
+                ml={1}
               >
-                Denys
+                {currentUser?.displayName || "Anonymous"}
               </Typography>
             </Box>
           </Button>

@@ -1,7 +1,7 @@
-import React, { FC, ReactNode } from "react";
+import { TTUserSettingsPaletteData } from "root/types/userSettings";
 import { Box, Button, SxProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { TTUserSettingsPaletteData } from "../../../types";
+import React, { FC, ReactNode } from "react";
 
 type ColorButtonProps = {
   children?: ReactNode;
@@ -14,34 +14,32 @@ type ColorButtonProps = {
 
 const StyledColorButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "colors" && prop !== "myProp",
-})<Pick<ColorButtonProps, "colors" | "selected">>(
-  ({ theme, colors, selected }) => ({
-    background: colors?.main,
-    bgcolor: "red",
-    minWidth: 30,
-    minHeight: 30,
-    padding: 0,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "space-between",
-    borderRadius: 10,
+})<Pick<ColorButtonProps, "colors" | "selected">>(({ colors, selected }) => ({
+  background: colors?.main,
+  bgcolor: "red",
+  minWidth: 30,
+  minHeight: 30,
+  padding: 0,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "space-between",
+  borderRadius: 10,
 
-    "&:hover": {
-      background: `${colors?.main}aa`,
-    },
-    "&:after": {
-      display: selected ? "block" : "none",
-      content: '""',
-      width: 6,
-      height: 6,
-      backgroundColor: "white",
-      borderRadius: 2,
-    },
-    ".MuiTouchRipple-child": {
-      backgroundColor: "white",
-    },
-  })
-);
+  "&:hover": {
+    background: `${colors?.main}aa`,
+  },
+  "&:after": {
+    display: selected ? "block" : "none",
+    content: '""',
+    width: 6,
+    height: 6,
+    backgroundColor: "white",
+    borderRadius: 2,
+  },
+  ".MuiTouchRipple-child": {
+    backgroundColor: "white",
+  },
+}));
 
 const ColorButton: FC<ColorButtonProps> = ({
   children,
@@ -54,10 +52,10 @@ const ColorButton: FC<ColorButtonProps> = ({
   return (
     <StyledColorButton
       colors={colors}
-      sx={sx}
       selected={selected}
       disabled={disabled}
       onClick={onClick}
+      sx={sx}
     >
       <Box color={colors?.contrastText || "inherit"}>{children}</Box>
     </StyledColorButton>

@@ -1,8 +1,8 @@
-import * as cors from "cors";
-import * as slowDown from "express-slow-down";
 import helmet from "helmet";
-import rateLimiter from "express-rate-limit";
+import * as cors from "cors";
 import { Application } from "express";
+import rateLimiter from "express-rate-limit";
+import * as slowDown from "express-slow-down";
 
 /**
  * Protect application from DDOS and XSS

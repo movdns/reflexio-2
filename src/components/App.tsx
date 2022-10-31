@@ -1,31 +1,29 @@
-import React from "react";
+import React, { FC } from "react";
+import { CssBaseline } from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { BrowserRouter as Router } from "react-router-dom";
+import { ThemeProvider } from "~/context/ThemeContext";
+import "~/common/assets/fontawesome/css/all.css";
+import { getFirestore } from "firebase/firestore";
+import isToday from "dayjs/plugin/isToday";
+import firebase from "firebase/compat/app";
+import { getAuth } from "firebase/auth";
+import Root from "./Root";
+import axios from "axios";
+import dayjs from "dayjs";
+
 import {
   AuthProvider,
   useFirebaseApp,
   useInitPerformance,
   FirestoreProvider,
 } from "reactfire";
-import { getAuth } from "firebase/auth";
-import { CssBaseline } from "@mui/material";
-import { ThemeProvider } from "../context/ThemeContext";
-import { getFirestore } from "firebase/firestore";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "../common/assets/fontawesome/css/all.css";
-import Root from "./Root";
-
-import isToday from "dayjs/plugin/isToday";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-
-import dayjs from "dayjs";
-
-import firebase from "firebase/compat/app";
-import axios from "axios";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isToday);
 
-const App: React.FC = () => {
+const App: FC = () => {
   firebase.setLogLevel("silent");
 
   const queryClient = new QueryClient({
@@ -64,12 +62,12 @@ const App: React.FC = () => {
     <AuthProvider sdk={auth}>
       <FirestoreProvider sdk={firestoreInstance}>
         <QueryClientProvider client={queryClient}>
-          <Router basename={process.env.PUBLIC_URL || "/"}>
-            <ThemeProvider>
-              <CssBaseline />
+          <ThemeProvider>
+            <CssBaseline />
+            <Router basename={process.env.PUBLIC_URL || "/"}>
               <Root />
-            </ThemeProvider>
-          </Router>
+            </Router>
+          </ThemeProvider>
         </QueryClientProvider>
       </FirestoreProvider>
     </AuthProvider>

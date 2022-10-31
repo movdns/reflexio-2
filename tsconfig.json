@@ -20,8 +20,10 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
+  "extends": "./tsconfig.base.json",
   "include": [
     "src",
     "types/index.ts"
-  ]
+  ],
+
 }

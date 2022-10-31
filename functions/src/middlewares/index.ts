@@ -1,10 +1,11 @@
-import { Application } from "express";
 import secure from "./secure";
-import validateFirebaseIdToken from "./auth/validateFirebaseIdToken";
 import * as dayjs from "dayjs";
+import { Application } from "express";
 import * as customParseFormat from "dayjs/plugin/customParseFormat";
+import validateFirebaseIdToken from "./auth/validateFirebaseIdToken";
 
 dayjs.extend(customParseFormat);
+
 /**
  * Protect application from DDOS and XSS
  * @param {Request} app

@@ -9,19 +9,21 @@ export type TResponse<T> = Omit<Response, "json" | "status"> & {
 } & { status(code: number): TResponse<T> };
 
 export type TResponseData<T> = {
-  error: boolean;
+  error: boolean | 403 | 404;
   data?: T;
   message?: string;
 };
-
 // Extend "request" with user object (for auth permissions check)
 export {};
 declare global {
   namespace Express {
     export interface Request {
       user?: {
+        picture?: string;
         name: string;
         uid: string;
+        role?: string;
+        provider_id?: string;
       };
     }
   }

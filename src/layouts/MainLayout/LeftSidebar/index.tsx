@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react";
-import { Box, Drawer, List, Theme, useMediaQuery } from "@mui/material";
-import Logo from "../../../components/Logo";
+import { Box, Drawer, useMediaQuery } from "@mui/material";
+import Logo from "~/components/shared/Logo";
+import React, { FC } from "react";
 
 type LeftSidebarProps = {
   isSidebarOpen: boolean;
@@ -13,11 +13,11 @@ const LeftSidebar: FC<LeftSidebarProps> = ({
   onSidebarClose,
   children,
 }) => {
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
+  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("xxxl"));
 
   const SidebarContent = (
     <Box p={2} height="100%">
-      <Logo />
+      <Logo size="small" />
       {children}
     </Box>
   );
@@ -30,7 +30,7 @@ const LeftSidebar: FC<LeftSidebarProps> = ({
         PaperProps={{
           sx: {
             width: "300px",
-            border: "0 !important",
+            border: "0!important",
             boxShadow: "0px 7px 30px 0px rgb(113 122 131 / 11%)",
           },
         }}
@@ -42,12 +42,12 @@ const LeftSidebar: FC<LeftSidebarProps> = ({
   return (
     <Drawer
       anchor="left"
-      open={true}
+      open={isSidebarOpen}
       onClose={onSidebarClose}
       PaperProps={{
         sx: {
-          width: "265px",
-          border: "0 !important",
+          width: "300px",
+          border: "0!important",
         },
       }}
       variant="temporary"

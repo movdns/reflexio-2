@@ -1,16 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import AuthLayout from "../Auth/AuthLayout";
-import SignInScreen from "../Auth/SignInScreen";
+// import PullToRefresh from "react-simple-pull-to-refresh";
+import { SettingsProvider } from "~/context/SettingsContext";
+import { DiaryProvider } from "~/context/DiaryContext";
+import AuthLayout from "~/layouts/AuthLayout";
+import SignInScreen from "~/pages/AuthPage";
+import Compose from "~/context/Compose";
+import DayPage from "~/pages/DayPage";
 import { useUser } from "reactfire";
-
-import DiaryPage from "../../pages/DiaryPage";
-import { DiaryProvider } from "../../context/DiaryContext";
-import PullToRefresh from "react-simple-pull-to-refresh";
-// import { ThemeProvider } from "../../context/ThemeContext";
-import Compose from "../../context/Compose";
-import { SettingsProvider } from "../../context/SettingsContext";
-import PalettePage from "../../pages/PalettePage";
 
 const Root: FC = () => {
   const {
@@ -29,9 +26,9 @@ const Root: FC = () => {
     return null;
   }
 
-  const handleRefresh = async () => {
-    //  window.location.reload();
-  };
+  // const handleRefresh = async () => {
+  //  window.location.reload();
+  // };
 
   if (isLogged) {
     return (
@@ -42,21 +39,13 @@ const Root: FC = () => {
           element={
             <Compose components={[SettingsProvider, DiaryProvider]}>
               {/*<PullToRefresh onRefresh={handleRefresh}>*/}
-              <DiaryPage />
+              <DayPage />
               {/*</PullToRefresh>*/}
             </Compose>
           }
         >
           <Route path=":date" />
         </Route>
-        <Route
-          path="/palette"
-          element={
-            <Compose components={[SettingsProvider, DiaryProvider]}>
-              <PalettePage />
-            </Compose>
-          }
-        />
         <Route path="/login" element={<Navigate to="/" />} />
         <Route path="/register" element={<Navigate to="/" />} />
       </Routes>

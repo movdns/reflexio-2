@@ -1,19 +1,19 @@
 import * as admin from "firebase-admin";
+import { TUserSettings } from "../../../types/userSettings";
 import { TRequestBody, TResponse, TResponseData } from "../../types";
-import { TSettings } from "./types";
-// eslint-disable-next-line max-len
 import setUserSettingsValidationSchema from "./validation/setUserSettingsValidationSchema";
 
-const collectionDBName = "userSettings";
+const collectionDBName: string =
+  process.env.COLLECTION_USER_SETTINGS_DB_NAME || "userSettings";
 
 /**
- * Create or update existing "icon" resource
- * @param {TRequestBody<TSettings>} req
- * @param {TResponse<TSettings | null>} res
+ * Update userSettings resource
+ * @param {TRequestBody<TUserSettings>} req
+ * @param {TResponse<TUserSettings | null>} res
  */
 async function setUserSettings(
-  req: TRequestBody<TSettings>,
-  res: TResponse<TResponseData<TSettings | null>>
+  req: TRequestBody<TUserSettings>,
+  res: TResponse<TResponseData<TUserSettings | null>>
 ) {
   const data = req.body;
 
@@ -23,7 +23,6 @@ async function setUserSettings(
   if (!uid) {
     return res.json({
       error: true,
-      data: null,
       message: "Insufficient permissions",
     });
   }

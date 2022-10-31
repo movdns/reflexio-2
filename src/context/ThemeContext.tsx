@@ -1,19 +1,11 @@
-import React, {
-  createContext,
-  FC,
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useContext, useState, useMemo, FC, createContext } from "react";
 import {
   PaletteMode,
   createTheme,
   ThemeProvider as MuiThemeProvider,
 } from "@mui/material";
 import { deepmerge } from "@mui/utils";
-import defaultTheme from "../common/theme";
-import palette from "../common/palette";
+import defaultTheme from "../common/mui/theme";
 
 type ThemeContextProps = {
   mode: PaletteMode;
@@ -39,11 +31,6 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  // const [primary, setPrimary] = useState(palette.neutral.main);
-  // const [contrastTextColor, setContrastTextColor] = useState(
-  //   palette.neutral.contrastText
-  // );
-
   const theme = useMemo(
     () =>
       createTheme(
@@ -54,7 +41,6 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
               default: mode === "light" ? "#fafbfb" : "#202328", // body
               paper: mode === "light" ? "#fff" : "#33373D ", // cards
             },
-            //  ...palette,
           },
         })
       ),
