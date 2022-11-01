@@ -29,7 +29,7 @@
   <summary>Navigation</summary>
   <ol>
     <li><a href="#about">About The Project</a></li>
-    <li> <a href="#getting-started">Getting Started</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#running">Running</a></li>
     <li><a href="#deploying">Deploying</a></li>
