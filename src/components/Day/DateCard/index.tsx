@@ -119,7 +119,7 @@ const DateCard: FC = () => {
             )}
           </Box>
           <Typography variant="h3" sx={{ marginTop: 1 }} fontSize={25}>
-            September
+            {dayjs(day?.date, "D-MM-YY").format("MMMM")}
           </Typography>
         </Box>
         <Box position="absolute" right={10} bottom={10}>

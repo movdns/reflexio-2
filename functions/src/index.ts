@@ -10,6 +10,6 @@ const app = express();
 
 useMiddlewares(app);
 
-app.use("/v2/", routes);
+app.use("/", routes);
 
 export const api = functions.https.onRequest(app);
