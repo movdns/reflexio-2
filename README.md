@@ -34,7 +34,7 @@
     <li><a href="#running">Running</a></li>
     <li><a href="#deploying">Deploying</a></li>
     <li><a href="#todo">Todo</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contacts">Contact</a></li>
   </ol>
 </details>
 
@@ -126,12 +126,12 @@ For demo purposes, we use the **Anonymous** method.
 5. Init Firebase 
    inside project root folder:
    
-       ```sh
-       firebase login
-       firebase init
-       firebase deploy
-       ```
-   
+   ```sh
+   firebase login
+   firebase init
+   firebase deploy
+   ```
+      
    Select below options (by using space btn):
 
     ``` 
@@ -156,15 +156,14 @@ For demo purposes, we use the **Anonymous** method.
    ? What do you want to use as your public directory? public
    ? Configure as a single-page app (rewrite all urls to /index.html)? (y/N) N
    ```
-6.  Setting up API routes paths<br /><br />
-   
-   Now, we need to update `.env.local` to set the API route endpoints.
+6.  Setting up API routes paths
+
+   Now we need to update `.env.local` to set the API route endpoints.
    ```
    # Example:
    REACT_APP_BACKEND_API_PRODUCTION_URL=https://us-central1-reflexio.cloudfunctions.net/api
    REACT_APP_BACKEND_API_DEVELOPMENT_URL=http://localhost:5001/reflexio/us-central1/api
    ```
-   <br />
    
    #### 1. Deploying Firebase Functions (PRODUCTION_URL)
    
@@ -255,7 +254,7 @@ to build the function every time you change the code .
 
 <!-- CONTACT -->
 ## ✈️ Contact
-<a name="roadmap"></a>
+<a name="contacts"></a>
 
 Denys Movchan - [personal page](https://dns.movchan.pro/)
 
