@@ -29,7 +29,7 @@
   <summary>Navigation</summary>
   <ol>
     <li><a href="#about">About The Project</a></li>
-    <li> <a href="#getting-started">Getting Started</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#running">Running</a></li>
     <li><a href="#deploying">Deploying</a></li>
@@ -264,8 +264,8 @@ Project Link: [https://github.com/movdns/reflexio-2](https://github.com/movdns/r
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[license-shield]: https://img.shields.io/badge/-UNLICENSED-black.svg?style=for-the-badge&colorB=gold&label=LICENSE
-[license-url]: https://github.com/movdns/reflexio-2/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/badge/-CC_BY_NC_3.0-black.svg?style=for-the-badge&colorB=gold&label=LICENSE
+[license-url]: https://creativecommons.org/licenses/by-nc/3.0/
 
 [TypeScript]: https://img.shields.io/badge/TypeScript-563D7C?style=for-the-badge&logo=typescript&logoColor=fff
 [TypeScript-url]: https://www.typescriptlang.org/

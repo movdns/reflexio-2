@@ -1,8 +1,8 @@
 {
   "name": "reflexio-2",
   "version": "2.0.0",
-  "private": false,
-  "license": "UNLICENSED",
+  "private": true,
+  "license": "CC BY-NC 3.0",
   "author": {
     "name": "Denys Movchan",
     "email": "m.dns.ukr@gmail.com",
