@@ -2,7 +2,10 @@ import React, { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSettingsContext } from "~/context/SettingsContext";
 import { useDiaryContext } from "~/context/DiaryContext";
-import { Calendar as ReactCalendar } from "../ReactCalendar";
+import {
+  Calendar as ReactCalendar,
+  CalendarTileProperties,
+} from "react-calendar";
 import Glyph from "../Glyph";
 import dayjs from "dayjs";
 import "./styles.css";
@@ -62,15 +65,21 @@ const Calendar: FC = () => {
         }
       }
     }
+    return { background: "red" };
   }
 
-  function tileDisabled({ date, view }: { date: string; view: string }) {
+  function tileDisabled(props: CalendarTileProperties): boolean {
+    const { view, date } = { ...props };
     if (view === "month") {
       return dayjs(date).isAfter(dayjs());
     }
+    return false;
   }
 
-  function tileClassName({ date, view }: { date: string; view: string }) {
+  function tileClassName(
+    props: CalendarTileProperties
+  ): string | string[] | null {
+    const { view, date } = { ...props };
     if (view === "month") {
       const formattedDay = dayjs(date).format("D-MM-YY");
 
@@ -83,10 +92,12 @@ const Calendar: FC = () => {
         return [isSelected, " ", isFavorite].join("");
       }
     }
+    return null;
   }
 
   const navigate = useNavigate();
-  const tileClickHandler = (date: string) => {
+
+  const tileClickHandler = (date: Date) => {
     navigate({
       pathname: dayjs(date).format("D-MM-YY"),
     });
@@ -102,9 +113,10 @@ const Calendar: FC = () => {
       minDetail="month"
       showFixedNumberOfWeeks={false}
       tileClassName={tileClassName}
+      // @ts-ignore
       tileStyle={tileStyles}
       tileDisabled={tileDisabled}
-      onClickDay={(date: string) => tileClickHandler(date)}
+      onClickDay={(date: Date) => tileClickHandler(date)}
     />
   );
 };
