@@ -111,7 +111,7 @@ const GlyphIconButton = styled(IconButton, {
     const { main, contrastText } = colors || {};
 
     const primaryColor = colour || main || "#ccc";
-    const secondaryColor = colour ? `${colour}20` : `${primaryColor}20`;
+    const secondaryColor = colour ? `${colour}10` : `${primaryColor}10`;
 
     const contrastColor = contrastText || "white";
 
@@ -167,21 +167,21 @@ const GlyphIconButton = styled(IconButton, {
       }
     };
 
-    const getOutline = () => {
-      if (variant === "default") {
-      }
-      if (variant === "filled") {
-      }
-      if (variant === "transparent") {
-      }
-      if (variant === "outlined") {
-        return "1px solid";
-      }
-
-      if (selected && selectedVariant === "outlined") {
-        return "1px solid";
-      }
-    };
+    // const getOutline = () => {
+    //   if (variant === "default") {
+    //   }
+    //   if (variant === "filled") {
+    //   }
+    //   if (variant === "transparent") {
+    //   }
+    //   if (variant === "outlined") {
+    //     return "1px solid";
+    //   }
+    //
+    //   if (selected && selectedVariant === "outlined") {
+    //     return "1px solid";
+    //   }
+    // };
 
     return {
       display: "flex",
@@ -192,7 +192,11 @@ const GlyphIconButton = styled(IconButton, {
       opacity: disabled && !selected ? 0.3 : 1,
       padding: p || 2,
       margin: m || 0,
-      outline: getOutline(),
+      // border: getOutline(),
+      boxShadow:
+        variant === "outlined" || (selected && selectedVariant === "outlined")
+          ? "0 0 0 1px"
+          : "none",
       "&:disabled": {
         color: colors ? colors?.main : "white",
         background: "inherit",
