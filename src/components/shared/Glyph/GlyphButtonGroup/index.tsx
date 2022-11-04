@@ -56,13 +56,23 @@ const GlyphButtonGroup: FC<GlyphButtonGroupProps> = ({
     : 10;
 
   return (
-    <Box component={Grid} container spacing={2}>
+    <Box
+      // component={Grid}
+      //  container
+      // spacing={2}
+      display="grid"
+      gridTemplateColumns="repeat(auto-fill, [col-start] minmax(60px, 1fr) [col-end])"
+      //gridTemplateRows="repeat(auto-fill, minmax(60px, 1fr))"
+      // gridAutoRows="60px"
+      gap={2}
+      //justifyContent="center"
+    >
       {glyphs &&
         glyphs?.slice(0, maxVisible || 5).map((glyph: any) => {
           const selected = selectedGlyphs?.includes(glyph) || false;
 
           return (
-            <Grid item key={`${groupCode} ${glyph}`}>
+            <Box justifySelf="center" sx={{ aspectRatio: "1/1" }}>
               <GlyphButton
                 key={glyph}
                 code={glyph}
@@ -76,24 +86,24 @@ const GlyphButtonGroup: FC<GlyphButtonGroupProps> = ({
                 p={8}
                 onClick={() => handleGlyphSelect(glyph)}
               />
-            </Grid>
+            </Box>
           );
         })}
       {ghostsNum &&
         [...Array(ghostsNum)].map((k) => (
-          <Grid item key={genUniqueId()}>
+          <Box justifySelf="center">
             <GlyphButton
               key={`ghost_${k}`}
               code="block-question"
               fullWidth
               iconType="thin"
               rounded
-              size={32}
-              disabled
-              colors={colors}
+              size={size || 34}
+              //disabled
+              // colors={colors}
               p={8}
             />
-          </Grid>
+          </Box>
         ))}
     </Box>
   );

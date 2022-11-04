@@ -53,7 +53,8 @@ const Calendar: FC = () => {
 
         return match && { ...match?.styles, ...todayStyles };
       } else {
-        if (dayjs(date).isAfter(dayjs().subtract(1, "d"))) {
+        // if (dayjs(date).isAfter(dayjs().subtract(1, "d"))) {
+        if (dayjs(date).isAfter(dayjs().add(1, "M"))) {
           return {
             background: "transparent",
             color: "#ccc",
@@ -71,7 +72,8 @@ const Calendar: FC = () => {
   function tileDisabled(props: CalendarTileProperties): boolean {
     const { view, date } = { ...props };
     if (view === "month") {
-      return dayjs(date).isAfter(dayjs());
+      // return dayjs(date).isAfter(dayjs());
+      return dayjs(date).isAfter(dayjs().add(1, "M"));
     }
     return false;
   }

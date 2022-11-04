@@ -24,21 +24,27 @@ export const DiaryProvider: FC<{ children?: ReactNode }> = ({ children }) => {
   // Retrieve date from URL params
   const { date: paramsDate } = useParams();
 
+  const { data: userData } = useUser() || {};
+  const { isAnonymous } = { ...userData };
+
   const isParamsDateValid =
     dayjs(`${paramsDate}`, "D-MM-YY").isValid() &&
     dayjs(`${paramsDate}`, "D-MM-YY").isBefore(dayjs()) &&
     paramsDate;
 
-  const queryDate = isParamsDateValid ? paramsDate : dayjs().format("D-MM-YY");
+  const isAnonymousParamsDateValid =
+    paramsDate && dayjs(`${paramsDate}`, "D-MM-YY").isValid();
+
+  const queryDate =
+    isAnonymous && isAnonymousParamsDateValid
+      ? paramsDate
+      : isParamsDateValid
+        ? paramsDate
+        : dayjs().format("D-MM-YY");
 
   /**
    * Fetch all days collection
    */
-
-  const {
-    // @ts-ignore
-    data: { isAnonymous },
-  } = useUser();
 
   const { data: daysData } = useQuery(["diary"], async () => {
     const { error, message, data } = isAnonymous

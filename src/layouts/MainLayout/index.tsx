@@ -14,6 +14,8 @@ type MainLayoutProps = {
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("xxxl"));
+  const xs = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   const [isSidebarOpen, setSidebarOpen] = useState(lgUp);
 
   const handleSidebar = () => {
@@ -25,8 +27,11 @@ const MainLayout: FC<MainLayoutProps> = ({ children }) => {
       <Header
         toggleSidebar={handleSidebar}
         sx={{
+          // top: xs ? "auto" : 0,
+          // bottom: xs ? 0 : "auto",
           paddingLeft: isSidebarOpen && lgUp ? "300px" : "",
           backgroundColor: "#fbfbfb",
+          //backgroundColor: { xs: "yellow", sm: "orange", md: "tomato" },
         }}
       />
       <LeftSidebar
@@ -64,7 +69,7 @@ const PageWrapper = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("lg")]: {
     paddingTop: "64px",
   },
-  [theme.breakpoints.down("lg")]: {
+  [theme.breakpoints.down("sm")]: {
     paddingTop: "64px",
   },
 }));

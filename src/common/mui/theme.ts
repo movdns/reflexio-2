@@ -343,6 +343,15 @@ const defaultTheme = createTheme({
         },
       },
     },
+    MuiRating: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            opacity: 1,
+          },
+        },
+      },
+    },
   },
   typography,
   shadows,

@@ -3,6 +3,7 @@ import { TTUserSettingsPaletteData } from "root/types/userSettings";
 import { genUniqueId } from "~/helpers/genUniqueId";
 import { TSentimentData } from "root/types/day";
 import React, { FC, useCallback } from "react";
+import GlyphButton from "~/components/shared/Glyph/GlyphButton";
 
 type TagGroupProps = {
   sx?: SxProps;
@@ -38,7 +39,18 @@ const TagGroup: FC<TagGroupProps> = ({
     return <></>;
   }
   return (
-    <Stack spacing={0} direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
+    <Stack display="inline-flex" spacing={0} direction="row" gap={2}>
+      <Box ml={6}>
+        <GlyphButton
+          code="plus"
+          iconType="thin"
+          rounded
+          size={32}
+          fullWidth
+          color="#ccc"
+        />
+      </Box>
+
       {tags
         ? tags.map((tag: string) => {
             const isSelected = selectedTags?.includes(tag);
@@ -56,12 +68,12 @@ const TagGroup: FC<TagGroupProps> = ({
                   bgcolor: secondaryColor || "inherit",
                   color: primaryColor || "inherit",
                   border: "none",
-                  outline: isSelected ? "1px solid" : "none",
-                  fontWeight: isSelected ? "bold" : "regular",
+                  boxShadow: isSelected ? "0 0 0 1px" : "none",
+                  // fontWeight: isSelected ? "bold" : "regular",
                   "&:hover": {
                     border: "none",
                     background: `${primaryColor}50`,
-                    outline: isSelected ? "1px solid" : "none",
+                    boxShadow: isSelected ? "0 0 0 1px" : "none",
                   },
                   ...sx,
                 }}
@@ -90,6 +102,8 @@ const TagGroup: FC<TagGroupProps> = ({
               </Box>
             );
           })}
+
+      <Box mr={2} />
     </Stack>
   );
 };
