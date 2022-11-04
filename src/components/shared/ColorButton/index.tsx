@@ -6,6 +6,7 @@ import React, { FC, ReactNode } from "react";
 type ColorButtonProps = {
   children?: ReactNode;
   colors?: TTUserSettingsPaletteData;
+  outlined?: boolean;
   selected?: boolean;
   disabled?: boolean;
   sx?: SxProps;
@@ -13,33 +14,36 @@ type ColorButtonProps = {
 };
 
 const StyledColorButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== "colors" && prop !== "myProp",
-})<Pick<ColorButtonProps, "colors" | "selected">>(({ colors, selected }) => ({
-  background: colors?.main,
-  bgcolor: "red",
-  minWidth: 30,
-  minHeight: 30,
-  padding: 0,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "space-between",
-  borderRadius: 10,
+  shouldForwardProp: (prop) => prop !== "colors" && prop !== "outlined",
+})<Pick<ColorButtonProps, "colors" | "selected" | "outlined">>(
+  ({ colors, selected, outlined }) => ({
+    background: outlined ? "transparent" : colors?.main,
+    minWidth: 30,
+    minHeight: 30,
+    padding: 0,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "space-between",
+    borderRadius: 10,
+    boxShadow: "0 0 4px 6px white",
+    border: `1px solid ${colors?.main || "gray"}`,
 
-  "&:hover": {
-    background: `${colors?.main}aa`,
-  },
-  "&:after": {
-    display: selected ? "block" : "none",
-    content: '""',
-    width: 6,
-    height: 6,
-    backgroundColor: "white",
-    borderRadius: 2,
-  },
-  ".MuiTouchRipple-child": {
-    backgroundColor: "white",
-  },
-}));
+    "&:hover": {
+      background: `${colors?.main}aa`,
+    },
+    "&:after": {
+      display: selected ? "block" : "none",
+      content: '""',
+      width: 6,
+      height: 6,
+      backgroundColor: "white",
+      borderRadius: 2,
+    },
+    ".MuiTouchRipple-child": {
+      backgroundColor: "white",
+    },
+  })
+);
 
 const ColorButton: FC<ColorButtonProps> = ({
   children,
@@ -47,12 +51,14 @@ const ColorButton: FC<ColorButtonProps> = ({
   colors,
   selected,
   disabled,
+  outlined,
   onClick,
 }) => {
   return (
     <StyledColorButton
       colors={colors}
       selected={selected}
+      outlined={outlined}
       disabled={disabled}
       onClick={onClick}
       sx={sx}

@@ -1,3 +1,6 @@
+
+[![Save Ukraine][ua]][ua-url]
+
 <a name="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
@@ -115,7 +118,7 @@ For demo purposes, we use the **Anonymous** method.
     REACT_APP_FIREBASE_APP_ID=
    ```
    
-    Also, set `PROJECT_ID` in `.firebaserc`
+    Also, set `PROJECT_ID` in `.firebaserc` (rename `.firebaserc.sample`)
     ```
     {
        "projects": {
@@ -156,9 +159,10 @@ For demo purposes, we use the **Anonymous** method.
    ? What do you want to use as your public directory? public
    ? Configure as a single-page app (rewrite all urls to /index.html)? (y/N) N
    ```
-6.  Setting up API routes paths
+6. Setting up API routes paths
 
    Now we need to update `.env.local` to set the API route endpoints.
+
    ```
    # Example:
    REACT_APP_BACKEND_API_PRODUCTION_URL=https://us-central1-reflexio.cloudfunctions.net/api
@@ -166,12 +170,11 @@ For demo purposes, we use the **Anonymous** method.
    ```
    
    #### 1. Deploying Firebase Functions (PRODUCTION_URL)
-   
-      ```sh
-      cd functions;
-      yarn build;
-      firebase deploy --only functions 
-      ```
+   ```sh
+    cd functions;
+    yarn build;
+    firebase deploy --only functions 
+    ```
    
    Then deploying is finished, copy Function URL path, and paste it to `.env.local`, `REACT_APP_BACKEND_API_PRODUCTION_URL` field;
    <br /><br />
@@ -282,6 +285,11 @@ Project Link: [https://github.com/movdns/reflexio-2](https://github.com/movdns/r
 [ExpressJs]: https://img.shields.io/badge/ExpressJs-0769AD?style=for-the-badge&logo=express
 [ExpressJs-url]: https://expressjs.com/
 
-[product-screenshot]: public/screenshot.png
+[egg]: docs/images/dogememe.png
+
+[ua]: docs/images/ua.svg
+[ua-url]: https://war.ukraine.ua/
+
+[product-screenshot]: docs/images/screenshot.png
 [demo-shield]: https://img.shields.io/badge/-Live_Demo-black.svg?style=for-the-badge&logo=AirPlayVideo&colorB=indianred
 [demo-url]: https://reflexio-2.web.app

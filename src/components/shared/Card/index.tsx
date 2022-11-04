@@ -33,7 +33,7 @@ const DiaryCard: FC<DiaryCardProps> = ({
         ...sx,
       }}
     >
-      <Box p={3} {...boxProps}>
+      <Box p={{ xs: 3, sm: 3 }} {...boxProps}>
         {children}
       </Box>
     </Card>

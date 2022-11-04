@@ -12,6 +12,7 @@ import {
   Avatar,
   Button,
   SxProps,
+  useMediaQuery,
 } from "@mui/material";
 
 type HeaderProps = {
@@ -32,57 +33,69 @@ const Header: FC<HeaderProps> = ({ toggleSidebar, sx }) => {
     }
   };
 
+  const xs = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   return (
     <AppBar sx={sx} elevation={0}>
-      <Toolbar sx={{ background: "#fafbfb" }}>
-        <GlyphButton p={5} onClick={toggleSidebar}>
-          <Glyph size={24} code="bars" iconType="light" fullWidth />
-        </GlyphButton>
-
-        <Box flexGrow={1} />
-
-        <Box display="flex" alignItems="center">
-          <Button
-            aria-label="menu"
-            color="inherit"
-            aria-controls="profile-menu"
-            aria-haspopup="true"
-            onClick={handleLogout}
-          >
-            <Avatar sx={{ bgcolor: "primary.main", width: 30, height: 30 }}>
-              <img
-                src={currentUser?.photoURL || avatar_placeholder}
-                width="100%"
-                alt=""
+      <Toolbar>
+        <Box display="flex" width="100%">
+          <Box order={xs ? 2 : 0}>
+            <GlyphButton p={5} onClick={toggleSidebar}>
+              <Glyph
+                size={24}
+                code="bars"
+                iconType="solid"
+                fullWidth
+                color="turquoise"
               />
-            </Avatar>
-            <Box
-              sx={{
-                display: {
-                  xs: "none",
-                  sm: "flex",
-                },
-                alignItems: "center",
-              }}
+            </GlyphButton>
+          </Box>
+
+          <Box flexGrow={1} order={1} />
+
+          <Box display="flex" alignItems="center" order={xs ? 0 : 2}>
+            <Button
+              aria-label="menu"
+              color="inherit"
+              aria-controls="profile-menu"
+              aria-haspopup="true"
+              onClick={handleLogout}
             >
-              <Typography
-                color="textSecondary"
-                variant="h5"
-                fontWeight="400"
-                sx={{ ml: 1 }}
+              <Avatar sx={{ bgcolor: "primary.main", width: 30, height: 30 }}>
+                <img
+                  src={currentUser?.photoURL || avatar_placeholder}
+                  width="100%"
+                  alt=""
+                />
+              </Avatar>
+              <Box
+                sx={{
+                  display: {
+                    xs: "none",
+                    sm: "flex",
+                  },
+                  alignItems: "center",
+                }}
               >
-                Hi,
-              </Typography>
-              <Typography
-                color="textSecondary"
-                variant="h5"
-                fontWeight="700"
-                ml={1}
-              >
-                {currentUser?.displayName || "Anonymous"}
-              </Typography>
-            </Box>
-          </Button>
+                <Typography
+                  color="textSecondary"
+                  variant="h5"
+                  fontWeight="400"
+                  sx={{ ml: 1 }}
+                >
+                  Hi,
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  variant="h5"
+                  fontWeight="700"
+                  ml={1}
+                >
+                  {currentUser?.displayName || "Anonymous"}
+                </Typography>
+              </Box>
+            </Button>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>

@@ -6,8 +6,10 @@ import { useDiaryContext } from "~/context/DiaryContext";
 import GlyphButton from "~/components/shared/Glyph/GlyphButton";
 import ColorButton from "~/components/shared/ColorButton";
 import DiaryCard from "~/components/shared/Card";
-import { Box, Typography } from "@mui/material";
+import { Box, Slider, Typography, useMediaQuery } from "@mui/material";
 import Glyph from "~/components/shared/Glyph";
+import useWidth from "~/hooks/useWidth";
+import ColorSlider from "~/components/shared/ColorSlider";
 
 const DayMoodSelector: FC = () => {
   const { day, makeDayMutation } = useDiaryContext();
@@ -15,6 +17,12 @@ const DayMoodSelector: FC = () => {
   const { mood } = day || {};
 
   const [isOpen, setIsOpen] = useState(!!mood?.glyphCode);
+
+  const currentBreakpoint = useWidth();
+  const getBreakpointValue = (data: { [key: string]: number }) =>
+    Object.keys(data).includes(currentBreakpoint) && data[currentBreakpoint];
+
+  const xs = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
 
   const restMoods =
     moodSettings &&
@@ -56,52 +64,84 @@ const DayMoodSelector: FC = () => {
   }
 
   return (
-    <DiaryCard sx={{ overflow: "visible", position: "relative" }}>
-      <Box position="absolute" right={10} top={10}>
-        <ColorButton colors={selectedMoodColors}>
-          <Typography variant="subtitle1" fontWeight={100} fontSize="0.7rem">
-            {currentMoodCode && moodSettings?.[currentMoodCode]?.score}
-          </Typography>
-        </ColorButton>
-      </Box>
+    <DiaryCard
+      sx={{
+        overflow: "visible",
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: { xs: 130, sm: 150 },
+      }}
+      boxProps={{ width: "100%", p: { xs: 1, sm: 1 } }}
+    >
+      {!xs && (
+        <Box position="absolute" right={10} top={10}>
+          <ColorButton colors={selectedMoodColors} disabled outlined>
+            <Typography
+              variant="subtitle1"
+              fontWeight={100}
+              fontSize="0.7rem"
+              color={selectedMoodColors?.main}
+            >
+              {currentMoodCode && moodSettings?.[currentMoodCode]?.score}
+            </Typography>
+          </ColorButton>
+        </Box>
+      )}
 
       <Box
         position="relative"
         display="flex"
-        justifyContent="space-between"
+        justifyContent={{ xs: "center", sm: "space-around" }}
         alignItems="center"
-        height={152}
+        width="100%"
       >
-        <Box>
-          <Typography fontSize={mood?.label ? 22 : 20} fontWeight={100}>
+        <Box width="100%" minWidth={180} order={1} pt={2} px={1}>
+          <Typography
+            fontSize={mood?.label ? 22 : 20}
+            fontWeight={100}
+            color="#5e3d57"
+          >
             {mood?.label || "Pick your mood"}
           </Typography>
+
+          <ColorSlider
+            aria-label="Temperature"
+            defaultValue={3}
+            valueLabelDisplay="auto"
+            step={1}
+            marks
+            min={1}
+            max={5}
+            colors={selectedMoodColors}
+          />
         </Box>
 
-        <Box display="flex" minHeight={120} minWidth={120}>
+        <Box
+          display="flex"
+          minHeight={{ xs: 80, sm: 120 }}
+          minWidth={{ xs: 80, sm: 120 }}
+        >
           <Planet
             mass={2}
             tension={100}
             friction={20}
             open={isOpen}
             // orbitRadius={(restGlyphs?.length && restGlyphs.length * 30) || 120}
-            orbitRadius={110}
+            orbitRadius={
+              getBreakpointValue({ xs: 120, sm: 100, md: 130 }) || 90
+            }
             hideOrbit
-            // autoClose
-            //rotation={90}
+            autoClose
+            rotation={xs ? 180 : 0}
             bounceDirection="BOTTOM"
-            // orbitStyle={(defaultStyle) => ({
-            //   ...defaultStyle,
-            //   borderWidth: 2,
-            //   borderStyle: "dashed",
-            //   borderColor: "gray",
-            // })}
             centerContent={
               <GlyphButton p={2} onClick={() => setIsOpen(!isOpen)}>
                 <Glyph
                   code={mood?.glyphCode || "circle-question"}
                   fullWidth
-                  size={90}
+                  size={getBreakpointValue({ xs: 60, sm: 90 }) || 90}
                   iconType="solid"
                   color={mood?.glyphCode ? selectedMoodColors?.main : "#ddd"}
                 />
@@ -135,7 +175,9 @@ const DayMoodSelector: FC = () => {
                       <Glyph
                         code={glyphCode}
                         fullWidth
-                        size={55}
+                        size={
+                          getBreakpointValue({ xs: 45, sm: 50, md: 55 }) || 55
+                        }
                         iconType="solid"
                         color={colors?.main}
                       />
@@ -143,6 +185,7 @@ const DayMoodSelector: FC = () => {
                   </Box>
                 );
               })}
+            {xs && [...Array(restMoods?.length).map((i) => <Box></Box>)]}
           </Planet>
         </Box>
       </Box>

@@ -16,11 +16,15 @@ import {
   CardContent,
   Divider,
   Grid,
+  Tab,
+  Tabs,
+  Button,
   TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { Slider as SnapSlider } from "@lifarl/react-scroll-snap-slider";
 
 type DaySentimentItemProps = {
   sentimentCode: string;
@@ -88,6 +92,8 @@ const DaySentimentItem: FC<DaySentimentItemProps> = ({
     return dayGlyphs && dayTags ? dayGlyphs?.length + dayTags?.length : 0;
   };
 
+  const xs = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
+
   if (!sentimentCode || !sentimentSettings) {
     return <DaySentimentItemSkeleton vertical />;
   }
@@ -96,105 +102,113 @@ const DaySentimentItem: FC<DaySentimentItemProps> = ({
 
   return (
     <DiaryCard colors={colors} boxProps={{ p: 0 }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        p={4}
-        position="relative"
-      >
-        <Box>
-          <Typography
-            textTransform="capitalize"
-            variant="h3"
-            color={colors?.main}
-            borderBottom={`3px solid ${colors?.main}`}
-            pb={0.5}
-          >
-            {sentimentSettings.label}
-          </Typography>
+      {/*<Box*/}
+      {/*  display="flex"*/}
+      {/*  justifyContent="space-between"*/}
+      {/*  alignItems="center"*/}
+      {/*  position="relative"*/}
+      {/*  p={{ xs: 3, md: 4 }}*/}
+      {/*  pb={0}*/}
+      {/*>*/}
+      {/*  <Box>*/}
+      {/*    <Typography*/}
+      {/*      textTransform="capitalize"*/}
+      {/*      variant="h3"*/}
+      {/*      color={colors?.main}*/}
+      {/*      borderBottom={`1px solid ${colors?.main}`}*/}
+      {/*      pb={0.5}*/}
+      {/*      fontWeight={100}*/}
+      {/*    >*/}
+      {/*      {sentimentSettings.label}*/}
+      {/*    </Typography>*/}
+      {/*  </Box>*/}
+
+      {/*  <Box position="absolute" right={10} top={10}>*/}
+      {/*    <ColorButton*/}
+      {/*      colors={colors}*/}
+      {/*      sx={{ paddingLeft: 1, paddingRight: 1 }}*/}
+      {/*      outlined*/}
+      {/*      disabled*/}
+      {/*    >*/}
+      {/*      <Typography*/}
+      {/*        variant="subtitle1"*/}
+      {/*        fontWeight={500}*/}
+      {/*        fontSize="0.8rem"*/}
+      {/*        color={colors?.main}*/}
+      {/*      >*/}
+      {/*        {calcTotalPoints()}*/}
+      {/*      </Typography>*/}
+      {/*    </ColorButton>*/}
+      {/*  </Box>*/}
+      {/*</Box>*/}
+      <Box p={{ xs: 3, md: 4 }} position="relative">
+        <Box mb={2}>
+          <GlyphGroupButton
+            size={xs ? 34 : 36}
+            maxVisible={xs ? 12 : 10}
+            groupCode={sentimentCode}
+            glyphs={availableGlyphs}
+            selectedGlyphs={dayGlyphs}
+            onSelect={handleSelect}
+          />
         </Box>
 
-        <Box position="absolute" right={10} top={10}>
-          <ColorButton colors={colors} sx={{ paddingLeft: 1, paddingRight: 1 }}>
-            <Typography variant="subtitle1" fontWeight={100} fontSize="0.8rem">
-              {calcTotalPoints()}
-            </Typography>
-          </ColorButton>
+        <Divider orientation="horizontal" flexItem sx={{ mr: "-1px" }}>
+          <Typography variant="subtitle2" color="gray" />
+        </Divider>
+
+        <Box height={90}>
+          <Box
+            position="absolute"
+            // display="flex"
+            //flexWrap="wrap"
+            overflow="scroll"
+            whiteSpace="nowrap"
+            width="100vw"
+            py={3}
+            left={-24}
+            display="flex"
+          >
+            <TagGroup
+              tags={availableTags}
+              selectedTags={dayTags}
+              onSelect={handleSelect}
+              colors={colors}
+            />
+          </Box>
+        </Box>
+
+        <Divider orientation="horizontal" flexItem sx={{ mr: "-1px" }}>
+          <Typography variant="subtitle2" color="gray" />
+        </Divider>
+
+        <Box mt={3}>
+          <TextField
+            label="Few words about your feelings"
+            multiline
+            fullWidth
+            size="medium"
+            placeholder="Few words"
+            minRows={xs ? 1 : 6}
+            value={descriptionValue}
+            onChange={handleChangeDescription}
+            sx={{
+              "& label.Mui-focused": {
+                color: "#0009",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  //  borderColor: "#E0E0E0",
+                  borderColor: colors?.main,
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: colors?.main,
+                },
+              },
+            }}
+          />
         </Box>
       </Box>
-      <CardContent>
-        <Grid
-          item
-          container
-          direction={horizontal ? "column" : "row"}
-          spacing={4}
-        >
-          <Grid
-            item
-            xs={horizontal ? 12 : 6}
-            pr={horizontal ? 0 : 4}
-            order={horizontal ? 2 : 0}
-          >
-            <TextField
-              label="Few words about your feelings"
-              multiline
-              fullWidth
-              size="medium"
-              placeholder="Few words"
-              minRows={6}
-              value={descriptionValue}
-              onChange={handleChangeDescription}
-              sx={{
-                "& label.Mui-focused": {
-                  color: "#0009",
-                },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#E0E0E0",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: colors?.main,
-                  },
-                },
-              }}
-            />
-          </Grid>
-
-          <Box
-            component={Divider}
-            orientation="vertical"
-            flexItem
-            sx={{ mr: "-1px" }}
-          />
-
-          <Grid item xs={6} alignItems="center" pl={xl ? 3 : 0}>
-            <Box pb={2}>
-              <GlyphGroupButton
-                size={36}
-                maxVisible={10}
-                groupCode={sentimentCode}
-                glyphs={availableGlyphs}
-                selectedGlyphs={dayGlyphs}
-                onSelect={handleSelect}
-              />
-            </Box>
-
-            <Divider orientation="horizontal" flexItem sx={{ mr: "-1px" }}>
-              <Typography variant="subtitle2" color="gray" />
-            </Divider>
-
-            <Box display="inline-flex" flexWrap="wrap" pt={2}>
-              <TagGroup
-                tags={availableTags}
-                selectedTags={dayTags}
-                onSelect={handleSelect}
-                colors={colors}
-              />
-            </Box>
-          </Grid>
-        </Grid>
-      </CardContent>
     </DiaryCard>
   );
 };

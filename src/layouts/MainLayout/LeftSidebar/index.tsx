@@ -41,7 +41,7 @@ const LeftSidebar: FC<LeftSidebarProps> = ({
   }
   return (
     <Drawer
-      anchor="left"
+      anchor="right"
       open={isSidebarOpen}
       onClose={onSidebarClose}
       PaperProps={{
