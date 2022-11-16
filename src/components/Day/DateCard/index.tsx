@@ -1,5 +1,11 @@
 import React, { FC, useCallback, useState } from "react";
-import { Box, Typography, Fade, LinearProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Fade,
+  LinearProgress,
+  useMediaQuery,
+} from "@mui/material";
 import { useSettingsContext } from "~/context/SettingsContext";
 import { useDiaryContext } from "~/context/DiaryContext";
 import GlyphButton from "~/components/shared/Glyph/GlyphButton";
@@ -16,6 +22,8 @@ const DateCard: FC = () => {
   const colors = getColorsFromPalette?.(day?.paletteCode);
 
   const [showColorSelector, setShowColorSelector] = useState(false);
+
+  const lg = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
   const isToday = dayjs(day?.date, "D-MM-YY").isToday();
 
@@ -42,8 +50,7 @@ const DateCard: FC = () => {
   const handleSetDayFavorite = (value?: boolean) => {
     makeDayMutation?.({ isFavorite: value || !day?.isFavorite });
   };
-
-  if (!day) {
+  if (!day || !day?.date) {
     return <DateCardSkeleton />;
   }
   return (
@@ -60,17 +67,7 @@ const DateCard: FC = () => {
       }}
     >
       <Box width="100%">
-        <Box position="absolute" left={5} top={5} display={{ xs: "none" }}>
-          <GlyphButton
-            rounded
-            code="star"
-            size={26}
-            variant="transparent"
-            iconType={day?.isFavorite ? "solid" : "thin"}
-            color={day?.isFavorite ? colors?.main : "#aaa"}
-            onClick={() => handleSetDayFavorite()}
-          />
-        </Box>
+        <Box position="absolute" left={5} top={5}></Box>
         <Box position="absolute" right={10} top={10} display="inline-flex">
           <Fade in={showColorSelector} timeout={{ enter: 500, exit: 500 }}>
             <Box display="inline-flex">
@@ -104,14 +101,25 @@ const DateCard: FC = () => {
         display="flex"
         alignItems="center"
         justifyContent="space-between"
-        pl={{ xs: 0, md: 3 }}
         width="100%"
-        color="#5e3d57"
       >
         <Box>
-          <Typography variant="h1" fontSize={{ xs: 36, md: 40 }}>
-            {dayjs(day?.date, "D-MM-YY").format("D, dddd")}
-          </Typography>
+          <Box display="inline-flex" alignItems="center">
+            <Typography variant="h1" fontSize={{ xs: 36, md: 40 }}>
+              {dayjs(day?.date, "D-MM-YY").format("D, dddd")}
+            </Typography>
+            <Box ml={1}>
+              <GlyphButton
+                rounded
+                code="star"
+                size={lg ? 30 : 20}
+                variant="transparent"
+                iconType={day?.isFavorite ? "solid" : "thin"}
+                color={day?.isFavorite ? colors?.main : "#aaa"}
+                onClick={() => handleSetDayFavorite()}
+              />
+            </Box>
+          </Box>
 
           <Box sx={{ width: "100%" }}>
             {isToday && (
@@ -132,7 +140,7 @@ const DateCard: FC = () => {
           <Typography
             variant="h3"
             sx={{ marginTop: { xs: 1, sm: 1 } }}
-            fontSize={{ xs: 20, sm: 35 }}
+            fontSize={{ xs: 20, lg: 25 }}
           >
             {dayjs(day?.date, "D-MM-YY").format("MMMM")}
           </Typography>

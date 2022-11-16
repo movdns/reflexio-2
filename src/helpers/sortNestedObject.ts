@@ -1,7 +1,11 @@
 /**
  * Deep sort of object properties
  */
-const sortNestedObjectByField = (obj: any, field: string, toArray?: false) => {
+const sortNestedObjectByField = (
+  obj: { [key: string]: any },
+  field: string,
+  toArray?: boolean
+) => {
   const sorted = Object.keys(obj).sort((a: any, b: any) => {
     return typeof obj[a].order === "undefined" &&
       typeof obj[b].order === "undefined"
@@ -19,7 +23,7 @@ const sortNestedObjectByField = (obj: any, field: string, toArray?: false) => {
     });
   }
 
-  let sortedObj: { [key: string]: {} } = {};
+  let sortedObj: { [key: string]: any } = {};
   sorted.forEach((key: string) => {
     sortedObj[key] = obj[key];
   });

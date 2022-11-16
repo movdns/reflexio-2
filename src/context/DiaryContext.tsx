@@ -16,6 +16,7 @@ type DiaryContextProps = {
   queryDate?: string;
   isDayEditable?(): boolean;
   makeDayMutation?(data: Partial<TDay>): void;
+  fakeDayMutation?(data: Partial<TDay>): void;
 };
 
 export const DiaryProvider: FC<{ children?: ReactNode }> = ({ children }) => {
@@ -39,8 +40,8 @@ export const DiaryProvider: FC<{ children?: ReactNode }> = ({ children }) => {
     isAnonymous && isAnonymousParamsDateValid
       ? paramsDate
       : isParamsDateValid
-        ? paramsDate
-        : dayjs().format("D-MM-YY");
+      ? paramsDate
+      : dayjs().format("D-MM-YY");
 
   /**
    * Fetch all days collection
@@ -154,7 +155,24 @@ export const DiaryProvider: FC<{ children?: ReactNode }> = ({ children }) => {
     async (data: Partial<TDay>) => {
       await dayMutation.mutate({ ...dayData, ...data });
     },
-    [dayData, dayMutation]
+
+    // [mutation] // DO NOT DO THIS even if eslint recommends you to add "mutation" there
+    // eslint-disable-next-line
+    [dayData]
+  );
+
+  /**
+   * For the debug purposes, affects only on UI
+   * @param data: TDay
+   */
+  const fakeDayMutation = useCallback(
+    async (data: Partial<TDay>) => {
+      await queryClient.setQueryData(["day", queryDate], {
+        ...dayData,
+        ...data,
+      });
+    },
+    [dayData, queryClient, queryDate]
   );
 
   /**
@@ -179,6 +197,7 @@ export const DiaryProvider: FC<{ children?: ReactNode }> = ({ children }) => {
         queryDate,
         isDayEditable,
         makeDayMutation,
+        fakeDayMutation,
       }}
     >
       {children}

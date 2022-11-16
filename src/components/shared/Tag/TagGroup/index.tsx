@@ -39,17 +39,25 @@ const TagGroup: FC<TagGroupProps> = ({
     return <></>;
   }
   return (
-    <Stack display="inline-flex" spacing={0} direction="row" gap={2}>
-      <Box ml={6}>
-        <GlyphButton
-          code="plus"
-          iconType="thin"
-          rounded
-          size={32}
-          fullWidth
-          color="#ccc"
-        />
-      </Box>
+    <Stack
+      display="inline-flex"
+      spacing={0}
+      flexWrap={readonly ? "wrap" : "nowrap"}
+      direction="row"
+      gap={readonly ? 1 : 2}
+    >
+      {!readonly && (
+        <Box ml={6}>
+          <GlyphButton
+            code="plus"
+            iconType="thin"
+            rounded
+            size={32}
+            fullWidth
+            color="#ccc"
+          />
+        </Box>
+      )}
 
       {tags
         ? tags.map((tag: string) => {
@@ -85,7 +93,7 @@ const TagGroup: FC<TagGroupProps> = ({
         : selectedTags?.map((tag: string) => {
             return (
               <Box
-                key={tag}
+                key={genUniqueId()}
                 size="small"
                 component={Button}
                 textTransform="capitalize"

@@ -124,6 +124,7 @@ const TodoList: FC = () => {
               role={undefined}
               dense
               sx={{
+                position: "relative",
                 paddingLeft: 0,
                 "&.Mui-focusVisible": {
                   backgroundColor: `${newTodoColors?.main}40`,
@@ -144,7 +145,12 @@ const TodoList: FC = () => {
 
               {showColorSelector && palette && (
                 <Fade in={showColorSelector} timeout={500}>
-                  <Box display="inline-flex">
+                  <Box
+                    display="flex"
+                    position="absolute"
+                    zIndex={999}
+                    left={45}
+                  >
                     {Object.keys(palette)
                       .filter((code) => code !== newTodoItem.paletteCode)
                       .map((paletteCode) => (
@@ -164,27 +170,29 @@ const TodoList: FC = () => {
                 </Fade>
               )}
 
-              <TextField
-                id="standard-basic"
-                variant="standard"
-                fullWidth
-                color="success"
-                value={newTodoItem.text}
-                onChange={(v) =>
-                  handleChangeNewTodoState({ text: v.target.value })
-                }
-                sx={{
-                  ".MuiInput-underline:before": {
-                    borderBottom: `2px solid #e0e0e0`,
-                  },
-                  ".MuiInput-underline:after": {
-                    borderBottom: `2px solid ${newTodoColors?.main}`,
-                  },
-                  ".MuiInput-root:hover:not(.Mui-disabled):before": {
-                    borderBottom: `2px solid #CCCCCC`,
-                  },
-                }}
-              />
+              {!showColorSelector && (
+                <TextField
+                  id="standard-basic"
+                  variant="standard"
+                  fullWidth
+                  color="success"
+                  value={newTodoItem.text}
+                  onChange={(v) =>
+                    handleChangeNewTodoState({ text: v.target.value })
+                  }
+                  sx={{
+                    ".MuiInput-underline:before": {
+                      borderBottom: `2px solid #e0e0e0`,
+                    },
+                    ".MuiInput-underline:after": {
+                      borderBottom: `2px solid ${newTodoColors?.main}`,
+                    },
+                    ".MuiInput-root:hover:not(.Mui-disabled):before": {
+                      borderBottom: `2px solid #CCCCCC`,
+                    },
+                  }}
+                />
+              )}
             </ListItemButton>
           </ListItem>
 
@@ -232,7 +240,7 @@ export const TodoListSkeleton = ({ ghost }: { ghost?: boolean }) => (
 
     <Box width="100%" pb={1}>
       <Typography variant="h4" sx={{ marginBottom: 2 }}>
-        <Skeleton width={120} />
+        <Skeleton width={80} />
       </Typography>
 
       <List>

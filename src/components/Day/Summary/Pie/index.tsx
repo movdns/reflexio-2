@@ -5,6 +5,7 @@ import {
   ResponsiveSunburst,
   SunburstCustomLayerProps,
 } from "@nivo/sunburst";
+import useStateWithDep from "~/hooks/useStateWithDep";
 
 type DaySummaryPieProps = {
   data?: any;
@@ -12,16 +13,18 @@ type DaySummaryPieProps = {
 };
 
 const DaySummaryPie: FC<DaySummaryPieProps> = ({ data, readonly }) => {
-  const [pieDataState, setPieDataState] = useState(data || placeholderData);
+  const [pieDataState, setPieDataState] = useStateWithDep(
+    data || placeholderData
+  );
 
-  useEffect(() => {
-    // // data !== pieDataState && setPieDataState(data);
-    // if (typeof data === "undefined") {
-    //   setPieDataState(placeholderData);
-    // } else if (data) {
-    data && data !== pieDataState && setPieDataState(data);
-    // }
-  }, [data, pieDataState]);
+  // useEffect(() => {
+  //   // // data !== pieDataState && setPieDataState(data);
+  //   // if (typeof data === "undefined") {
+  //   //   setPieDataState(placeholderData);
+  //   // } else if (data) {
+  //   data && data !== pieDataState && setPieDataState(data);
+  //   // }
+  // }, [data, pieDataState]);
 
   return (
     <ResponsiveSunburst
@@ -36,7 +39,8 @@ const DaySummaryPie: FC<DaySummaryPieProps> = ({ data, readonly }) => {
       isInteractive={!readonly}
       arcLabel={(e) => {
         // return e.id + " (" + e.value + ")";
-        return ((10 / 100) * e.percentage).toFixed(1);
+        // return ((10 / 100) * e.percentage).toFixed(1);
+        return `${e.percentage.toFixed()}%`;
       }}
       layers={["arcs", "arcLabels", CenteredMetricSunburst]}
       childColor={{
@@ -143,7 +147,13 @@ const CenteredMetricSunburst = ({
   );
 };
 
-const CustomTooltip = ({ id, value, color, data }: ComputedDatum<any>) => {
+const CustomTooltip = ({
+  id,
+  value,
+  color,
+  data,
+  percentage,
+}: ComputedDatum<any>) => {
   const theme = useTheme();
 
   return (
@@ -155,8 +165,8 @@ const CustomTooltip = ({ id, value, color, data }: ComputedDatum<any>) => {
         padding: 10,
       }}
     >
-      <b style={{ textTransform: "capitalize" }}> {data?.label || id}:</b>{" "}
-      {value} score
+      <b style={{ textTransform: "capitalize" }}> {data?.label || id}: </b>
+      {percentage.toFixed()}%
     </p>
   );
 };

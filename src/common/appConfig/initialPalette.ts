@@ -1,33 +1,35 @@
 const initialPalette = {
   negative: {
     main: "#EF8799",
-    secondary: "#EF879980",
+    secondary: "#266a80",
     contrastText: "#ffffff",
   },
   danger: {
     main: "#E99180",
-    secondary: "#E9918080",
+    secondary: "#0b3e62",
     contrastText: "#ffffff",
   },
   neutral: {
-    main: "#6d92b4",
-    secondary: "#6d92b480",
-    contrastText: "#ffffff",
+    // main: "#cadfd9",
+    main: "#d4dbda",
+    secondary: "#226b7a",
+    contrastText: "white",
   },
   positive: {
-    main: "#00C292",
-    secondary: "#00C29280",
+    // main: "#00C292",
+    main: "#9dc56d",
+    secondary: "#2a4a50",
     contrastText: "#ffffff",
   },
   special: {
-    main: "#0DCAD6",
-    secondary: "#0DCAD680",
+    main: "#20defc",
+    secondary: "#134455",
     contrastText: "#ffffff",
   },
   custom1: {
-    main: "#ffbbc7",
-    secondary: "#ffbbc780",
-    contrastText: "#354860",
+    main: "#fccaba",
+    secondary: "#4a5a70",
+    contrastText: "#289698",
   },
 };
 export default initialPalette;

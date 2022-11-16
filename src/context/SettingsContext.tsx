@@ -11,7 +11,7 @@ import { useUser } from "reactfire";
 type SettingsContextProps = TUserSettings & {
   getColorsFromPalette?: (
     paletteCode: string | undefined
-  ) => TTUserSettingsPaletteData | null;
+  ) => TTUserSettingsPaletteData | null | undefined;
   getMainColorFromPalette?: (code: string | undefined) => void;
   makeUserSettingsMutation?: (data: any) => void;
 };
@@ -93,10 +93,10 @@ export const SettingsProvider: FC<{ children?: ReactNode }> = ({
 
   const getMainColorFromPalette = useCallback(
     (paletteCode: string | undefined): string => {
-      return paletteCode
-        ? userSettings?.palette?.[paletteCode] &&
-            userSettings?.palette[paletteCode]?.main
-        : "#aaa";
+      const userPalette =
+        userSettings && paletteCode && userSettings?.palette?.[paletteCode];
+
+      return userPalette ? userPalette?.main : "#aaa";
     },
     [userSettings]
   );

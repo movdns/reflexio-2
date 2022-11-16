@@ -11,7 +11,7 @@ const dayPossibleProperties = {
     label: [
       "Lorem ipsum",
       "Nascetur",
-      "Not good not terrible",
+      "Routine",
       "Dolor sit",
       "Duis aute",
       "Excepteur",

@@ -59,9 +59,9 @@ const genRandomDay = (date: string): TDay => {
     },
     metrics: {
       score: {
-        mood: isSpecial ? 9 : randomIntFromInterval(0, 9),
-        motivation: randomIntFromInterval(0, 10),
-        health: randomIntFromInterval(0, 10),
+        mood: isSpecial ? 5 : randomIntFromInterval(1, 5),
+        motivation: randomIntFromInterval(1, 5),
+        health: randomIntFromInterval(1, 5),
       },
     },
     todo: [...Array(randomIntFromInterval(2, 6))].map(() => ({

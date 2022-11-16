@@ -38,6 +38,7 @@
     "nivo": "^0.31.0",
     "npm": "^8.19.2",
     "react": "^18.2.0",
+    "react-autosave": "^0.4.1",
     "react-calendar": "https://github.com/movdns/react-calendar.git",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -51,7 +52,7 @@
     "react-transition-group": "^4.4.5",
     "reactfire": "^4.2.1",
     "styled-components": "^5.3.5",
-    "typescript": "^4.8.4",
+    "typescript": "4.7.4",
     "web-vitals": "^2.1.0",
     "yup": "^0.32.11"
   },
@@ -92,8 +93,9 @@
     "@types/react-calendar": "^3.5.2",
     "@types/react-dom": "^18.0.0",
     "@types/react-query": "^1.2.9",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
+    "@typescript-eslint/typescript-estree": "^5.42.1",
     "eslint": "^8.20.0",
     "prettier": "^2.7.1"
   }

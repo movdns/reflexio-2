@@ -1,15 +1,15 @@
 import React, { ReactNode, FC } from "react";
 import { TTUserSettingsPaletteData } from "root/types/userSettings";
-import { Box, Card, BoxProps, SxProps } from "@mui/material";
+import { Box, Card, SxProps, BoxProps } from "@mui/material";
 
 type DiaryCardProps = {
   children: ReactNode;
   colors?: TTUserSettingsPaletteData;
-  variant?: "filled" | "outlined";
+  variant?: string;
   outlineWidth?: number;
-  minHeight?: number;
   boxProps?: BoxProps;
   sx?: SxProps;
+  minHeight?: string | number;
 };
 
 const DiaryCard: FC<DiaryCardProps> = ({
@@ -18,8 +18,8 @@ const DiaryCard: FC<DiaryCardProps> = ({
   variant,
   outlineWidth,
   minHeight,
-  sx,
   boxProps,
+  sx,
 }) => {
   return (
     <Card
@@ -29,11 +29,13 @@ const DiaryCard: FC<DiaryCardProps> = ({
             ? `${outlineWidth || 2}px solid ${colors?.main || "#bebebe"}`
             : "none",
         backgroundColor: variant === "filled" ? colors?.main : "white",
+        color: colors?.secondary || colors?.contrastText,
         minHeight: minHeight,
+        boxShadow: variant === "shadow" && `0 0 8px 3px ${colors?.main}`,
         ...sx,
       }}
     >
-      <Box p={{ xs: 3, sm: 3 }} {...boxProps}>
+      <Box p={3} {...boxProps}>
         {children}
       </Box>
     </Card>

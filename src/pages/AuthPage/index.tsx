@@ -62,6 +62,7 @@ const SignInScreen: FC = () => {
     <Box mt={5} width="100%">
       <Stack spacing={2} direction="column">
         <Button
+          disabled
           variant="google"
           onClick={() => signInWithProvider(googleProvider)}
           startIcon={<GoogleIcon />}
@@ -71,6 +72,7 @@ const SignInScreen: FC = () => {
         </Button>
 
         <Button
+          disabled
           fullWidth
           variant="github"
           onClick={() => signInWithProvider(gitProvider)}

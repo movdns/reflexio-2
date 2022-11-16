@@ -66,12 +66,12 @@ const PageWrapper = styled("div")(({ theme }) => ({
   overflow: "hidden",
 
   backgroundColor: theme.palette.background.default,
-  [theme.breakpoints.up("lg")]: {
+  [theme.breakpoints.up("xs")]: {
     paddingTop: "64px",
   },
-  [theme.breakpoints.down("sm")]: {
-    paddingTop: "64px",
-  },
+  // [theme.breakpoints.down("lg")]: {
+  //   paddingTop: "64px",
+  // },
 }));
 
 export default MainLayout;

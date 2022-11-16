@@ -42,7 +42,7 @@ const TodoListItemSkeleton: FC<{ ghost?: boolean }> = ({ ghost }) => (
       </ListItemIcon>
       <ListItemText
         id="222"
-        primary={<Skeleton width={200} animation={ghost && false} />}
+        primary={<Skeleton width={140} animation={ghost && false} />}
         secondary={<Skeleton width={60} animation={ghost && false} />}
       />
     </ListItemButton>

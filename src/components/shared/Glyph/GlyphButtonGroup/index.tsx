@@ -72,9 +72,12 @@ const GlyphButtonGroup: FC<GlyphButtonGroupProps> = ({
           const selected = selectedGlyphs?.includes(glyph) || false;
 
           return (
-            <Box justifySelf="center" sx={{ aspectRatio: "1/1" }}>
+            <Box
+              justifySelf="center"
+              sx={{ aspectRatio: "1/1" }}
+              key={genUniqueId()}
+            >
               <GlyphButton
-                key={glyph}
                 code={glyph}
                 fullWidth
                 selected={selected}
@@ -90,10 +93,9 @@ const GlyphButtonGroup: FC<GlyphButtonGroupProps> = ({
           );
         })}
       {ghostsNum &&
-        [...Array(ghostsNum)].map((k) => (
-          <Box justifySelf="center">
+        [...Array(ghostsNum)].map(() => (
+          <Box justifySelf="center" key={genUniqueId()}>
             <GlyphButton
-              key={`ghost_${k}`}
               code="block-question"
               fullWidth
               iconType="thin"

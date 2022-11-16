@@ -17,13 +17,17 @@ const ColorSlider = styled(Slider, {
 })<ColorSliderProps>(({ theme, colors }) => ({
   color: colors?.main || theme.palette.primary.main,
   borderRadius: 3,
-  height: 8,
+  height: 6,
+
+  "& .MuiSlider-thumb:not(.MuiSlider-active)": {
+    transition: "left 0.5s ease-in",
+  },
   "& .MuiSlider-track": {
-    border: "none",
-    borderRadius: 3,
+    transition: "width 0.5s ease-in",
   },
 
   "& .MuiSlider-thumb": {
+    transition: "left 2s",
     height: 24,
     width: 24,
     backgroundColor: "#fff",
@@ -43,7 +47,7 @@ const ColorSlider = styled(Slider, {
     padding: 0,
     width: 32,
     height: 32,
-    borderRadius: "50% 50% 50% 0",
+    borderRadius: "10px 10px 10px 2px",
     backgroundColor: colors?.main || theme.palette.primary.main,
     transformOrigin: "bottom left",
     transform: "translate(50%, -100%) rotate(-45deg) scale(0)",

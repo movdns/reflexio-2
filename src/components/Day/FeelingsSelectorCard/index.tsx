@@ -1,85 +1,77 @@
-import React, { FC } from "react";
-import { Box, Rating, Typography, Slider, useMediaQuery } from "@mui/material";
+import React, { FC, useCallback, useEffect, useState } from "react";
+import { Box, Rating, Typography } from "@mui/material";
 import { useSettingsContext } from "~/context/SettingsContext";
 import { useDiaryContext } from "~/context/DiaryContext";
-import ColorButton from "~/components/shared/ColorButton";
+import genSliderMarks from "~/components/shared/ColorSlider/helpers/genSliderMarks";
 import getTypeByScore from "~/helpers/getTypeByScore";
-import DayFeelingsSelectorSkeleton from "./Skeleton";
+import useDebounce from "~/hooks/useDebounce";
+import ColorSlider from "~/components/shared/ColorSlider";
 import DiaryCard from "~/components/shared/Card";
 import Glyph from "~/components/shared/Glyph";
-import ColorSlider from "~/components/shared/ColorSlider";
+import DayFeelingsSelectorSkeleton from "./Skeleton";
+import useStateWithDep from "~/hooks/useStateWithDep";
+import hash from "object-hash";
 
 const DayFeelingsSelectorCard: FC = () => {
   const { day, makeDayMutation } = useDiaryContext();
   const { getColorsFromPalette } = useSettingsContext();
 
-  const xs = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
-
   const { metrics } = { ...day };
-  const { score } = { ...metrics };
-  const { health, motivation } = { ...score };
+  const { score: dayScore } = { ...metrics };
+  // const { health, motivation } = { ...dayScore };
 
-  const handleRatingChange = (
-    points: number,
-    type: "motivation" | "health"
-  ) => {
-    points &&
+  const [feelingsState, setFeelingsState] = useStateWithDep(dayScore);
+  const debouncedFeelingsState = useDebounce(feelingsState, 2000);
+
+  const handleChangeFeelingsState = (value: any) => {
+    setFeelingsState((prev) => ({ ...prev, ...value }));
+  };
+
+  const ratingMutation = useCallback(
+    (data: any) => {
       makeDayMutation?.({
         metrics: {
           ...day?.metrics,
-          score: { ...day?.metrics?.score, [type]: points },
+          score: { ...day?.metrics?.score, ...data },
         },
       });
-  };
-  const calculateAvgScore = () => {
-    const exclude = ["total", "mood"];
+    },
+    [day?.metrics, makeDayMutation]
+  );
 
-    if (score) {
-      const scoreKeys = Object.keys(score).filter(
-        (scoreCode) => !exclude.includes(scoreCode)
-      );
-      // @ts-ignore @TODO fix typing
-      const scoreValues = scoreKeys.map((scoreKey) => score[scoreKey]);
+  useEffect(() => {
+    debouncedFeelingsState &&
+      dayScore &&
+      hash(dayScore) !== hash(debouncedFeelingsState) &&
+      ratingMutation(debouncedFeelingsState);
+  }, [debouncedFeelingsState, ratingMutation, dayScore]);
 
-      const total = scoreValues.reduce((p, n) => p + n, 0);
-      return Math.round((total / scoreKeys.length) * 1e1) / 1e1;
-    }
-  };
-
-  const colors = getColorsFromPalette?.(getTypeByScore(calculateAvgScore()));
+  // useEffect(() => {
+  //   if (
+  //     (debouncedMoodState && debouncedMoodState?.health !== health) ||
+  //     debouncedMoodState?.motivation !== motivation
+  //   ) {
+  //     ratingMutation(debouncedMoodState);
+  //   }
+  // }, [debouncedMoodState, health, motivation, ratingMutation, feelingsState]);
 
   const { main: healthColor } =
-    getColorsFromPalette?.(getTypeByScore(health)) || {};
+    getColorsFromPalette?.(getTypeByScore(feelingsState?.health)) || {};
 
   const { main: motivationColor } =
-    getColorsFromPalette?.(getTypeByScore(motivation)) || {};
+    getColorsFromPalette?.(getTypeByScore(feelingsState?.motivation)) || {};
 
-  if (!day) {
+  if (!day || !dayScore?.health || !dayScore?.motivation) {
     return <DayFeelingsSelectorSkeleton />;
   }
 
   return (
     <DiaryCard
-      colors={colors}
       sx={{
         position: "relative",
       }}
       boxProps={{ p: { xs: 3 } }}
     >
-      {!xs && (
-        <Box position="absolute" right={10} top={10}>
-          <ColorButton colors={colors} outlined>
-            <Typography
-              variant="subtitle1"
-              fontWeight={100}
-              fontSize="0.7rem"
-              color={colors?.main}
-            >
-              {calculateAvgScore()}
-            </Typography>
-          </ColorButton>
-        </Box>
-      )}
       <Box
         display="flex"
         flexDirection="row"
@@ -87,14 +79,10 @@ const DayFeelingsSelectorCard: FC = () => {
         justifyContent="center"
         alignItems="center"
         width="100%"
-        height={{ xs: "auto", md: 150 }}
+        height={{ xs: "auto" }}
       >
         <Box width="100%">
-          <Box
-            display="flex"
-            flexDirection={xs ? "row" : "column"}
-            alignItems="baseline"
-          >
+          <Box display="flex" flexDirection="row" alignItems="baseline">
             <Typography
               variant="subtitle1"
               color="#777e89"
@@ -106,7 +94,7 @@ const DayFeelingsSelectorCard: FC = () => {
             </Typography>
 
             <Rating
-              disabled={xs}
+              disabled
               sx={{
                 "& .MuiRating-iconFilled": {
                   color: healthColor,
@@ -116,9 +104,9 @@ const DayFeelingsSelectorCard: FC = () => {
                 },
               }}
               max={5}
-              value={health ? health / 2 : 2.5}
+              value={feelingsState?.health || 2.5}
               onChange={(event, value) =>
-                value && handleRatingChange(value * 2, "health")
+                value && handleChangeFeelingsState({ health: value })
               }
               precision={0.5}
               emptyIcon={
@@ -126,72 +114,39 @@ const DayFeelingsSelectorCard: FC = () => {
                   <Glyph
                     code="heart"
                     iconType="thin"
-                    size={xs ? 20 : 38}
+                    size={20}
                     fullWidth
-                    color={xs ? "transparent" : "inherit"}
+                    color="transparent"
                   />
                 </Box>
               }
               icon={
                 <Box>
-                  <Glyph
-                    code="heart"
-                    iconType="solid"
-                    size={xs ? 20 : 38}
-                    fullWidth
-                  />
+                  <Glyph code="heart" iconType="solid" size={20} fullWidth />
                 </Box>
               }
             />
           </Box>
 
-          {xs && (
-            <ColorSlider
-              colors={getColorsFromPalette?.(getTypeByScore(health))}
-              aria-label="Temperature"
-              value={health ? health / 2 : 2.5}
-              onChange={(event, value) =>
-                value && handleRatingChange(Number(value) * 2, "health")
-              }
-              marks={[
-                {
-                  value: 1,
-                },
-                {
-                  value: 1.5,
-                },
-                {
-                  value: 2,
-                },
-                {
-                  value: 2.5,
-                },
-                {
-                  value: 3,
-                },
-                {
-                  value: 3.5,
-                },
-                {
-                  value: 4,
-                },
-                {
-                  value: 4.5,
-                },
-              ]}
-              step={0.5}
-              min={0.5}
-              max={5}
-            />
-          )}
+          <ColorSlider
+            colors={getColorsFromPalette?.(
+              getTypeByScore(feelingsState?.health)
+            )}
+            aria-label="Health"
+            valueLabelDisplay="auto"
+            marks={genSliderMarks(0.5, 5, 0.5)}
+            value={feelingsState?.health || 2.5}
+            onChange={(event, value) =>
+              value && handleChangeFeelingsState({ health: Number(value) })
+            }
+            step={0.5}
+            min={0.5}
+            max={5}
+          />
         </Box>
 
         <Box width="100%">
-          <Box
-            display="flex"
-            flexDirection={xs ? "row" : "column"}
-            alignItems="baseline"
-          >
+          <Box display="flex" flexDirection="row" alignItems="baseline">
             <Typography
               variant="subtitle1"
               color="#777e89"
@@ -203,7 +158,7 @@ const DayFeelingsSelectorCard: FC = () => {
             </Typography>
 
             <Rating
-              disabled={xs}
+              disabled
               sx={{
                 "& .Mui-disabled": {
                   opacity: 1,
@@ -217,9 +172,10 @@ const DayFeelingsSelectorCard: FC = () => {
                 },
               }}
               max={5}
-              value={motivation ? motivation / 2 : 2.5}
+              value={feelingsState?.motivation || 2.5}
               onChange={(event, value) =>
-                value && handleRatingChange(value * 2, "motivation")
+                value &&
+                handleChangeFeelingsState({ motivation: Number(value) })
               }
               precision={0.5}
               emptyIcon={
@@ -227,41 +183,35 @@ const DayFeelingsSelectorCard: FC = () => {
                   <Glyph
                     code="bolt"
                     iconType="thin"
-                    size={xs ? 20 : 38}
+                    size={20}
                     fullWidth
-                    color={xs ? "transparent" : "inherit"}
+                    color="transparent"
                   />
                 </Box>
               }
               icon={
                 <Box>
-                  <Glyph
-                    code="bolt"
-                    iconType="solid"
-                    size={xs ? 20 : 38}
-                    fullWidth
-                  />
+                  <Glyph code="bolt" iconType="solid" size={20} fullWidth />
                 </Box>
               }
             />
           </Box>
 
-          {xs && (
-            <ColorSlider
-              colors={getColorsFromPalette?.(getTypeByScore(motivation))}
-              aria-label="Temperature"
-              defaultValue={3}
-              valueLabelDisplay="auto"
-              step={0.5}
-              min={0.5}
-              max={5}
-              marks
-              value={motivation ? motivation / 2 : 2.5}
-              onChange={(event, value) =>
-                value && handleRatingChange(Number(value) * 2, "motivation")
-              }
-            />
-          )}
+          <ColorSlider
+            colors={getColorsFromPalette?.(
+              getTypeByScore(feelingsState?.motivation)
+            )}
+            aria-label="Motivation"
+            valueLabelDisplay="auto"
+            step={0.5}
+            min={0.5}
+            max={5}
+            marks={genSliderMarks(0.5, 5, 0.5)}
+            value={feelingsState?.motivation || 2.5}
+            onChange={(event, value) =>
+              value && handleChangeFeelingsState({ motivation: Number(value) })
+            }
+          />
         </Box>
       </Box>
     </DiaryCard>

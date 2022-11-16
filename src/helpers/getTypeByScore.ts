@@ -7,15 +7,15 @@ const getTypeByScore = (
 ): "positive" | "negative" | "neutral" | "danger" | "special" | undefined => {
   if (score) {
     switch (true) {
-      case score < 3:
+      case score < 2:
         return "negative";
-      case score < 5:
+      case score < 3:
         return "danger";
-      case score === 5:
+      case score === 3:
         return "neutral";
-      case score < 8:
+      case score <= 4.5:
         return "positive";
-      case score <= 10:
+      case score === 5:
         return "special";
       default:
         return "neutral";

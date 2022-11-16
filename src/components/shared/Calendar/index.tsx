@@ -57,11 +57,14 @@ const Calendar: FC = () => {
         if (dayjs(date).isAfter(dayjs().add(1, "M"))) {
           return {
             background: "transparent",
+            border: "1px solid transparent",
+            // outline border radius is no working on IOS, so we need to reserve border place
             color: "#ccc",
           };
         } else {
           return {
-            background: "#eee",
+            background: "transparent",
+            border: "1px dashed #ccc",
           };
         }
       }

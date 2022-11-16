@@ -29,9 +29,9 @@ function genInitialDay({
     },
     metrics: {
       score: {
-        mood: 5,
-        health: 5,
-        motivation: 5,
+        mood: 3,
+        health: 3,
+        motivation: 3,
       },
       points: {
         todo: 0,

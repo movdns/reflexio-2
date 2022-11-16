@@ -24,7 +24,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Slider as SnapSlider } from "@lifarl/react-scroll-snap-slider";
 
 type DaySentimentItemProps = {
   sentimentCode: string;

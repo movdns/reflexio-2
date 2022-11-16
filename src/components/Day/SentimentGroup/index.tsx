@@ -1,5 +1,5 @@
-import React, { FC, useCallback } from "react";
-import { Box, Grid } from "@mui/material";
+import React, { FC, useCallback, useRef } from "react";
+import { Box, Button, Grid } from "@mui/material";
 import DaySentimentItemSkeleton from "./SentimentItem/Skeleton";
 import { useSettingsContext } from "~/context/SettingsContext";
 import { useDiaryContext } from "~/context/DiaryContext";
@@ -15,7 +15,7 @@ const DaySentimentGroup: FC = () => {
   const { sentiments, metrics } = day || {};
   const { score } = { ...metrics };
 
-  const isSpecial = score?.mood && score.mood > 8;
+  const isSpecial = score?.mood && score.mood === 5;
 
   const handleSentimentMutation = useCallback(
     (data: TSentiment) => {
@@ -40,17 +40,17 @@ const DaySentimentGroup: FC = () => {
       </>
     );
   }
-
+  console.log(score?.mood);
   return (
     <>
       {Object.keys(sentimentsSettings)
         .sort((a, b) => {
           if (score?.mood) {
-            return score.mood < 5
+            return score.mood < 3
               ? a !== "negative"
                 ? 1
                 : -1
-              : score.mood < 8
+              : score.mood < 4
               ? a !== "positive"
                 ? 1
                 : -1

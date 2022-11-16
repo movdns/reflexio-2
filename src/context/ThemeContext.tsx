@@ -1,4 +1,11 @@
-import React, { useContext, useState, useMemo, FC, createContext } from "react";
+import React, {
+  useContext,
+  useState,
+  useMemo,
+  FC,
+  createContext,
+  useCallback,
+} from "react";
 import {
   PaletteMode,
   createTheme,
@@ -14,8 +21,9 @@ type ThemeContextProps = {
     main,
     secondary,
   }: {
-    main: string;
-    secondary: string;
+    main?: string;
+    secondary?: string;
+    contrastText?: string;
   }) => void;
 };
 
@@ -31,12 +39,24 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     setMode(mode === "light" ? "dark" : "light");
   };
 
+  const [primary, setPrimary] = useState<any>(
+    defaultTheme.palette.primary.main
+  );
+  const [contrastText, setContrastText] = useState<any>(
+    defaultTheme.palette.primary.contrastText
+  );
+
+  const setPrimaryColor = (color: string) => {
+    setPrimary(color);
+  };
+
   const theme = useMemo(
     () =>
       createTheme(
         deepmerge(defaultTheme, {
           palette: {
             mode,
+            primary: { main: primary, contrastText: contrastText },
             background: {
               default: mode === "light" ? "#fafbfb" : "#202328", // body
               paper: mode === "light" ? "#fff" : "#33373D ", // cards
@@ -44,23 +64,31 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
           },
         })
       ),
-    [mode]
+    [contrastText, mode, primary]
   );
 
-  // const setThemeColors = useCallback(
-  //   ({ main, secondary }: { main: string; secondary: string }) => {
-  //     setPrimary(main);
-  //     setContrastTextColor(secondary);
-  //   },
-  //   []
-  // );
+  const setThemeColors = useCallback(
+    ({
+      main,
+      secondary,
+      contrastText,
+    }: {
+      main?: string;
+      secondary?: string;
+      contrastText?: string;
+    }) => {
+      main && setPrimary(main);
+      contrastText && setContrastText(contrastText);
+    },
+    []
+  );
 
   return (
     <ThemeContext.Provider
       value={{
         mode,
         toggleMode,
-        //setThemeColors,
+        setThemeColors,
       }}
     >
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>

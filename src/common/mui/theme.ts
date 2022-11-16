@@ -288,6 +288,10 @@ const defaultTheme = createTheme({
             "&:hover": {
               backgroundColor: "#353e42",
             },
+            "&:disabled": {
+              opacity: 0.4,
+              color: "white",
+            },
           },
         },
         {
@@ -299,6 +303,10 @@ const defaultTheme = createTheme({
             backgroundColor: "#4281E5",
             "&:hover": {
               backgroundColor: "#498eff",
+            },
+            "&:disabled": {
+              opacity: 0.4,
+              color: "white",
             },
           },
         },

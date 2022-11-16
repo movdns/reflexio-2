@@ -1,8 +1,7 @@
 import React, { FC, useMemo } from "react";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
 import { useDiaryContext } from "~/context/DiaryContext";
 import { useSettingsContext } from "~/context/SettingsContext";
-import ColorButton from "~/components/shared/ColorButton";
 import TagGroup from "~/components/shared/Tag/TagGroup";
 import getTypeByScore from "~/helpers/getTypeByScore";
 import { genUniqueId } from "~/helpers/genUniqueId";
@@ -15,6 +14,8 @@ import { TDay } from "root/types/day";
 const DaySummary: FC = () => {
   const { day } = useDiaryContext();
   const { getColorsFromPalette } = useSettingsContext();
+
+  const smUp = useMediaQuery((theme: any) => theme.breakpoints.up("sm"));
 
   const pieData = useMemo(() => {
     if (day && getColorsFromPalette) {
@@ -111,7 +112,7 @@ const DaySummary: FC = () => {
       );
 
     return (
-      <Box height="100%">
+      <Box height="100%" width={!isDataExists ? "100%" : "auto"}>
         {isDataExists ? (
           Object.keys(sentiments).map((sentimentCode) => {
             const colors = getColorsFromPalette?.(sentimentCode);
@@ -164,7 +165,7 @@ const DaySummary: FC = () => {
                   )}
                   {tags && (
                     <Box display="flex" flexWrap="wrap" mt={glyphs ? 1 : 0}>
-                      <TagGroup selectedTags={tags} colors={colors} />
+                      <TagGroup selectedTags={tags} colors={colors} readonly />
                     </Box>
                   )}
                 </Box>
@@ -180,6 +181,7 @@ const DaySummary: FC = () => {
             alignItems="center"
             justifyContent="center"
             height={300}
+            width="100%"
             color="#aaa"
           >
             <Glyph code="lightbulb-exclamation-on" size={72} />
@@ -193,29 +195,29 @@ const DaySummary: FC = () => {
     );
   };
 
-  const colors = getColorsFromPalette?.(day?.paletteCode);
-
   return (
     <DiaryCard sx={{ position: "relative", height: "100%" }}>
-      <Box position="absolute" right={10} top={10}>
-        <ColorButton colors={colors}>
-          <Typography variant="subtitle1" fontWeight={100} fontSize="0.7rem">
-            7
-          </Typography>
-        </ColorButton>
-      </Box>
       <Box component={Grid} item container spacing={2}>
         <Box component={Grid} item xs={12}>
           <Typography variant="h3" textTransform="capitalize">
             Summary
           </Typography>
         </Box>
-        <Box component={Grid} item xs={12} sm={6}>
-          <Box sx={{ overflowY: "scroll", maxHeight: 330 }}>
-            {renderSummaryData(day)}
+        {smUp && (
+          <Box component={Grid} item xs={12} sm={6}>
+            <Box
+              sx={{
+                overflowY: "scroll",
+                overflowX: "hidden",
+                maxHeight: 330,
+                display: { lg: "none", xl: "flex" },
+              }}
+            >
+              {renderSummaryData(day)}
+            </Box>
           </Box>
-        </Box>
-        <Box component={Grid} item xs={12} sm={6}>
+        )}
+        <Box component={Grid} item xs={12} sm={6} lg={12} xl={6}>
           <Box
             display="flex"
             alignItems="center"

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import { Box, Grid, useMediaQuery } from "@mui/material";
 import DayFeelingsSelector from "~/components/Day/FeelingsSelectorCard";
 import DaySentimentGroup from "~/components/Day/SentimentGroup";
@@ -10,64 +10,44 @@ import MainLayout from "~/layouts/MainLayout/";
 
 const DiaryPage: FC = () => {
   const xs = useMediaQuery((theme: any) => theme.breakpoints.down("sm"));
-
+  const spacing = { xs: 2, sm: 3, lg: 4 };
   return (
     <MainLayout>
-      <Grid
-        container
-        //spacing={{ xs: 2, md: 4 }}
-        rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-      >
-        <Grid item container xs={12} rowSpacing={{ xs: 2, sm: 3, md: 4 }}>
-          <Box
-            component={Grid}
-            item
-            container
-            xs={12}
-            lg={6}
-            rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-            columnSpacing={{ xs: 2, sm: 3, md: 4 }}
-          >
-            <Box component={Grid} item xs={12} lg={12}>
-              <DateCard />
-            </Box>
-            <Box component={Grid} item xs={12} sm={6}>
-              <MoodSelector />
-            </Box>
-            <Box component={Grid} item xs={12} sm={6}>
-              <DayFeelingsSelector />
-            </Box>
+      <Grid container spacing={spacing}>
+        <Grid item container spacing={spacing}>
+          <Grid item container xs={12} lg={8} xl={6}>
+            <Grid item container spacing={spacing}>
+              <Box component={Grid} item xs={12}>
+                <DateCard />
+              </Box>
+              <Box component={Grid} item xs={12} sm={6}>
+                <MoodSelector />
+              </Box>
+              <Box component={Grid} item xs={12} sm={6}>
+                <DayFeelingsSelector />
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Box component={Grid} item xs={12} lg={4} xl={6}>
+            <DaySummary />
           </Box>
-          {!xs && (
-            <Box component={Grid} item xs={12} lg={6}>
-              <DaySummary />
-            </Box>
-          )}
         </Grid>
 
         <Grid
           item
           container
-          rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-          columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+          spacing={spacing}
           direction={{ xs: "column", lg: "row" }}
         >
-          {/*<Grid item container xs={12} md={4}>*/}
-          {/*  <Grid item xs={12}>*/}
-          {/* */}
-          {/*  </Grid>*/}
-          {/*</Grid>*/}
+          <Grid item lg={4} xl={3} order={{ lg: 0, xs: 1 }}>
+            <TodoList />
+          </Grid>
 
-          <Grid
-            item
-            container
-            xs={12}
-            lg={8}
-            rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-            columnSpacing={{ xs: 2, sm: 3, md: 4 }}
-            order={0}
-          >
-            <DaySentimentGroup />
+          <Grid item container lg={8} xl={9} order={{ lg: 1, xs: 0 }}>
+            <Grid item container spacing={spacing}>
+              <DaySentimentGroup />
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
