@@ -8,6 +8,7 @@ import SignInScreen from "~/pages/AuthPage";
 import Compose from "~/context/Compose";
 import DayPage from "~/pages/DayPage";
 import { useUser } from "reactfire";
+import NewPage from "~/pages/NewPage";
 
 const Root: FC = () => {
   const {
@@ -46,6 +47,7 @@ const Root: FC = () => {
         >
           <Route path=":date" />
         </Route>
+        <Route path="/new" element={<NewPage />} />
         <Route path="/login" element={<Navigate to="/" />} />
         <Route path="/register" element={<Navigate to="/" />} />
       </Routes>

@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { CssBaseline } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ThemeProvider } from "~/context/ThemeContext";
 import "~/common/assets/fontawesome/css/all.css";
@@ -21,6 +22,8 @@ import {
 } from "reactfire";
 
 dayjs.extend(customParseFormat);
+dayjs.extend(relativeTime);
+
 dayjs.extend(isToday);
 
 const App: FC = () => {

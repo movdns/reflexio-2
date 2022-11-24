@@ -2,6 +2,7 @@ import { TTUserSettingsPaletteData } from "root/types/userSettings";
 import { IconButton, SxProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React, { FC, ReactNode } from "react";
+import { alpha, darken } from "@mui/material";
 import Glyph from "../index";
 
 export type GlyphButtonProps = {
@@ -15,6 +16,7 @@ export type GlyphButtonProps = {
   rounded?: boolean;
   crossOut?: boolean;
   fullWidth?: boolean;
+  lifted?: boolean;
 
   iconType?: "duotone" | "solid" | "thin" | "light" | "regular" | undefined;
   variant?: "transparent" | "filled" | "outlined" | "default";
@@ -31,42 +33,21 @@ export type GlyphButtonProps = {
 
 const GlyphButton: FC<GlyphButtonProps> = ({
   children,
-  sx,
-
   code,
   size,
   color,
-  colors,
-  rounded,
-  crossOut,
-  fullWidth,
-
-  iconType,
   variant,
+  fullWidth,
   selectedVariant,
-
-  disabled,
-  selected,
-
-  p,
-  m,
-
-  onClick,
+  iconType,
+  ...props
 }) => {
   return (
     <GlyphIconButton
-      crossOut={crossOut}
-      disabled={disabled}
-      selected={selected}
-      rounded={rounded}
       variant={variant || "default"}
       selectedVariant={selectedVariant || "filled"}
-      onClick={onClick}
-      colors={colors}
       colour={color}
-      sx={sx}
-      p={p}
-      m={m}
+      {...props}
     >
       {children ? (
         <>{children}</>
@@ -89,6 +70,7 @@ const GlyphIconButton = styled(IconButton, {
     prop !== "colour" &&
     prop !== "colors" &&
     prop !== "rounded" &&
+    prop !== "lifted" &&
     prop !== "variant" &&
     prop !== "selectedVariant" &&
     prop !== "selected" &&
@@ -100,6 +82,7 @@ const GlyphIconButton = styled(IconButton, {
     colour,
     colors,
     rounded,
+    lifted,
     variant,
     selectedVariant,
     selected,
@@ -110,7 +93,7 @@ const GlyphIconButton = styled(IconButton, {
   }) => {
     const { main, contrastText } = colors || {};
 
-    const primaryColor = colour || main || "#ccc";
+    const primaryColor = colour || main || "#ddd";
     const secondaryColor = colour ? `${colour}10` : `${primaryColor}10`;
 
     const contrastColor = contrastText || "white";
@@ -137,7 +120,8 @@ const GlyphIconButton = styled(IconButton, {
         return `${colors?.main || colour}50`;
       }
       if (variant === "filled" || (selected && selectedVariant === "filled")) {
-        return `${primaryColor}aa`;
+        // return `${primaryColor}80`;
+        return alpha(primaryColor, 0.7);
       }
       if (variant === "transparent") {
       }
@@ -193,10 +177,14 @@ const GlyphIconButton = styled(IconButton, {
       padding: p || 2,
       margin: m || 0,
       // border: getOutline(),
-      boxShadow:
-        variant === "outlined" || (selected && selectedVariant === "outlined")
-          ? "0 0 0 1px"
-          : "none",
+      boxShadow: lifted
+        ? `0 3px 0px 0px ${darken(
+            primaryColor,
+            0.2
+          )}, 0px 0px 10px 0px rgba(120, 120, 120, 0.4)`
+        : variant === "outlined" || (selected && selectedVariant === "outlined")
+        ? "0 0 0 1px"
+        : "none",
       "&:disabled": {
         color: colors ? colors?.main : "white",
         background: "inherit",
@@ -216,7 +204,15 @@ const GlyphIconButton = styled(IconButton, {
         borderTop: "1px solid",
         transform: "rotate(45deg)",
       },
+      "&:active": {
+        top: lifted ? 2 : 0,
+        boxShadow: lifted
+          ? `0 2px 0px 0px ${darken(primaryColor, 0.2)}`
+          : "none",
+      },
+
       aspectRatio: "1 / 1",
+      // transition: "all 0.16s",
     };
   }
 );

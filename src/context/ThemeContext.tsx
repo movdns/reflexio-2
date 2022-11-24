@@ -58,7 +58,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
             mode,
             primary: { main: primary, contrastText: contrastText },
             background: {
-              default: mode === "light" ? "#fafbfb" : "#202328", // body
+              // default: mode === "light" ? "#fafbfb" : "#202328", // body
               paper: mode === "light" ? "#fff" : "#33373D ", // cards
             },
           },

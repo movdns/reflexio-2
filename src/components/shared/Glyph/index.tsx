@@ -40,7 +40,7 @@ const Glyph: React.FC<GlyphProps> = ({
       className={`fa-${iconType || "thin"} fa-${code} ${
         !fullWidth ? "" : "fa-fw"
       }`}
-      size={size || 32}
+      size={size}
       color={colorationToColor || color}
       selectedColor={selectedColorationToColor || selectedColor}
       shadow={shadow}
@@ -61,7 +61,7 @@ const GlyphIcon = styled("div", {
   selectedColor?: string;
   shadow?: boolean;
 }>(({ size, color, selected, selectedColor, shadow }) => ({
-  fontSize: size || 32,
+  fontSize: size || "inherit",
   position: "relative",
   color:
     (!color && selected && (selectedColor || "#ccc")) || color || "inherit",

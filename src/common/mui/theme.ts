@@ -51,12 +51,26 @@ const defaultTheme = createTheme({
     },
 
     background: {
-      default: "#fafbfb",
+      default: "#f4f4f4",
     },
     // contrastThreshold: 3,
   },
 
   components: {
+    // @ts-ignore
+    MuiTimeline: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+          margin: 0,
+          ".MuiTimelineContent-root": { paddingRight: 0, paddingBottom: 2 },
+          ".MuiTimelineDot-root": { margin: "21.5px 0" },
+          ".MuiTimelineItem-root::before": {
+            content: "none",
+          },
+        },
+      },
+    },
     MuiAlert: {
       styleOverrides: {
         root: {
@@ -127,7 +141,7 @@ const defaultTheme = createTheme({
       ],
       styleOverrides: {
         root: {
-          borderRadius: 20,
+          borderRadius: 12,
         },
       },
     },
@@ -137,6 +151,13 @@ const defaultTheme = createTheme({
           props: { elevation: 1 },
           style: {
             boxShadow: "rgb(90 114 123 / 11%) 0px 7px 30px 0px",
+            // boxShadow: "none",
+          },
+        },
+        {
+          props: { elevation: 3 },
+          style: {
+            boxShadow: "rgb(90 114 123 / 20%) 0px 7px 30px 0px",
           },
         },
         {
@@ -198,13 +219,43 @@ const defaultTheme = createTheme({
     MuiTextField: {
       variants: [
         {
-          props: { variant: "outlined" },
+          props: { variant: "standard" },
           style: {
-            [`& fieldset`]: {
-              borderRadius: 10,
+            // background: "red",
+            ".MuiInputBase-root": {
+              fontSize: 20,
+              "&:before": {
+                borderColor: "lightgray",
+              },
             },
           },
         },
+        {
+          props: { variant: "outlined" },
+          style: {
+            ".MuiInputBase-root": {
+              borderRadius: 10,
+              background: "#eee",
+            },
+            [`& fieldset`]: {
+              borderWidth: 2,
+              borderColor: "#eee",
+            },
+          },
+        },
+        // {
+        //   props: { variant: "filled" },
+        //   style: {
+        //     ".MuiInputBase-root": {
+        //       fontSize: 20,
+        //       padding: 16,
+        //       borderRadius: 10,
+        //       "&:before": {
+        //         content: "none",
+        //       },
+        //     },
+        //   },
+        // },
       ],
     },
     MuiChip: {
@@ -322,6 +373,19 @@ const defaultTheme = createTheme({
             },
           },
         },
+        {
+          props: { variant: "tag" },
+          style: {
+            padding: "10px 25px",
+            fontSize: "1rem",
+            borderRadius: 12,
+            background: "#f28151",
+            color: "white",
+            "&:hover": {
+              background: "#f2815180",
+            },
+          },
+        },
       ],
     },
     MuiCheckbox: {
@@ -398,6 +462,7 @@ declare module "@mui/material/Button" {
     github: true;
     google: true;
     demo: true;
+    tag: true;
   }
   interface ButtonPropsColorOverrides {
     neutral: true;
@@ -405,6 +470,7 @@ declare module "@mui/material/Button" {
     positive: true;
     negative: true;
     special: true;
+    tag: true;
   }
 }
 
